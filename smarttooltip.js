@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 /**
- * @copyright Copyright © . All rights reserved.
+ * @copyright Copyright © 2018 ... All rights reserved.
  * @author Michael Goyberg
  * @license
  * @version   1.0
@@ -20,7 +20,7 @@
  *
  * The structure of data in function showTemplate have the next structure:
  * const data = {
- * 		id: target identificator, 
+ * 		id: target identificator,
 		x: evt.clientX,
 		y: evt.clientY,
 		options: {
@@ -37,8 +37,8 @@
 			descr:	'Description'
 			value:  'This text will be shown as description',
 			color:  'state color',
-			link:   'external URL', 
-			[titleFormat]: 'title formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, .... 
+			link:   'external URL',
+			[titleFormat]: 'title formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ....
 			[descrFormat]: same as titleFormat string but for second string of text in title section
 		},
 		targets: [
@@ -49,9 +49,9 @@
 				descr:	'Description'
 				value:  'This text will be shown as description',
 				color:  'state color',
-				link:   'external URL', 
+				link:   'external URL',
 				parent: 'parent UUID'
-				[legendFormat]: 'first column of legend stroke formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, .... 
+				[legendFormat]: 'first column of legend stroke formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ....
 				[legendValFormat]: same as legendFormat string but for second column
 			},
 			{}, ...
@@ -81,7 +81,6 @@
 
 
 class SmartTooltip {
-
 	// get href link paramter to new or old site
 	static getLink(link) {
 		if (typeof window.SmartTooltip.isNewSite === 'undefined' || !window.SmartTooltip.isNewSite() || !link || link == '') {
@@ -212,6 +211,7 @@ class SmartTooltip {
 					--smartTip-legend-fill: #fff;
 					--smartTip-run-color: #0f0;
 					--smartTip-stop-color: #f00;
+					--smartTip-def-color: #666;
 					--smartTip-border-radius: 2;
 
 					--legend-frm-border-width: 2;
@@ -652,8 +652,9 @@ class SmartTooltip {
 					div.dataset['dragged'] = false;
 					if (window.SmartTooltip._pinned) {
 						// store div coordinates in localstorage
-						SmartTooltip._saveInLocalStorage('SmartTooltip.x', div.style['left']);
-						SmartTooltip._saveInLocalStorage('SmartTooltip.y', div.style['top']);
+						const rc = div.getBoundingClientRect();
+						SmartTooltip._saveInLocalStorage('SmartTooltip.x', rc.x);
+						SmartTooltip._saveInLocalStorage('SmartTooltip.y', rc.y);
 					}
 				})
 
@@ -742,7 +743,7 @@ class SmartTooltip {
 				x += (offsetX-50);
 				this._ttipRef.style['left'] = x;
 			}
-		
+
 			window.SmartTooltip._checkMouseMoving();
 		}
 	}
@@ -934,11 +935,10 @@ class SmartTooltip {
 					// value color and width
 					if (this._ttipValue) {
 						if (typeof data.title.value !== 'undefined') {
-							if (this._ttipScaleGroup) {
-								this._ttipScaleGroup.style['display'] = 'block';
-							}
-							this._ttipValue.style['fill'] = data.title.color;
-							this._ttipValue.setAttribute('width', data.title.value * (maxValW/100));
+							this._ttipScaleGroup ? (this._ttipScaleGroup.style['display'] = 'block') : {};
+							this._ttipValue.style['fill'] = data.title.color || '#666';
+							const onepct = maxValW/100;
+							this._ttipValue.setAttribute('width', data.title.value * onepct || 0);
 							if (data.title.link) {
 								this._ttipValue.classList.add('sttip-linked');
 								this._ttipValue.dataset['linkto'] = data.title.link;
@@ -946,9 +946,9 @@ class SmartTooltip {
 								this._ttipValue.classList.remove('sttip-linked');
 								this._ttipValue.dataset['linkto'] = '';
 							}
-							this._ttipValue.dataset['uuid'] = data.title.uuid;
+							data.title.uuid ? this._ttipValue.dataset['uuid'] = data.title.uuid : '';
 						} else if (this._ttipScaleGroup) {
-							this._ttipScaleGroup.style['display'] = 'none';
+							this._ttipScaleGroup ? (this._ttipScaleGroup.style['display'] = 'none') : {};
 						}
 					}
 				}
@@ -975,8 +975,8 @@ class SmartTooltip {
 					// and move to these coordinates (the tooltip window was moved by user interaction to seautable place (i hope))
 					let left=0, top=0
 					if (forId) {
-						left = localStorage.getItem('SmartTooltip.x');
-						top = localStorage.getItem('SmartTooltip.y');
+						left = Number(localStorage.getItem('SmartTooltip.x'));
+						top = Number(localStorage.getItem('SmartTooltip.y'));
 					}
 					if (left && top) { // move here!
 						left += window.scrollX;
@@ -984,7 +984,7 @@ class SmartTooltip {
 
 						this._ttipRef.style['left'] = left;
 						this._ttipRef.style['top'] = top;
-					} else { 
+					} else {
 						this.move(data.x, data.y, forId, ownerBodyRect);
 					}
 				}
