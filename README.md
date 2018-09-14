@@ -43,7 +43,7 @@ It also use customized templates for individual elements.
 				parent: 'parent UUID'
 				[legendFormat]: 'first column of legend stroke formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ....
 				[legendValFormat]: same as legendFormat string but for second column
-			},
+			}, 
 			{}, ...
 		]
 	}
