@@ -85,7 +85,7 @@ It also use customized templates for individual elements.
 		},
 		targets: [
 			{
-				uuid:	  'unuque target id'
+				uuid:	 'unuque target id',
 				legend: 'Title legend',
 				name:   'Title legend may be defined here also',
 				descr:	'Description'
@@ -93,8 +93,8 @@ It also use customized templates for individual elements.
 				color:  'state color',
 				link:   'external URL',
 				parent: 'parent UUID'
-				[legendFormat]: 'first column of legend stroke formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ....
-				[legendValFormat]: same as legendFormat string but for second column
+				[legendFormat]: 'first column of legend stroke formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ...'
+				[legendValFormat]: 'same as legendFormat string but for second column'
 			}, 
 			{}, ...
 		]
@@ -115,12 +115,18 @@ It also use customized templates for individual elements.
 ```
   ...
 ``` js
+  //collect data object and call the next function
+  var data = { id, x, y, options:{rRect, isRun, scale, sortby, cssVars:{...}}, targets:[{uuid, name, value, color, link}], title:{uuid, name, value, color, link} };
+
   window.SmartTooltip.show(data)
   window.SmartTooltip.move(evt.clientX, evt.clientY);
   window.SmartTooltip.hide();
  ```
  2. Use internal template
  ``` js
+  //collect data object and call the next function
+  var data = { id, x, y, options:{rRect, isRun, scale, sortby, cssVars:{...}}, targets:[{uuid, name, value, color, link}], title:{uuid, name, value, color, link} };
+ 
   SmartTooltip.showTooltip(data);
   SmartTooltip.moveTooltip(evt.clientX, evt.clientY);
   SmartTooltip.hideTooltip();
