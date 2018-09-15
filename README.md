@@ -73,15 +73,15 @@ It also use customized templates for individual elements.
 			}
 		},
 		title: {
-			uuid:	  'unique target id'
+			uuid:	'unique target id',
 			legend: 'Title legend',
 			name:   'Title legend may be defined here also',
 			descr:	'Description'
 			value:  'This text will be shown as description',
 			color:  'state color',
 			link:   'external URL',
-			[titleFormat]: 'title formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ....
-			[descrFormat]: same as titleFormat string but for second string of text in title section
+			legendFormat: 'title string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ...',
+			legendValFormat: 'same as legendFormat string but for second string'
 		},
 		targets: [
 			{
@@ -92,9 +92,9 @@ It also use customized templates for individual elements.
 				value:  'This text will be shown as description',
 				color:  'state color',
 				link:   'external URL',
-				parent: 'parent UUID'
-				[legendFormat]: 'first column of legend stroke formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ...'
-				[legendValFormat]: 'same as legendFormat string but for second column'
+				parent: 'parent UUID',
+				legendFormat: 'legend stroke formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ...',
+				legendValFormat: 'legend value formating string'
 			}, 
 			{}, ...
 		]
