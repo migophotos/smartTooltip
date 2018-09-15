@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 /**
  * @copyright Copyright © 2018 ... All rights reserved.
  * @author Michael Goyberg
@@ -26,9 +24,61 @@
 		options: {
 			// the client rectangle coordinates of correspondent element.
 			// this coordinates will used for place 'the pinned' tooltip near this element
+			// you may specify here any screen coordinates for positioning SmartTooltip window
+			// only top and right parameters used for calculating currently. 
+			// The position of tooltip window will be moved by 16 px at right side of specified 'right' parameter. 
 			tRect: { left: 0, top:0, right:0, bottom:0 },
+
 			// true or false for changing run indicator
-			isRun:
+			isRun: true/false
+
+			// SmartTooltip window will be scaled by specified factor before showing
+			scale: 0.6 - default
+
+			// Sort data by specified parameter. Can be one of the next parameters:
+			// "asis" 			- don't sort, default 
+			// states/state 	- sort by state or colors (in case of state is not exists), 
+			// values/value 	- sort by value, 
+			// colors/color 	- sort by color, 
+			// names/name 		- sort by legend or name, 
+			// any other word 	- sort by this "word" parameter. For example: link
+			// Note: This option parameter may be specified only once. After this it will be used for all tooltips on the page
+			//       If you want to show different tooltips with different sort orders, please specify this parameter each time!
+			sortby: "asis",
+
+			// here you have an ability to re-style SmartTooltip window by changing svg.sttip css variables
+			// there is no need to define all the style variables, you can specify only some of them or do not specify anything at all, 
+			// if you like the look and fill of the built-in template.
+			//
+			// This section of parameters allows you to override the look&fill of SmartTooltip window for each specific element on the HTML page.
+			
+			// Not yet implemented!
+			// If you have a desire to globally change the look&fill of the SmartTooltip window, then you can use a special static function
+			// passing into it a similar object, needed in the adjustment, variables.
+			// SmartTooltip.changeLookAndFill(cssVars={});
+			cssVars: {
+				"--smartTip-font-family": "'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif";
+				"--smartTip-font-stretch": c"ondensed",
+				"--smartTip-font-color": "#9dc2de",
+				"--smartTip-scale-font-size": "12px",
+				"--smartTip-legend-font-size": "22px",
+				"--smartTip-title-font-size": "30px",
+				"--smartTip-descr-font-size": "28px",
+				
+				"--smartTip-run-color": "#0f0",
+				"--smartTip-stop-color": "#f00",
+				"--smartTip-def-color": "#666",
+
+				"--smartTip-frame-fill": "#fff",
+				"--smartTip-frame-opacity": "0.95",
+				"--smartTip-frame-scale": "0.6",
+				"--smartTip-border-color": "none",
+				"--smartTip-border-width": "2",
+				"--smartTip-border-radius": "2",
+
+				"--smartTip-legend-fill": "#fff",
+				"--smartTip-legend-stroke": "#666"
+			}
 		},
 		title: {
 			uuid:	'unique id'
@@ -69,11 +119,15 @@
  * ....
  * window.SmartTooltip.init(idElement, templateFileName);
  * ...
+ * //collect data object and call the next function
+ * var data = { id, x, y, options:{rRect, isRun, scale, sortby}, targets:[{uuid, name, value, color, link}], title:{uuid, name, value, color, link} };
  * window.SmartTooltip.show(data)
  * window.SmartTooltip.move(evt.clientX, evt.clientY);
  * window.SmartTooltip.hide();
  *
  * 2. Use internal template
+ * //collect data object and call the next function
+ * var data = { id, x, y, options:{rRect, isRun, scale, sortby, cssVars:{...}}, targets:[{uuid, name, value, color, link}], title:{uuid, name, value, color, link} };
  * SmartTooltip.showTooltip(data);
  * SmartTooltip.moveTooltip(evt.clientX, evt.clientY);
  * SmartTooltip.hideTooltip();
@@ -114,7 +168,7 @@ class SmartTooltip {
 		if (window.SmartTooltip) {
 			window.SmartTooltip.move(clientX, clientY);
 		} else {
-			console.error('window.SmartTooltip is not initialized. call SmartTooltip.show(data), or SmartTooltip.init(id, template) before.')
+			throw new ReferenceError("window.SmartTooltip hasn't been initialised. call SmartTooltip.show(data), or SmartTooltip.init(id, template) before.");
 		}
 	}
 	static hideTooltip(evt=null) {
@@ -124,7 +178,7 @@ class SmartTooltip {
 		if (window.SmartTooltip) {
 			window.SmartTooltip.hide();
 		} else {
-			console.error('window.SmartTooltip is not initialized. call SmartTooltip.show(data), or SmartTooltip.init(id, template) before.')
+			throw new ReferenceError("window.SmartTooltip hasn't been initialised. call SmartTooltip.show(data), or SmartTooltip.init(id, template) before.");
 		}
 	}
 
@@ -139,7 +193,7 @@ class SmartTooltip {
 				case "UNITS":	{ frmStr += data.units || ''; break; }
 				case "COLOR":	{ frmStr += data.color || ''; break; }
 				case "NAME":	{ frmStr += data.name  || data.legend || ''; break; }
-				case "LEGEND":{ frmStr += data.legend || data.name || ''; break;}
+				case "LEGEND":  { frmStr += data.legend || data.name || ''; break;}
 				case "LINK":	{ frmStr += data.link || ''; break; }
 				case "TOOLTIP": { frmStr += data.tooltip || ''; break; }
 				case "STATE":	{ frmStr += data.state || ''; break; }
@@ -203,16 +257,28 @@ class SmartTooltip {
 					overflow: visible;
 					vector-effect: non-scaling-stroke;
 
+					--smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+					--smartTip-font-stretch: condensed;
+					--smartTip-font-color: #666;
 					--smartTip-scale-font-size: 12px;
 					--smartTip-legend-font-size: 22px;
 					--smartTip-title-font-size: 30px;
 					--smartTip-descr-font-size: 28px;
-					--smartTip-legend-stroke: #666;
-					--smartTip-legend-fill: #fff;
+					
 					--smartTip-run-color: #0f0;
 					--smartTip-stop-color: #f00;
 					--smartTip-def-color: #666;
+
+					--smartTip-frame-fill: #fff;
+					--smartTip-frame-opacity: 0.95;
+					--smartTip-frame-scale: 0.6;
+					--smartTip-border-color: none;
+					--smartTip-border-width: 2;
 					--smartTip-border-radius: 2;
+
+					--smartTip-legend-fill: #fff;
+					--smartTip-legend-stroke: #666;
+
 
 					--legend-frm-border-width: 2;
 					--legend-frm-border-radius: var(--smartTip-border-radius, 2);
@@ -233,9 +299,10 @@ class SmartTooltip {
 					stroke-linecap: butt;
 				}
 				text.sttip-text {
-					font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
-					font-stretch: condensed;
+					font-family: var(--smartTip-font-family);
+					font-stretch: var(--smartTip-font-stretch);
 					pointer-events: none;
+					fill: var(--smartTip-font-color);
 				}
 				.sttip-scale-text {
 					font-size:var(--smartTip-scale-font-size, 12px);
@@ -259,10 +326,12 @@ class SmartTooltip {
 					ry: var(--legend-frm-border-radius);
 				}
 				.sttip-frame {
-					fill:var(--legend-frm-fill);
-					fill-opacity: 0.8;
-					rx: var(--legend-frm-border-radius);
-					ry: var(--legend-frm-border-radius);
+					fill:var(--smartTip-frame-fill);
+					fill-opacity: var(--smartTip-frame-opacity, 1);
+					stroke: var(--smartTip-border-color);
+					stroke-width: var(--smartTip-border-width);
+					rx: var(--smartTip-border-radius);
+					ry: var(--smartTip-border-radius);
 				}
 
 				.sttip-legend-rect {
@@ -510,6 +579,87 @@ class SmartTooltip {
 		});
 	}
 
+	/**
+	 * Sort data array by specified parameter
+	 * 
+	 * @param {array} data An array of data properties
+	 * @property {string} name The name of signal. Existing parameter legend will be used instead of this one
+	 * @property {string} legend the legend for signal. 
+	 * @property {number || string} value The value of signal. In case of this parameter's type is 'string' it will be converted to number before compiring
+	 * @property {string} color Represents the color of value
+	 * @property {number} state Represents state of value. In case of this parameter's type is 'string' it will be converted to number before compiring
+	 * @param {string} sortParam Sort data by one of the next parameters:"asis" - don't sort, states/state - sort by state or colors (in case of state is not exists), values/value - sort by value, colors/color - sort by color, names/name - sort by legend or name, any other word 	- sort by this "word" parameter. For example: link
+	 * 
+	 * Be careful: this function changes an array data!
+	 */
+	static sortDataByParam(data = [], sortParam="asis") {
+		switch (sortParam) {
+			case 'asis':
+				break;
+			case 'name':  	 // sort by name and ignore lower and upper case
+			case 'names': {  // sort by name and ignore lower and upper case
+				data.sort(function(a, b) {
+					let aName = a.legend || a.name;
+					let bName = b.legend || b.name;
+					const nameA = aName.toUpperCase(); // ignore upper and lowercase
+					const nameB = bName.toUpperCase(); // ignore upper and lowercase
+					if (nameA < nameB) {
+						return -1;
+					}
+					if (nameA > nameB) {
+						return 1;
+					}
+					return 0;
+				});
+				break;
+			}
+			case 'value':
+			case 'values': {
+				data.sort(function(a, b) {
+					if(Number(a.value) > Number(b.value)) {
+						return 1;
+					}
+					if(Number(a.value) < Number(b.value)) {
+						return -1;
+					}
+					return 0;
+				});
+				break
+			}
+			case 'color':
+			case 'colors': {
+				data.sort(function(a, b) {
+					if (a.color > b.color) return 1;
+					if (a.color < b.color) return -1
+					return 0;
+				});
+				break;
+			}
+			case 'state':
+			case 'states': {
+				data.sort(function(a, b) {
+					if (!a.state || !b.state) {
+						if (a.color > b.color) return 1;
+						if (a.color < b.color) return -1
+					} else {
+						if (Number(a.state) > Number(b.state)) return 1;
+						if (Number(a.state) < Number(b.state)) return -1
+					}
+					return 0;
+				});
+				break;
+			}
+			default: {
+				data.sort(function(a, b) {
+					if(a[sortParam] > b[sortParam]) return 1;
+					if(a[sortParam] < b[sortParam]) return -1;
+					return 0;
+				});
+			}
+		}
+	}
+
+
 	constructor() {
 		if (!window.SmartTooltip) {
 			this._initialized = false;
@@ -544,6 +694,7 @@ class SmartTooltip {
 		while (sta.length) {
 			sta[0].remove();
 		}
+		// calculate the sum of all values in array
 		const sum = subTargets.reduce((acc, cur) => acc + Number(cur.value),0);
 		const onePCT = subTargets.length > 1 ? 360 / sum : 3.6;
 		const centerPt = {
@@ -591,6 +742,7 @@ class SmartTooltip {
 		for (let el of els) {
 			if (el.dataset['uuid'] === uuid) {
 				foundEl = el;
+				console.info(`Todo: possible bug in IE11: "<svg> does not have 'Element.classList' in IE11"`);
 				el.classList.add(effect);
 			} else {
 				el.classList.remove(effect);
@@ -802,11 +954,10 @@ class SmartTooltip {
 			}
 
 			if (this._ttipRef && this._ttipGroup) {
-				let sFormat, sText;
 
 				const legendGroupX = this._ttipLegendGroup? (this._ttipLegendGroup.dataset['x']) : 0;
 				const titleGroupX  = this._ttipTitleGroup ? (this._ttipTitleGroup.dataset['x']) : 0;
-				let ttipBoundGroupBR, format;
+				let ttipBoundGroupBR, format, sText;
 
 				// delete all 'legend-stroke' clones from 'legend-group'
 				const lsa = this._ttipLegendGroup ? this._ttipLegendGroup.getElementsByClassName('clone-ls') : null;
@@ -816,8 +967,44 @@ class SmartTooltip {
 
 				this._ttipGroup.setAttribute("transform", "scale(1, 1)");
 				this._ttipRef.style['display'] = '';
+				
+				let ownerBodyRect = { left: 0, top:0, right:0, bottom:0 };
+				// specified parameter options.scale will change this variable and SmartTooltip window will be scaled by specified factor
+				// the default is 0.6 
+				let scaleToolipFactor = 0.6;	
+
+				if (typeof data.options === 'object') {
+					// change apperiance of run indicator (if exists)
+					if (this._ttipRunIndicator && typeof data.options.isRun !== 'undefined') {
+						this._ttipRunIndicator.classList.replace((data.options.isRun? 'sttip-stop' : 'sttip-run'), (data.options.isRun? 'sttip-run' : 'sttip-stop'));
+					}
+					// tRect - the client rectangle coordinates of correspondent element.
+					// this coordinates will used for place 'the pinned' tooltip near this element
+					if (typeof data.options.tRect === 'object') {
+						ownerBodyRect = data.options.tRect;
+					}
+					if (typeof data.options.scale === 'number') {
+						scaleToolipFactor = data.options.scale;
+					}
+					if (typeof data.options.sortby === 'string') {
+						this.sortby = data.options.sortby;
+					}
+					const svg = this._root.firstElementChild;
+					svg.removeAttribute("style")
+					if (typeof data.options.cssVars === 'object') {
+						const css = data.options.cssVars;
+						for ( var key in css) {
+							svg.style.setProperty(key, css[key]);
+						}
+					}
+				}
+
 				if (typeof data.targets === 'object' && data.targets.length) {
-					{
+					// create the temporary array for working with it (sorting,...)
+					const targets = Array.from(data.targets);
+					// now sort it be optiona parameter 'sortby'
+					SmartTooltip.sortDataByParam(targets, this.sortby || "value");
+					if (targets.length) {
 						this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = '') : {};
 						this._ttipDiagram ? (this._ttipDiagram.style['display'] = '') : {};
 						this._ttipActiveGroup ? (this._ttipActiveGroup.style['display'] = '') : {};
@@ -829,14 +1016,14 @@ class SmartTooltip {
 							this._ttipLegendStroke.style['display'] = '';
 							// calculate max length for first (name) and second (value) columns
 							let C1 = { maxL: 0, maxInd: -1, rows: [] }, C2 = { maxL: 0, maxInd: -1, rows: [] }, gap = 10, text;
-							for (let index = 0; index < data.targets.length; index++) {
+							for (let index = 0; index < targets.length; index++) {
 								if (this._ttipLegendName) {
-									if (typeof data.targets[index].legendFormat === 'string') {
+									if (typeof targets[index].legendFormat === 'string') {
 										format = targets[index].legendFormat;
 									} else {
 										format = null;
 									}
-									text = SmartTooltip.formatString((format || this._ttipLegendName.dataset['format'] || "$LEGEND$"), data.targets[index]);
+									text = SmartTooltip.formatString((format || this._ttipLegendName.dataset['format'] || "$LEGEND$"), targets[index]);
 									if (text.length > C1.maxL) {
 										C1.maxL = text.length;
 										C1.maxInd = index;
@@ -844,12 +1031,12 @@ class SmartTooltip {
 									C1.rows.push(text)
 								}
 								if (this._ttipLegendValue) {
-									if (typeof data.targets[index].legendValFormat === 'string') {
+									if (typeof targets[index].legendValFormat === 'string') {
 										format = targets[index].legendValFormat;
 									} else {
 										format = null;
 									}
-									text = SmartTooltip.formatString((format || this._ttipLegendValue.dataset['format'] || "$VALUE$"), data.targets[index]);
+									text = SmartTooltip.formatString((format || this._ttipLegendValue.dataset['format'] || "$VALUE$"), targets[index]);
 									if (text.length > C2.maxL) {
 										C2.maxL = text.length;
 										C2.maxInd = index;
@@ -872,8 +1059,8 @@ class SmartTooltip {
 								maxStrokeWidth = this._sttipLegendTextStroke.getBoundingClientRect().width;
 							}
 
-							for (let index = 0; index < data.targets.length; index++) {
-								let target = data.targets[index];
+							for (let index = 0; index < targets.length; index++) {
+								let target = targets[index];
 								this._ttipLegendColor ? (this._ttipLegendColor.style['fill'] = target.color) : {};
 								this._ttipLegendName ?  (this._ttipLegendName.textContent = C1.rows[index]) : {};
 								this._ttipLegendValue ?  (this._ttipLegendValue.textContent = C2.rows[index]) : {};
@@ -899,10 +1086,10 @@ class SmartTooltip {
 							// hide template
 							this._ttipLegendStroke.style['display'] = 'none';
 						}
-						this._drawDiagramm(data.targets);
+						this._drawDiagramm(targets);
 					}
 				} else {
-					// hide legend group and diagram in case of no sub-targets
+					// hide legend group and diagram in case of no targets
 					this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = 'none') : {};
 					this._ttipDiagram ? (this._ttipDiagram.style['display'] = 'none') : {};
 					this._ttipActiveGroup ? (this._ttipActiveGroup.style['display'] = 'none') : {};
@@ -952,19 +1139,6 @@ class SmartTooltip {
 						}
 					}
 				}
-				let ownerBodyRect = { left: 0, top:0, right:0, bottom:0 };
-
-				if (typeof data.options === 'object') {
-					// change apperiance of run indicator (if exists)
-					if (this._ttipRunIndicator && typeof data.options.isRun !== 'undefined') {
-						this._ttipRunIndicator.classList.replace((data.options.isRun? 'sttip-stop' : 'sttip-run'), (data.options.isRun? 'sttip-run' : 'sttip-stop'));
-					}
-					// tRect - the client rectangle coordinates of correspondent element.
-					// this coordinates will used for place 'the pinned' tooltip near this element
-					if (typeof data.options.tRect === 'object') {
-						ownerBodyRect = data.options.tRect;
-					}
-				}
 				if (typeof data.x === 'number' && typeof data.y === 'number') {
 					let forId = 0;
 					if (this._shownFor != data.id) {
@@ -988,11 +1162,12 @@ class SmartTooltip {
 						this.move(data.x, data.y, forId, ownerBodyRect);
 					}
 				}
+				// resize the frame rectange of toolip window
 				ttipBoundGroupBR = this._ttipBoundGroup.getBoundingClientRect();
 				this._ttipFrame.setAttributeNS(null, 'width', ttipBoundGroupBR.width + 12);
 				this._ttipFrame.setAttributeNS(null, 'height', ttipBoundGroupBR.height + 12);
 
-				this._ttipGroup.setAttribute("transform", "scale(0.6, 0.6)");
+				this._ttipGroup.setAttribute("transform", `scale(${scaleToolipFactor})`);
 				window.SmartTooltip._checkMouseMoving();
 			}
 		}

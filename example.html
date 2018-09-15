@@ -102,7 +102,12 @@ Cras turpis erat, dapibus nec laoreet non, dictum vel nulla. Sed commodo odio vi
                         x: evt.clientX,
                         y: evt.clientY,
                         options: {
-                            tRect: evt.target.getBoundingClientRect()
+                            tRect: evt.target.getBoundingClientRect(),
+                            cssVars: {
+                                "--smartTip-frame-fill": "#000",
+                                "--smartTip-font-color": "#fff",
+                                "--smartTip-legend-fill":"#000",
+                            }
                         },
                         title: {
                             uuid: `uuid-${evt.target.id}`,
@@ -140,6 +145,7 @@ Cras turpis erat, dapibus nec laoreet non, dictum vel nulla. Sed commodo odio vi
                             descr: 'The pie shows the number of letters in each word',
                             color: 'red',
                             link: `https://www.google.com/search?q=${evt.target.textContent}`,
+                            value: greenEls.length,
                             descrFormat: '$DESCR$'
                         },
                         targets: []
