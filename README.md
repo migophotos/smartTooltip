@@ -76,7 +76,11 @@ It also use customized templates for individual elements.
 			uuid:	'unique target id',
 			legend: 'Title legend',
 			name:   'Title legend may be defined here also',
-			descr:	'Description'
+			descr:	'Description',
+			value:  `By default this value will be shown in description line (under title). But by using descrFormat and/or titleFormat
+					you can change that behavior. By default, it is assumed that the value of this parameter is specified in percents. 
+					In case you want to display the actual value, add the "valueMax" parameter to correctly calculate the length of the indicator.`,
+			valueMax: null, 
 			value:  'This text will be shown as description',
 			color:  'state color',
 			link:   'external URL',

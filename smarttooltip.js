@@ -29,7 +29,7 @@
 			// The position of tooltip window will be moved by 16 px at right side of specified 'right' parameter. 
 			tRect: { left: 0, top:0, right:0, bottom:0 },
 
-			// true or false for changing run indicator
+			// run indicator is a small circle near the legend. It's fill color is green, when this parameter equals true and red when false.
 			isRun: true/false
 
 			// SmartTooltip window will be scaled by specified factor before showing
@@ -85,7 +85,10 @@
 			legend: 'Title legend',
 			name:   'Title legend may be defined here also',
 			descr:	'Description'
-			value:  'This text will be shown as description',
+			value:  'By default this value will be shown in description line (under title). But by using descrFormat and/or titleFormat
+					 you can change that behavior. By default, it is assumed that the value of this parameter is specified in percents. 
+					 In case you want to display the actual value, add the "valueMax" parameter to correctly calculate the length of the indicator.',
+			valueMax: null, 
 			color:  'state color',
 			link:   'external URL',
 			[titleFormat]: 'title formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ....
@@ -294,7 +297,7 @@ class SmartTooltip {
 				}
 				.sttip-scale-line {
 					fill: none;
-					stroke: #0a0a0a;
+					stroke: var(--smartTip-font-color);
 					stroke-width: 2;
 					stroke-linecap: butt;
 				}
@@ -425,7 +428,7 @@ class SmartTooltip {
 				<g id="bound-group">
 					<rect id="pinMe" x="4" y="4" rx="1" ry="1" width="16" height="16" />
 					<circle id="diagram" class="sttip-diagram" cx="72.5" cy="72.5" r="65" style="fill:#fff;"/>
-					<g id="active-group">
+					<g id="diagram-group">
 					</g>
 					<g id="legend-group" data-x="6.5" >
 						<circle id="run-indicator" class="sttip-run-indicator sttip-stop" cx="16.5" cy="157.5" r="5"/>
@@ -448,11 +451,13 @@ class SmartTooltip {
 							<path id="scale-75" class="sttip-scale-line" d="M345.75,109.827l0,-5.327"/>
 							<path id="scale-100" class="sttip-scale-line" d="M411,111.827l0,-7.327"/>
 							<text id="value-0" class="sttip-text sttip-scale-text" x="145.155px" y="122.5px">0</text>
-							<text id="value-50" class="sttip-text sttip-scale-text" x="274.28px" y="122.5px">50</text>
-							<text id="value-100" class="sttip-text sttip-scale-text" x="404.295px" y="122.5px">100</text>
+							<text id="value-50" class="sttip-text sttip-scale-text" text-anchor="middle" x="280" y="122.5px">50%</text>
+							<text id="value-100" class="sttip-text sttip-scale-text" text-anchor="middle" x="412" y="122.5px">100%</text>
 						</g>
-						<text id="tooltip-title" data-format="$NAME$" class="sttip-text sttip-title" x="147" y="47">Tooltip Title</text>
-						<text id="tooltip-description" data-format="$VALUE$" class="sttip-text sttip-description" x="147" y="75">Tooltip description</text>
+						<g id="descr-group">
+							<text id="tooltip-title" data-format="$NAME$" class="sttip-text sttip-title" x="147" y="47">Tooltip Title</text>
+							<text id="tooltip-description" data-format="$VALUE$" class="sttip-text sttip-description" x="147" y="75">Tooltip description</text>
+						</g>
 					</g>
 				</g>
 			</g>
@@ -462,10 +467,23 @@ class SmartTooltip {
 		return defttip;
 	}
 
+	// all browser compatible function that returns an object with curren scroll amount. 
+	// many thans for w3cub project! http://docs.w3cub.com/dom/window/scrolly/
+	static getScroll() {
+		var supportPageOffset = window.pageXOffset !== undefined;
+		var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
+		var x = supportPageOffset ? window.pageXOffset : isCSS1Compat ? document.documentElement.scrollLeft : document.body.scrollLeft;
+		var y = supportPageOffset ? window.pageYOffset : isCSS1Compat ? document.documentElement.scrollTop : document.body.scrollTop;	
+		return {X:x, Y:y};				
+	}
+
 
 	static getAbsolutePoint(clientX, clientY) {
 		// caclulate an absolute location
-		var svg = window.SmartTooltip._root.firstElementChild;
+		var svg = window.SmartTooltip._svg;
+		if (!svg) {
+			throw(new ReferenceError("windows.SmartTooltip._svg hasn't been initialized!"));
+		}
 		var pt = svg.createSVGPoint()
 		pt.x = clientX;
 		pt.y = clientY;
@@ -686,11 +704,11 @@ class SmartTooltip {
 	}
 
 	_drawDiagramm(subTargets) {
-		// delete all 'sub-target' from 'active-group'
-		if (!this._ttipActiveGroup) {
+		// delete all 'sub-target' from 'diagram-group'
+		if (!this._ttipDiagramGroup) {
 			return;
 		}
-		const sta = this._ttipActiveGroup.getElementsByClassName('main-segment');
+		const sta = this._ttipDiagramGroup.getElementsByClassName('main-segment');
 		while (sta.length) {
 			sta[0].remove();
 		}
@@ -707,7 +725,7 @@ class SmartTooltip {
 		for (let i = 0; i < subTargets.length; i++) {
 			let target = subTargets[i];
 			// create individual group for each target
-			let g_el = SmartTooltip.addElement('g', {class:'main-segment', id:`${i}--main-segment`}, this._ttipActiveGroup);
+			let g_el = SmartTooltip.addElement('g', {class:'main-segment', id:`${i}--main-segment`}, this._ttipDiagramGroup);
 			let endAngle = target.value * onePCT + startAngle;
 			const isCurrent = target.current ? 'sttip-selected' : '';
 			const isLinked  = target.link ? 'sttip-linked' : '';
@@ -750,7 +768,8 @@ class SmartTooltip {
 		}
 		return foundEl;
 	}
-	// initialize smarttooltip eventlisteners, used for pin tooltip
+
+	// initialize smarttooltip event listeners, used for pin tooltip
 	_initEvents() {
 		if (!this._initialized) {
 			this._initialized = true;
@@ -781,20 +800,37 @@ class SmartTooltip {
 					window.SmartTooltip._checkMouseMoving();
 					// move tooltip's div and store its last position for next positioning in pinned mode (in future)
 					const div = window.SmartTooltip._ttipRef;
+					
+
 					if (div.dataset['dragged'] === "true") {
-						const pt = SmartTooltip.getAbsolutePoint(evt.clientX, evt.clientY);
 						const rc = div.getBoundingClientRect();
-						const x = rc.left + (pt.x - Number(div.dataset['X']));
-						const y = rc.top + (pt.y - Number(div.dataset['Y']));
+						
+						const scroll = SmartTooltip.getScroll();
+						const mousePt = {
+							X: evt.x + scroll.X,
+							Y: evt.y + scroll.Y
+						};
+
+						const x = rc.left + scroll.X + (mousePt.X - Number(div.dataset['X']));
+						const y = rc.top + scroll.Y + (mousePt.Y - Number(div.dataset['Y']));
+
+						div.dataset['X'] = mousePt.X;
+						div.dataset['Y'] = mousePt.Y;
+
 						div.style['left'] = x;
 						div.style['top'] = y;
 					}
 				});
 				this._ttipGroup.addEventListener('mousedown', function(evt) {
 					const div = window.SmartTooltip._ttipRef;
-					const pt = SmartTooltip.getAbsolutePoint(evt.clientX, evt.clientY);
-					div.dataset['X'] = pt.x;
-					div.dataset['Y'] = pt.y;
+					
+					const scroll = SmartTooltip.getScroll();
+					const mousePt = {
+						X: evt.x + scroll.X,
+						Y: evt.y + scroll.Y
+					};
+					div.dataset['X'] = mousePt.X;
+					div.dataset['Y'] = mousePt.Y;
 					div.dataset['dragged'] = true;
 				})
 				this._ttipGroup.addEventListener('mouseup', function(evt) {
@@ -846,7 +882,7 @@ class SmartTooltip {
 
 			window.SmartTooltip.hide();
 			window.SmartTooltip._interval = null;
-		}, 5000);
+		}, 5000); // 5000 - 5 second for showing tooltip on the screen without any mouse activity on it
 	}
 
 	init(id, tmplFileName) {
@@ -883,8 +919,9 @@ class SmartTooltip {
 				y += 30;
 			}
 			// caclulate an absolute location
-			x += window.scrollX;
-			y += window.scrollY;
+			const scroll = SmartTooltip.getScroll();
+			x += scroll.X;
+			y += scroll.Y;
 
 			this._ttipRef.style['left'] = x;
 			this._ttipRef.style['top'] = y;
@@ -923,6 +960,7 @@ class SmartTooltip {
 
 				this._initialized = false;
 				this._root.innerHTML= ttipdef.value;
+				this._svg = this._root.firstElementChild;
 
 				this._ttipGroup 	   = this._root.getElementById("tooltip-group");
 				this._ttipPinMe		   = this._root.getElementById("pinMe");
@@ -937,20 +975,22 @@ class SmartTooltip {
 				this._ttipLegendValue  = this._root.getElementById('legend-value');
 				this._ttipRunIndicator = this._root.getElementById('run-indicator');
 				this._ttipDiagram      = this._root.getElementById('diagram');
-				this._ttipActiveGroup  = this._root.getElementById('active-group');
+				this._ttipDiagramGroup = this._root.getElementById('diagram-group');
 				this._ttipValue        = this._root.getElementById('tooltip-value');
+				this._ttipDescrGroup   = this._root.getElementById('descr-group');
 				this._ttipTitle        = this._root.getElementById('tooltip-title');
 				this._ttipDescription  = this._root.getElementById('tooltip-description');
 				this._ttipTitleGroup   = this._root.getElementById('title-group');
 				this._ttipScaleGroup   = this._root.getElementById('scale-group');
 				this._ttipBoundGroup   = this._root.getElementById('bound-group');
+				this._ttipValue50      = this._root.getElementById('value-50');
+				this._ttipValue100     = this._root.getElementById('value-100');
 				this._ttipRef.style['display'] = 'none';
 				this._initEvents();
 
 				if (this._pinned) {
 					this._ttipPinMe ? this._ttipPinMe.classList.add('sttip-pinned') : {};
 				}
-
 			}
 
 			if (this._ttipRef && this._ttipGroup) {
@@ -979,7 +1019,7 @@ class SmartTooltip {
 						this._ttipRunIndicator.classList.replace((data.options.isRun? 'sttip-stop' : 'sttip-run'), (data.options.isRun? 'sttip-run' : 'sttip-stop'));
 					}
 					// tRect - the client rectangle coordinates of correspondent element.
-					// this coordinates will used for place 'the pinned' tooltip near this element
+					// this coordinates will be used for positioning 'the pinned' tooltip window near correspondent element
 					if (typeof data.options.tRect === 'object') {
 						ownerBodyRect = data.options.tRect;
 					}
@@ -989,12 +1029,11 @@ class SmartTooltip {
 					if (typeof data.options.sortby === 'string') {
 						this.sortby = data.options.sortby;
 					}
-					const svg = this._root.firstElementChild;
-					svg.removeAttribute("style")
+					this._svg.removeAttribute("style")
 					if (typeof data.options.cssVars === 'object') {
 						const css = data.options.cssVars;
 						for ( var key in css) {
-							svg.style.setProperty(key, css[key]);
+							this._svg.style.setProperty(key, css[key]);
 						}
 					}
 				}
@@ -1002,12 +1041,14 @@ class SmartTooltip {
 				if (typeof data.targets === 'object' && data.targets.length) {
 					// create the temporary array for working with it (sorting,...)
 					const targets = Array.from(data.targets);
+					//const targets = { ...data.targets }; - cannot be used here, because I use internal Array functions in sorting! 
+
 					// now sort it be optiona parameter 'sortby'
 					SmartTooltip.sortDataByParam(targets, this.sortby || "value");
 					if (targets.length) {
 						this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = '') : {};
 						this._ttipDiagram ? (this._ttipDiagram.style['display'] = '') : {};
-						this._ttipActiveGroup ? (this._ttipActiveGroup.style['display'] = '') : {};
+						this._ttipDiagramGroup ? (this._ttipDiagramGroup.style['display'] = '') : {};
 						this._ttipTitleGroup ? (this._ttipTitleGroup.setAttributeNS(null, 'transform', `translate(0, 0)`)) : {};
 
 						let y = 0;
@@ -1081,7 +1122,7 @@ class SmartTooltip {
 								target.link ? ls.classList.add('sttip-linked') : ls.classList.remove('sttip-linked');
 								ls.setAttributeNS(null, 'transform', `translate(0, ${y})`);
 								this._ttipLegendGroup.appendChild(ls);
-								y = (index + 1) * 34;	// + 2 * (index + 1);
+								y = (index + 1) * 34;	// mistical number is a storke height from template
 							}
 							// hide template
 							this._ttipLegendStroke.style['display'] = 'none';
@@ -1092,12 +1133,12 @@ class SmartTooltip {
 					// hide legend group and diagram in case of no targets
 					this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = 'none') : {};
 					this._ttipDiagram ? (this._ttipDiagram.style['display'] = 'none') : {};
-					this._ttipActiveGroup ? (this._ttipActiveGroup.style['display'] = 'none') : {};
+					this._ttipDiagramGroup ? (this._ttipDiagramGroup.style['display'] = 'none') : {};
 					this._ttipTitleGroup ? (this._ttipTitleGroup.setAttributeNS(null, 'transform', `translate(-${titleGroupX - legendGroupX}, 0)`)) : {};
 				}
 
 				if (typeof data.title === 'object') {
-					const maxValW = this._ttipValue ? Number(this._ttipValue.dataset['maxw']) : 0;
+					let maxWidth = this._ttipValue ? Number(this._ttipValue.dataset['maxw']) : 0;
 					// title - legend or name
 					if (this._ttipTitle) {
 						if (typeof data.title.titleFormat === 'string') {
@@ -1119,12 +1160,41 @@ class SmartTooltip {
 						sText = SmartTooltip.formatString(format || this._ttipDescription.dataset['format'] ||  "$VALUE$", data.title);
 						this._ttipDescription.textContent = sText;
 					}
+					let descrRect = 0; 		// resize scale group for this size
+					let scaleFactor = 1;	// will be calculated if real rectangle width, after title and description rendering, 
+											// greater than stored in parameter 'data-maxw' in template definition
+
+					if (this._ttipDescrGroup) {
+						descrRect = this._ttipDescrGroup.getBoundingClientRect();
+						if (maxWidth < descrRect.width) {
+							scaleFactor = descrRect.width / maxWidth;
+						}
+					}
 					// value color and width
 					if (this._ttipValue) {
 						if (typeof data.title.value !== 'undefined') {
 							this._ttipScaleGroup ? (this._ttipScaleGroup.style['display'] = 'block') : {};
 							this._ttipValue.style['fill'] = data.title.color || '#666';
-							const onepct = maxValW/100;
+							let onepct = maxWidth/100;
+							if(typeof data.title.valueMax !== 'undefined' && data.title.valueMax !== null) {
+								onepct = maxWidth / data.title.valueMax;
+								if (this._ttipValue50 && this._ttipValue100) {
+									this._ttipValue50.textContent = (data.title.valueMax / 2).toFixed(0);
+									this._ttipValue100.textContent = data.title.valueMax;
+								}
+							} else if (data.title.value > 100) {
+								onepct = maxWidth / data.title.value;
+								if (this._ttipValue50 && this._ttipValue100) {
+									this._ttipValue50.textContent = (data.title.value / 2).toFixed(0);
+									this._ttipValue100.textContent = data.title.value;
+								}
+						} else {
+								onepct = maxWidth/100;
+								if (this._ttipValue50 && this._ttipValue100) {
+									this._ttipValue50.textContent = '50';
+									this._ttipValue100.textContent = '100%';
+								}
+							}
 							this._ttipValue.setAttribute('width', data.title.value * onepct || 0);
 							if (data.title.link) {
 								this._ttipValue.classList.add('sttip-linked');
@@ -1134,6 +1204,11 @@ class SmartTooltip {
 								this._ttipValue.dataset['linkto'] = '';
 							}
 							data.title.uuid ? this._ttipValue.dataset['uuid'] = data.title.uuid : '';
+							if (scaleFactor > 1 && this._ttipScaleGroup) {
+								let tmp = this._ttipTitleGroup.dataset['x'];
+								let translateX = -tmp * (scaleFactor-1);
+								this._ttipScaleGroup.setAttributeNS(null, 'transform', `translate(${translateX}, 0) scale(${scaleFactor}, 1)`);
+							}
 						} else if (this._ttipScaleGroup) {
 							this._ttipScaleGroup ? (this._ttipScaleGroup.style['display'] = 'none') : {};
 						}
@@ -1153,8 +1228,9 @@ class SmartTooltip {
 						top = Number(localStorage.getItem('SmartTooltip.y'));
 					}
 					if (left && top) { // move here!
-						left += window.scrollX;
-						top += window.scrollY;
+						const scroll = SmartTooltip.getScroll();
+						left += scroll.X;
+						top += scroll.Y;
 
 						this._ttipRef.style['left'] = left;
 						this._ttipRef.style['top'] = top;
@@ -1168,6 +1244,10 @@ class SmartTooltip {
 				this._ttipFrame.setAttributeNS(null, 'height', ttipBoundGroupBR.height + 12);
 
 				this._ttipGroup.setAttribute("transform", `scale(${scaleToolipFactor})`);
+				// get real (after scaling) size of #toolip-group and resize the root SVG
+				ttipBoundGroupBR = this._ttipGroup.getBoundingClientRect();
+				this._svg.setAttributeNS(null, 'width', ttipBoundGroupBR.width);
+				this._svg.setAttributeNS(null, 'height', ttipBoundGroupBR.height);
 				window.SmartTooltip._checkMouseMoving();
 			}
 		}
