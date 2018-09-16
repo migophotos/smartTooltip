@@ -689,7 +689,7 @@ class SmartTooltip {
 
 			let div = window.document.createElement('div');
 			div.setAttribute('id', 'SmartTooltip');
-			div.setAttribute('style', 'position:absolute;');
+			div.setAttribute('style', 'position:absolute; z-index:999999');
 			window.document.body.appendChild(div);
 			this._root = div.attachShadow({mode: 'open'});
 			this._ttipRef = div;
@@ -1188,7 +1188,7 @@ class SmartTooltip {
 									this._ttipValue50.textContent = (data.title.value / 2).toFixed(0);
 									this._ttipValue100.textContent = data.title.value;
 								}
-						} else {
+							} else {
 								onepct = maxWidth/100;
 								if (this._ttipValue50 && this._ttipValue100) {
 									this._ttipValue50.textContent = '50';
@@ -1204,10 +1204,14 @@ class SmartTooltip {
 								this._ttipValue.dataset['linkto'] = '';
 							}
 							data.title.uuid ? this._ttipValue.dataset['uuid'] = data.title.uuid : '';
-							if (scaleFactor > 1 && this._ttipScaleGroup) {
-								let tmp = this._ttipTitleGroup.dataset['x'];
-								let translateX = -tmp * (scaleFactor-1);
-								this._ttipScaleGroup.setAttributeNS(null, 'transform', `translate(${translateX}, 0) scale(${scaleFactor}, 1)`);
+							if (this._ttipScaleGroup) {
+								if (scaleFactor > 1) {
+									let tmp = this._ttipTitleGroup.dataset['x'];
+									let translateX = -tmp * (scaleFactor-1);
+									this._ttipScaleGroup.setAttributeNS(null, 'transform', `translate(${translateX}, 0) scale(${scaleFactor}, 1)`);
+								} else {
+									this._ttipScaleGroup.removeAttributeNS(null, 'transform');
+								}
 							}
 						} else if (this._ttipScaleGroup) {
 							this._ttipScaleGroup ? (this._ttipScaleGroup.style['display'] = 'none') : {};
