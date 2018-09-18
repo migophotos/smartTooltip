@@ -129,14 +129,13 @@
                         title: {
                             uuid: `uuid-${evt.target.id}`,
                             name: `${evt.target.textContent}`,
-                            descr: 'Click on the indicator at the bottom',
                             value: val,
                             valueMax: valueMax,
                             color: cr,
                             link: `https://www.google.com/search?q=${evt.target.textContent}`,
 
-                            titleFormat: '$NAME$=$VALUE$... What is it? Maybe Google knows ... ',
-                            descrFormat: '$DESCR$'
+                            titleFormat: 'Word is $NAME$, random value is $VALUE$',
+                            descrFormat: 'Click on the indicator, and let Google will help us!'
                         }
                     }, evt);
                 });
