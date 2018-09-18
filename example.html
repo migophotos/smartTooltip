@@ -5,22 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
     <script src="smarttooltip.js"></script>
     <style>
-        .container { 
-          width: 80%; 
-          margin: 0 auto; 
+        .container {
+          width: 80%;
+          margin: 0 auto;
         }
-        .grid-container {
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-        }
-        p { 
-            font-size: 18px; 
+        p {
+            font-size: 18px;
             line-height: 2.0;
-            padding-bottom: 27px; 
+            padding-bottom: 27px;
         }
         text {
             font-size: 18pt;
-            text-shadow: #4A4A4A 1px 1px 8px; 
+            text-shadow: #4A4A4A 1px 1px 8px;
         }
         .label-red {
             cursor: pointer;
@@ -42,7 +38,8 @@
     <p>Move the cursor over the word "<b><label id="l1" class="sttip-link">accumsan</label></b>". You will see a pop-up window containing the title with value, some description and value colored indicator.
         If you stupidly sit and look at the hint, it will go out after a few seconds. Alas, nothing lasts forever under the moon ... :)</p>
 
-    <p>The tooltip window "<b><label id="l2" class="sttip-link">crawls</label></b>" behind the mouse pointer, but it can be fixed. To do this, press the Ctrl key on the keyboard and move the mouse.
+    <p>The tooltip window "<b><label id="l2" class="sttip-link">crawls</label></b>" behind the mouse pointer, but it can be fixed. To do this,
+        press the Ctrl key on the keyboard, or click right mouse button and move its pointer to the SmartTooltip window.
         In the left, upper corner of the tooltip window is a blue circle. This is the "pinMe" button. If you press it, the tooltip will be "pinned" to any
         subsequent element on which you move the mouse pointer.</p>
     <p>Try clicking on the "pinMe" button and move the mouse pointer to the word "Diam" written in red ...
@@ -72,7 +69,7 @@
           arcu. Vivamus blandit arcu eget augue bibendum, sed imperdiet orci auctor. Mauris aliquet
           hendrerit suscipit. Aenean <label id="l15" class="label-green">ut</label> pulvinar diam, nec sagittis diam. Duis at gravida lacus,
           nec convallis erat. Etiam sit amet <label id="l16" class="label-green">quam</label>. Nulla facilisi.</p>
-     
+
 
 </div>
         <script>
@@ -105,7 +102,7 @@
             for (item of els) {
                 item.addEventListener('mouseover', function(evt) {
                     var val = Math.floor(Math.random() * (100 - 0 + 1)) + 0;
-                     
+
                     var cr = val2color(val);
                     let valueMax = null;
                     if (evt.target.id === 'l1')
@@ -132,7 +129,7 @@
                         title: {
                             uuid: `uuid-${evt.target.id}`,
                             name: `${evt.target.textContent}`,
-                            descr: 'Click on the indicator at the bottom (Ctrl + mouse)',
+                            descr: 'Click on the indicator at the bottom',
                             value: val,
                             valueMax: valueMax,
                             color: cr,

@@ -1,0 +1,193 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <script src="smarttooltip.js"></script>
+    <style>
+        .container {
+            width: 80%;
+            margin: 0 auto;
+          }
+          p {
+              font-size: 18px;
+              line-height: 2.0;
+              padding-bottom: 27px;
+          }
+          text {
+              font-size: 18pt;
+              text-shadow: #4A4A4A 1px 1px 8px;
+          }
+          .label-red {
+              cursor: pointer;
+              background-color: red;
+          }
+          .label-green {
+              cursor: pointer;
+              background-color: rgb(19, 233, 19);
+          }
+      </style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Как эффективно использовать SmartTooltip:<br> (настоятельно рекомендую прочитать этот абзац, и потренироваться в управлении этим умным виджетом)!</h2>
+    <p>Наведи курсор на слово <b><label id="l1" class="sttip-link">accumsan</label></b>. Ты увидишь всплывающее окно содержащее заголовок - name, значение - value, текст -  descr, цветной индикатор - color
+        Если тупо сидеть и смотреть на подсказку, то она погаснет через несколько секунд.  Увы, ничто не вечно под луной... :)</p>
+
+    <p>Окно подсказки "ползает" за указателем мыши, но его можно зафиксировать. Для этого нажмите на клавиатуре клавишу Ctrl или (если у вас занята левая рука)
+         нажмите правую кнопку мыши, и передвиньте указатель мыши в область окна подсказки.
+        В левом, верхнем углу окна подсказки расположен голубой кружок. Это кнопка "pinMe". Если ее нажать то подсказка будет "приколота" к любому последующему элементу
+        на который ты наведешь указатель мыши.</p>
+    <p>Попробуй нажми на кнопку "pinMe" и передвинь указатель мыши на слово Diam написанное черным по красному...
+        Посмотри, как изменилось поведение окна подсказки - теперь оно не ползает, а прыгает! И помнит свое состояние даже после перезагрузки страницы.</p>
+
+    <p>Теперь наведи указатель мыши на слово <b><label id="l2" class="sttip-link">Integer</label></b>, расположенное недалеко от слова <b><label id="l3" class="sttip-link">accumsan</label></b>.
+        Вполне возможно, что всплывшее окно подсказки закроет его.
+        Это происходит потому, что окно пытается уместиться на экране и... ну вообщем - я это починю когда нибудь. Что можно сделать сейчас? Тут есть один секрет:<br>
+        Окно подсказки можно передвинуть с помощью мышки в любое место экрана! Просто кликни мышкой где нибудь в свободном сером поле и тяни. Просто dtag & drop!
+        Как только ты перестанешь передвигать окошко, оно запомнит свои координаты и больше никуда не будет ползать и прыгать. Просто будет постоянно висеть
+        на экране и отображать подсказки при наведении курсора на "горячие" пирожки. Ты можешь в любой момент передвинуть окошко куда-нибудь еще, ему все равно
+        Оно будет запоминать новые координаты до тех пор пока ты снова не нажмешь на кнопку "pinMe" и она опять поголубеет. :)</p>
+    <p>Кстати, ты заметил, что у приколотого окошка цвет этой кнопки становится почти черным? Его можно поменять в стилях. Полную документацию я напишу, когда закончу исправлять баги.</p>
+
+    <p>Quisque tempor <label id="l5" class="label-red">diam</label> sit amet vulputate porttitor. </h3>
+     auctor nisi in erat viverra, a consectetur enim egestas. Quisque ut
+     massa pharetra, posuere tortor in, viverra ipsum. Donec consectetur
+     quam in tempor tincidunt. Nulla mauris tortor, ornare ac porttitor
+     non, maximus nec eros. Cras ac tincidunt ligula, in dapibus urna.
+     Nullam sed cursus est, ac euismod nibh. Duis ut mi ligula. Cras sed
+     feugiat ipsum. Nunc laoreet ante sed laoreet egestas.</p>
+
+    <h3>Fusce eget condimentum eros.</h3>
+    </p>In quis <label id="l6" class="label-green">enim</label> <b><label id="l7" class="sttip-link">accumsan</label></b>, <label id="l8" class="label-green">sollicitudin</label> sem id, gravida ipsum. Fusce <label id="l9" class="label-green">suscipit</label> <b><label id="l10" class="sttip-link">accumsan</label></b> massa.
+    Morbi vitae elementum lacus. Cras imperdiet urna vitae luctus laoreet. Vivamus venenatis
+    porttitor tincidunt. Donec volutpat <label id="l12" class="label-green">rutrum</label> faucibus. Nullam et <b><label id="l14" class="sttip-link">accumsan</label></b> ante, vitae egestas
+     arcu. Vivamus blandit arcu eget augue bibendum, sed imperdiet orci auctor. Mauris aliquet
+     hendrerit suscipit. Aenean <label id="l15" class="label-green">ut</label> pulvinar diam, nec sagittis diam. Duis at gravida lacus,
+     nec convallis erat. Etiam sit amet <label id="l16" class="label-green">quam</label>. Nulla facilisi.</p>
+
+</div>
+        <script>
+            var val2color = function(val) {
+                var color;
+                if (val < 25)
+                    color = "green";
+                else if (val < 50)
+                    color = "blue";
+                else if (val < 75)
+                    color = "yellow";
+                else
+                    color = "red";
+                return color;
+            }
+            var smallVal2color = function(val) {
+                var color;
+                if (val < 5)
+                    color = "green";
+                else if (val < 7)
+                    color = "blue";
+                else if (val < 8)
+                    color = "yellow";
+                else
+                    color = "red";
+                return color;
+            }
+            var item;
+            var els = document.getElementsByClassName('sttip-link');
+            for (item of els) {
+                item.addEventListener('mouseover', function(evt) {
+                    var val = Math.floor(Math.random() * (100 - 0 + 1)) + 0;
+
+                    var cr = val2color(val);
+                    let valueMax = null;
+                    if (evt.target.id === 'l1')
+                        val = val * 100;
+                    if (evt.target.id === 'l2') {
+                        val = val * 150;
+                        valueMax = 15000;
+                    }
+
+                    SmartTooltip.showTooltip({
+                        id: evt.target.id,
+                        x: evt.clientX,
+                        y: evt.clientY,
+                        options: {
+                            tRect: evt.target.getBoundingClientRect()
+                            , cssVars: {
+                                "--smartTip-frame-fill": "#000",
+                                "--smartTip-font-color": "#fff",
+                                "--smartTip-legend-fill":"#000",
+                                "--smartTip-border-radius": "10"
+                            }
+                            , scale: 0.8
+                        },
+                        title: {
+                            uuid: `uuid-${evt.target.id}`,
+                            name: `${evt.target.textContent}`,
+                            descr: 'Кликни на индикатор внизу (Ctrl + mouse)',
+                            value: val,
+                            valueMax: valueMax,
+                            color: cr,
+                            link: `https://www.google.com/search?q=${evt.target.textContent}`,
+
+                            titleFormat: '$NAME$ = $VALUE$',
+                            descrFormat: '$DESCR$'
+                        }
+                    }, evt);
+                });
+                item.addEventListener('mousemove', function(evt) {
+                    SmartTooltip.moveTooltip(evt.clientX, evt.clientY, evt);
+                });
+                item.addEventListener('mouseout', function(evt) {
+                    SmartTooltip.hideTooltip(evt);
+                });
+            }
+
+            els = document.getElementsByClassName('label-red');
+            for (item of els) {
+                item.addEventListener('mouseover', function(evt) {
+                    // evt.target.id ? {} : evt.target.setAttribute('id', evt.target.textContent);
+                    var greenEls = document.getElementsByClassName('label-green');
+                    var data = {
+                        id: evt.target.id,
+                        x: evt.clientX,
+                        y: evt.clientY,
+                        options: { tRect: evt.target.getBoundingClientRect(), sortby: "value" },
+                        title: {
+                            uuid: `uuid-${evt.target.id}`,
+                            name: `Количество слов на зеленом фоне - ${greenEls.length}`,
+                            descr: 'На диаграмме показано количество букв в каждом слове',
+                            color: 'red',
+                            link: `https://www.google.com/search?q=${evt.target.textContent}`,
+                            descrFormat: '$DESCR$'
+                        },
+                        targets: []
+                    };
+                    for (var subItem of greenEls) {
+                        //subItem.setAttribute('id', subItem.textContent);
+                        var subTarget = {
+                            uuid: `uuid-${subItem.id}`,
+                            name: subItem.textContent,
+                            color: smallVal2color(subItem.textContent.length),
+                            value: subItem.textContent.length,
+                            link: (subItem.textContent === 'suscipit' ? "http://www.google.com/search?q=suscipit" : '')
+                        }
+                        data.targets.push(subTarget);
+                    }
+                    SmartTooltip.showTooltip(data, evt);
+                });
+                item.addEventListener('mousemove', function(evt) {
+                    SmartTooltip.moveTooltip(evt.clientX, evt.clientY, evt);
+                });
+                item.addEventListener('mouseout', function(evt) {
+                    SmartTooltip.hideTooltip(evt);
+                });
+            }
+        </script>
+</body>
+
+</html>
+
