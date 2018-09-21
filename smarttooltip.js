@@ -165,26 +165,20 @@ class SmartTooltip {
 		if (!window.SmartTooltip) {
 			window.SmartTooltip = new SmartTooltip();
 		}
-		window.SmartTooltip.show(data);
+		window.SmartTooltip.show(evt, data);
 	}
-	static moveTooltip(clientX, clientY, evt = null) {
-		if (evt && (evt.ctrlKey || evt.metaKey || evt.buttons == 2)) {
-			return;
-		}
-
+	static moveTooltip(evt = null) {
+		// call move(..) in any case, lets this function make it's own decision :) 
 		if (window.SmartTooltip) {
-			window.SmartTooltip.move(clientX, clientY);
+			window.SmartTooltip.move(evt);
 		} else {
 			throw new ReferenceError("window.SmartTooltip hasn't been initialised. call SmartTooltip.show(data), or SmartTooltip.init(id, template) before.");
 		}
 	}
 	static hideTooltip(evt = null) {
-		if (evt && (evt.ctrlKey || evt.metaKey || evt.buttons == 2)) {
-			return;
-		}
-
+		// call hide(..) in any case, lets this function make it's own decision :) 
 		if (window.SmartTooltip) {
-			window.SmartTooltip.hide();
+			window.SmartTooltip.hide(evt);
 		} else {
 			throw new ReferenceError("window.SmartTooltip hasn't been initialised. call SmartTooltip.show(data), or SmartTooltip.init(id, template) before.");
 		}
@@ -340,6 +334,10 @@ class SmartTooltip {
 					stroke-width: var(--smartTip-border-width);
 					rx: var(--smartTip-border-radius);
 					ry: var(--smartTip-border-radius);
+				}
+
+				#SmartTooltip.hidden {
+					transition: all 500ms ease-in-out;
 				}
 
 				.sttip-legend-rect {
@@ -833,6 +831,7 @@ class SmartTooltip {
 		event.preventDefault();
 	}
 	_endDrag(event) {
+		const ref = window.SmartTooltip;
 		const div = window.SmartTooltip._ttipRef;
 		// before storing position of tooltip window in local storage, lets check it's current position. may be it is now moved by user
 		const x = parseInt(div.style.left)
@@ -841,8 +840,9 @@ class SmartTooltip {
 			if (window.SmartTooltip._pinned) {
 				SmartTooltip._saveInLocalStorage('SmartTooltip.x', x);
 				SmartTooltip._saveInLocalStorage('SmartTooltip.y', y);
-				window.SmartTooltip._ttipPinMe.classList.remove("sttip-pinned");
-				window.SmartTooltip._ttipPinMe.classList.add("sttip-custom");
+				ref._ttipPinMe.classList.remove("sttip-pinned");
+				ref._ttipPinMe.classList.add("sttip-custom");
+				ref._customPin = true; // over from just pinned to custom pinned mode
 			}
 		} else {
 			console.log("drag more!")
@@ -932,29 +932,41 @@ class SmartTooltip {
 			}
 			if (this._ttipPinMe) {
 				this._ttipPinMe.addEventListener('click', function (evt) {
-					window.SmartTooltip._pinned = !window.SmartTooltip._pinned;
-					if (window.SmartTooltip._pinned) {
+					const ref = window.SmartTooltip;
+					ref._pinned = !window.SmartTooltip._pinned;
+					if (ref._pinned) {
 						SmartTooltip._saveInLocalStorage('SmartTooltip.pinned', true);
 						this.classList.add('sttip-pinned');
 					} else {
-						this.classList.remove('sttip-pinned');
-						this.classList.remove('sttip-custom');
-						SmartTooltip.clearLocalStorage('SmartTooltip.pinned');
-						SmartTooltip.clearLocalStorage('SmartTooltip.x');
-						SmartTooltip.clearLocalStorage('SmartTooltip.y');
+						if (ref._customPin) { // return from 'custom pinned' mode to 'just pinned' mode
+							ref._customPin = false;
+							this.classList.remove('sttip-custom');
+							SmartTooltip.clearLocalStorage('SmartTooltip.x');
+							SmartTooltip.clearLocalStorage('SmartTooltip.y');
+							ref._pinned = true;
+							this.classList.add('sttip-pinned');
+						} else { // return from 'pinned' mode to 'float' mode
+							this.classList.remove('sttip-pinned');
+							SmartTooltip.clearLocalStorage('SmartTooltip.pinned');
+						}
 					}
-
 				});
 			}
 			if (this._ttipHelpMe) {
 				this._ttipHelpMe.addEventListener('click', function(evt) {
+					
 					window.SmartTooltip._ttipRef.style['display'] = 'none';
+					//window.SmartTooltip._ttipRef.classList.add('hidden');				
+
+					this._ttipGroup.setAttribute('opacity', 0);
 					evt.preventDefault();
 				})
 			}
 			if (this._ttipCloseMe) {
 				this._ttipCloseMe.addEventListener('click', function(evt) {
 					window.SmartTooltip._ttipRef.style['display'] = 'none';
+					//window.SmartTooltip._ttipRef.classList.add('hidden');				
+					this._ttipGroup.setAttribute('opacity', 0);
 					evt.preventDefault();
 				})
 			}
@@ -1009,42 +1021,57 @@ class SmartTooltip {
 
 
 	// needMoveForNewId - Id of new owner control, found in data.id
-	move(x, y, needMoveForNewId = 0, ownerRect) {
-		if (!needMoveForNewId) {
-			if (this._pinned) {
-				return;
+	move(evt, needMoveForNewId = 0, ownerRect) {
+		let coordX, coordY;
+		let x = evt.x, y = evt.y;
+		if (typeof evt === 'object') {
+			if (evt.type === 'mousemove') {
+				// lets check buttons
+				if (evt && (evt.ctrlKey || evt.metaKey || evt.buttons == 2)) {
+					console.log("mouse moved with buttons");
+					window.SmartTooltip._checkMouseMoving();
+					return;
+				}
+			} //else if (evt.type === 'fakeEvent') 
+			{
+
+				if (!needMoveForNewId) {
+					if (this._pinned) {
+						return;
+					}
+				}
+
+				if (this._ttipRef && this._ttipGroup) {
+					// in case of moving of pinned tooltip, calculate it's new coordinate by positioning it at the right side of owner control
+					if (needMoveForNewId && typeof ownerRect === 'object') {
+						x = ownerRect.right + 16;
+						y = ownerRect.top;
+					} else {
+						x += 10;
+						y += 30;
+					}
+					// caclulate an absolute location
+					const scroll = SmartTooltip.getScroll();
+					x += scroll.X;
+					y += scroll.Y;
+
+					this._ttipRef.style['left'] = x;
+					this._ttipRef.style['top'] = y;
+
+					const divRect = this._ttipRef.getBoundingClientRect();
+					let offsetX = window.innerWidth - divRect.right;
+					if (offsetX < 0) {
+						x += (offsetX - 50);
+						this._ttipRef.style['left'] = x;
+					}
+
+					window.SmartTooltip._checkMouseMoving();
+				}
 			}
-		}
-
-		if (this._ttipRef && this._ttipGroup) {
-			// in case of moving of pinned tooltip, calculate it's new coordinate by positioning it at the right side of owner control
-			if (needMoveForNewId && typeof ownerRect === 'object') {
-				x = ownerRect.right + 16;
-				y = ownerRect.top;
-			} else {
-				x += 10;
-				y += 30;
-			}
-			// caclulate an absolute location
-			const scroll = SmartTooltip.getScroll();
-			x += scroll.X;
-			y += scroll.Y;
-
-			this._ttipRef.style['left'] = x;
-			this._ttipRef.style['top'] = y;
-
-			const divRect = this._ttipRef.getBoundingClientRect();
-			let offsetX = window.innerWidth - divRect.right;
-			if (offsetX < 0) {
-				x += (offsetX - 50);
-				this._ttipRef.style['left'] = x;
-			}
-
-			window.SmartTooltip._checkMouseMoving();
 		}
 	}
 
-	show(data) { // dt = { x, y, title: {color, value, name, descr}, targets: [sub-targets], ...options}
+	show(evt, data) { // dt = { x, y, title: {color, value, name, descr}, targets: [sub-targets], ...options}
 		if (typeof data === 'object') {
 			let ttipdef = null;
 			if (this._definitions.has(data.id)) {
@@ -1096,14 +1123,19 @@ class SmartTooltip {
 				this._ttipBoundGroup   = this._root.getElementById('bound-group');
 				this._ttipValue50      = this._root.getElementById('value-50');
 				this._ttipValue100     = this._root.getElementById('value-100');
+				
 				this._ttipRef.style['display'] = 'none';
+				// window.SmartTooltip._ttipRef.classList.add('hidden');				
+
 				this._initEvents();
 
 				if (this._ttipPinMe) {
-					if (this._pinned) {
+					if (this._pinned) { // restore 'custom pinned' mode from local storage
 						if (localStorage.getItem('SmartTooltip.x')) {
+							this._customPin = true;
 							this._ttipPinMe.classList.add('sttip-custom')
-						} else {
+						} else { // just prepare _customPin parameter
+							this._customPin = false;
 							this._ttipPinMe.classList.add('sttip-pinned');
 						}
 					}
@@ -1127,6 +1159,7 @@ class SmartTooltip {
 					this._ttipFrameBGroup.setAttribute('transform', 'translate(0, 0)');
 				}
 
+				// this._ttipRef.classList.remove('hidden');				
 				this._ttipRef.style['display'] = '';
 
 				let ownerBodyRect = {left: 0, top: 0, right: 0, bottom: 0};
@@ -1363,7 +1396,12 @@ class SmartTooltip {
 						this._ttipRef.style['left'] = left;
 						this._ttipRef.style['top'] = top;
 					} else {
-						this.move(data.x, data.y, forId, ownerBodyRect);
+						const fakeEvt = {
+							x: data.x,
+							y: data.y,
+							type: 'fakeEvent'
+						}
+						this.move(fakeEvt, forId, ownerBodyRect);
 					}
 				}
 				// resize the frame rectange of toolip window
@@ -1386,10 +1424,23 @@ class SmartTooltip {
 			}
 		}
 	}
-	hide() {
+	hide(evt) {
+		if (typeof evt === 'undefined') {
+			// hide!!!
+			this._ttipRef.style['display'] = 'none';
+			// this._ttipRef.classList.add('hidden');				
+
+			return;
+		}
 		if (this._ttipRef && this._ttipGroup) {
-			if (!this._pinned)
-				this._ttipRef.style['display'] = 'none';
+			if (!this._pinned) {
+				if (evt && (evt.ctrlKey || evt.metaKey || evt.buttons == 2)) {
+					console.log("out with buttons");
+				}
+				// instead of hiding, lets delay for 2s interval
+				// this._ttipRef.style['display'] = 'none';
+				window.SmartTooltip._checkMouseMoving();
+			}
 		}
 	}
 };

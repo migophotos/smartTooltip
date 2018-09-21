@@ -39,7 +39,7 @@
         If you stupidly sit and look at the hint, it will go out after a few seconds. Alas, nothing lasts forever under the moon ... :)</p>
 
     <p>The tooltip window "<b><label id="l2" class="sttip-link">crawls</label></b>" behind the mouse pointer, but it can be fixed. To do this,
-        press the Ctrl key on the keyboard, or click right mouse button and move its pointer to the SmartTooltip window.
+        move the mouse pointer to the SmartTooltip window.
         In the left, upper corner of the tooltip window is a blue circle. This is the "pinMe" button. If you press it, the tooltip will be "pinned" to any
         subsequent element on which you move the mouse pointer.</p>
     <p>Try clicking on the "pinMe" button and move the mouse pointer to the word "Diam" written in red ...
@@ -50,9 +50,7 @@
         The tooltip window can be moved with the mouse to any place on the screen! <br>Just click anywhere in the free gray box and drag. Just drag and drop!
         Once you stop moving the window, it will remember its coordinates and will not crawl and jump anywhere else. Simply will constantly hang on the screen and display
          tips when you hover over the hot pies. You can move the window anyplace else at any time, it does not care. It will remember the new coordinates until you press
-         the "pinMe" button again and it will again be pierced. :)</p>
-         <p>By the way, did you notice that at the pinned window the color of this button becomes almost black?
-         It can be changed in styles. I will write the full documentation when I finish fixing the bugs.</p>
+         the "pinMe" button again.</p>
 
          <p>Quisque tempor <label id="l5" class="label-red">diam</label> sit amet vulputate porttitor.
             auctor nisi in erat viverra, a consectetur enim egestas. Quisque ut
@@ -119,12 +117,12 @@
                         options: {
                             tRect: evt.target.getBoundingClientRect()
                             , cssVars: {
-                                "--smartTip-frame-fill": "#000",
-                                "--smartTip-font-color": "#fff",
-                                "--smartTip-legend-fill":"#000",
+                                // "--smartTip-frame-fill": "#000",
+                                // "--smartTip-font-color": "#fff",
+                                // "--smartTip-legend-fill":"#000",
                                 "--smartTip-border-radius": "10"
                             }
-                            , scale: 0.8
+                            , scale: 0.9
                         },
                         title: {
                             uuid: `uuid-${evt.target.id}`,
@@ -140,7 +138,7 @@
                     }, evt);
                 });
                 item.addEventListener('mousemove', function(evt) {
-                    SmartTooltip.moveTooltip(evt.clientX, evt.clientY, evt);
+                    SmartTooltip.moveTooltip(evt);
                 });
                 item.addEventListener('mouseout', function(evt) {
                     SmartTooltip.hideTooltip(evt);
@@ -181,7 +179,7 @@
                     SmartTooltip.showTooltip(data, evt);
                 });
                 item.addEventListener('mousemove', function(evt) {
-                    SmartTooltip.moveTooltip(evt.clientX, evt.clientY, evt);
+                    SmartTooltip.moveTooltip(evt);
                 });
                 item.addEventListener('mouseout', function(evt) {
                     SmartTooltip.hideTooltip(evt);

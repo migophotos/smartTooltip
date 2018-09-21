@@ -37,8 +37,7 @@
     <p>Наведи курсор на слово <b><label id="l1" class="sttip-link">accumsan</label></b>. Ты увидишь всплывающее окно содержащее заголовок - name, значение - value, текст -  descr, цветной индикатор - color
         Если тупо сидеть и смотреть на подсказку, то она погаснет через несколько секунд.  Увы, ничто не вечно под луной... :)</p>
 
-    <p>Окно подсказки "ползает" за указателем мыши, но его можно зафиксировать. Для этого нажми на клавиатуре клавишу Ctrl или (если у тебя занята левая рука)
-         нажми правую кнопку мыши, и передвинь указатель мыши в область окна подсказки.
+    <p>Окно подсказки "ползает" за указателем мыши, но его можно зафиксировать. Для этого передвинь указатель мыши в область окна подсказки.
         В левом, верхнем углу окна подсказки расположен голубой кружок. Это кнопка "pinMe". Если ее нажать то подсказка будет "приколота" к любому последующему элементу
         на который ты наведешь указатель мыши.</p>
     <p>Попробуй нажми на кнопку "pinMe" и передвинь указатель мыши на слово Diam написанное черным по красному...
@@ -50,8 +49,7 @@
         Окно подсказки можно передвинуть с помощью мышки в любое место экрана! Просто кликни мышкой где нибудь в свободном сером поле и тяни. Просто dtag & drop!
         Как только ты перестанешь передвигать окошко, оно запомнит свои координаты и больше никуда не будет ползать и прыгать. Просто будет постоянно висеть
         на экране и отображать подсказки при наведении курсора на "горячие" пирожки. Ты можешь в любой момент передвинуть окошко куда-нибудь еще, ему все равно
-        Оно будет запоминать новые координаты до тех пор пока ты снова не нажмешь на кнопку "pinMe" и она опять поголубеет. :)</p>
-    <p>Кстати, ты заметил, что у приколотого окошка цвет этой кнопки становится почти черным? Его можно поменять в стилях. Полную документацию я напишу, когда закончу исправлять баги.</p>
+        Оно будет запоминать новые координаты до тех пор пока ты снова не нажмешь на кнопку "pinMe". :)</p>
 
     <p>Quisque tempor <label id="l5" class="label-red">diam</label> sit amet vulputate porttitor. </h3>
      auctor nisi in erat viverra, a consectetur enim egestas. Quisque ut
@@ -117,9 +115,9 @@
                         options: {
                             tRect: evt.target.getBoundingClientRect()
                             , cssVars: {
-                                "--smartTip-frame-fill": "#000",
-                                "--smartTip-font-color": "#fff",
-                                "--smartTip-legend-fill":"#000",
+                                // "--smartTip-frame-fill": "#000",
+                                // "--smartTip-font-color": "#fff",
+                                // "--smartTip-legend-fill":"#000",
                                 "--smartTip-border-radius": "10"
                             }
                             , scale: 0.8
@@ -138,7 +136,7 @@
                     }, evt);
                 });
                 item.addEventListener('mousemove', function(evt) {
-                    SmartTooltip.moveTooltip(evt.clientX, evt.clientY, evt);
+                    SmartTooltip.moveTooltip(evt);
                 });
                 item.addEventListener('mouseout', function(evt) {
                     SmartTooltip.hideTooltip(evt);
@@ -179,7 +177,7 @@
                     SmartTooltip.showTooltip(data, evt);
                 });
                 item.addEventListener('mousemove', function(evt) {
-                    SmartTooltip.moveTooltip(evt.clientX, evt.clientY, evt);
+                    SmartTooltip.moveTooltip(evt);
                 });
                 item.addEventListener('mouseout', function(evt) {
                     SmartTooltip.hideTooltip(evt);
