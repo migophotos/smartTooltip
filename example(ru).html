@@ -6,27 +6,32 @@
     <script src="smarttooltip.js"></script>
     <style>
         .container {
-            width: 80%;
-            margin: 0 auto;
-          }
-          p {
-              font-size: 18px;
-              line-height: 2.0;
-              padding-bottom: 27px;
-          }
-          text {
-              font-size: 18pt;
-              text-shadow: #4A4A4A 1px 1px 8px;
-          }
-          .label-red {
-              cursor: pointer;
-              background-color: red;
-          }
-          .label-green {
-              cursor: pointer;
-              background-color: rgb(19, 233, 19);
-          }
-      </style>
+          width: 80%;
+          margin: 0 auto;
+        }
+        p {
+            font-size: 18px;
+            line-height: 2.0;
+            padding-bottom: 27px;
+        }
+        text {
+            font-size: 18pt;
+            text-shadow: #4A4A4A 1px 1px 8px;
+        }
+        .label-red {
+            cursor: pointer;
+            background-color: red;
+        }
+        .label-green {
+            cursor: pointer;
+            background-color: rgb(19, 233, 19);
+        }
+        .label-blue {
+            cursor: pointer;
+            background-color: rgb(19, 147, 233);
+        }
+    </style>
+
 
 </head>
 
@@ -37,38 +42,31 @@
     <p>Наведи курсор на слово <b><label id="l1" class="sttip-link">accumsan</label></b>. Ты увидишь всплывающее окно содержащее заголовок - name, значение - value, текст -  descr, цветной индикатор - color
         Если тупо сидеть и смотреть на подсказку, то она погаснет через несколько секунд.  Увы, ничто не вечно под луной... :)</p>
 
-    <p>Окно подсказки "ползает" за указателем мыши, но его можно зафиксировать. Для этого передвинь указатель мыши в область окна подсказки.
+    <p>Окно подсказки "<b><label id="l2" class="sttip-link">ползает</label></b>" за указателем мыши, но его можно зафиксировать. Для этого передвинь указатель мыши в область окна подсказки.
         В левом, верхнем углу окна подсказки расположен голубой кружок. Это кнопка "pinMe". Если ее нажать то подсказка будет "приколота" к любому последующему элементу
-        на который ты наведешь указатель мыши.</p>
-    <p>Попробуй нажми на кнопку "pinMe" и передвинь указатель мыши на слово Diam написанное черным по красному...
+        на который ты наведешь <label id="l5" class="label-red">указатель</label> мыши.</p>
+    <p>Попробуй нажми на кнопку "pinMe" и передвинь указатель мыши на слово "указатель" написанное черным по красному...
         Посмотри, как изменилось поведение окна подсказки - теперь оно не ползает, а прыгает! И помнит свое состояние даже после перезагрузки страницы.</p>
 
-    <p>Теперь наведи указатель мыши на слово <b><label id="l2" class="sttip-link">Integer</label></b>, расположенное недалеко от слова <b><label id="l3" class="sttip-link">accumsan</label></b>.
-        Вполне возможно, что всплывшее окно подсказки закроет его.
-        Это происходит потому, что окно пытается уместиться на экране и... ну вообщем - я это починю когда нибудь. Что можно сделать сейчас? Тут есть один секрет:<br>
+    <h3>Fusce eget condimentum eros.</h3>
+    <p>In quis <label id="l6" class="label-green">enim</label> <b><label id="l7" class="sttip-link">accumsan</label></b>, <label id="l8" class="label-green">sollicitudin</label> sem id, gravida ipsum. Fusce <label id="l9" class="label-green">suscipit</label> <b><label id="l10" class="sttip-link">accumsan</label></b> massa.
+        Morbi vitae elementum lacus. Cras imperdiet urna vitae luctus laoreet. Vivamus venenatis
+        porttitor tincidunt. Donec volutpat <label id="l12" class="label-green">rutrum</label> faucibus. Nullam et <b><label id="l14" class="sttip-link">accumsan</label></b> ante, vitae egestas
+        arcu. Vivamus blandit arcu eget augue bibendum, sed imperdiet orci auctor. Mauris aliquet
+        hendrerit suscipit. Aenean <label id="l15" class="label-green">ut</label> pulvinar diam, nec sagittis diam. Duis at gravida lacus,
+        nec convallis erat. Etiam sit amet <label id="l16" class="label-green">quam</label>. Nulla facilisi.</p>
+
+     <p>Теперь наведи указатель <label id="m1" class="label-blue">мыши</label>  на слово <b><label id="l2" class="sttip-link">Integer</label></b>, расположенное недалеко от <label id="m2" class="label-blue">слова</label> "accumsan".
+        Вполне <label id="m3" class="label-blue">возможно</label> , что всплывшее окно подсказки закроет его. Это происходит потому, <label id="m4" class="label-blue">что</label>
+        окно пытается уместиться на экране и... <label id="m5" class="label-blue">ну</label> вообщем - я это починю когда <label id="m6" class="label-blue">нибудь</label>. Что можно сделать сейчас? Тут есть один секрет:<br>
         Окно подсказки можно передвинуть с помощью мышки в любое место экрана! Просто кликни мышкой где нибудь в свободном сером поле и тяни. Просто dtag & drop!
         Как только ты перестанешь передвигать окошко, оно запомнит свои координаты и больше никуда не будет ползать и прыгать. Просто будет постоянно висеть
         на экране и отображать подсказки при наведении курсора на "горячие" пирожки. Ты можешь в любой момент передвинуть окошко куда-нибудь еще, ему все равно
-        Оно будет запоминать новые координаты до тех пор пока ты снова не нажмешь на кнопку "pinMe". :)</p>
+        Оно будет запоминать новые координаты до тех пор пока ты снова не нажмешь на кнопку "<label id="m0" class="label-blue">pinMe</label>". :)</p>
 
-    <p>Quisque tempor <label id="l5" class="label-red">diam</label> sit amet vulputate porttitor. </h3>
-     auctor nisi in erat viverra, a consectetur enim egestas. Quisque ut
-     massa pharetra, posuere tortor in, viverra ipsum. Donec consectetur
-     quam in tempor tincidunt. Nulla mauris tortor, ornare ac porttitor
-     non, maximus nec eros. Cras ac tincidunt ligula, in dapibus urna.
-     Nullam sed cursus est, ac euismod nibh. Duis ut mi ligula. Cras sed
-     feugiat ipsum. Nunc laoreet ante sed laoreet egestas.</p>
-
-    <h3>Fusce eget condimentum eros.</h3>
-    </p>In quis <label id="l6" class="label-green">enim</label> <b><label id="l7" class="sttip-link">accumsan</label></b>, <label id="l8" class="label-green">sollicitudin</label> sem id, gravida ipsum. Fusce <label id="l9" class="label-green">suscipit</label> <b><label id="l10" class="sttip-link">accumsan</label></b> massa.
-    Morbi vitae elementum lacus. Cras imperdiet urna vitae luctus laoreet. Vivamus venenatis
-    porttitor tincidunt. Donec volutpat <label id="l12" class="label-green">rutrum</label> faucibus. Nullam et <b><label id="l14" class="sttip-link">accumsan</label></b> ante, vitae egestas
-     arcu. Vivamus blandit arcu eget augue bibendum, sed imperdiet orci auctor. Mauris aliquet
-     hendrerit suscipit. Aenean <label id="l15" class="label-green">ut</label> pulvinar diam, nec sagittis diam. Duis at gravida lacus,
-     nec convallis erat. Etiam sit amet <label id="l16" class="label-green">quam</label>. Nulla facilisi.</p>
 
 </div>
-        <script>
+<script>
             var val2color = function(val) {
                 var color;
                 if (val < 25)
@@ -120,7 +118,7 @@
                                 // "--smartTip-legend-fill":"#000",
                                 "--smartTip-border-radius": "10"
                             }
-                            , scale: 0.8
+                            , scale: 0.9
                         },
                         title: {
                             uuid: `uuid-${evt.target.id}`,
@@ -128,10 +126,10 @@
                             value: val,
                             valueMax: valueMax,
                             color: cr,
-                            link: `https://www.google.com/search?q=${evt.target.textContent}+${val}`,
+                            link: `https://www.google.com/search?q=${evt.target.textContent}`,
 
-                            titleFormat: 'Слово $NAME$, значение (случайное): $VALUE$',
-                            descrFormat: 'Нажми на индикатор, и да поможет нам Google!'
+                            titleFormat: 'Word is $NAME$, random value is $VALUE$',
+                            descrFormat: 'Click on the indicator, and let Google will help us!'
                         }
                     }, evt);
                 });
@@ -146,19 +144,19 @@
             els = document.getElementsByClassName('label-red');
             for (item of els) {
                 item.addEventListener('mouseover', function(evt) {
-                    // evt.target.id ? {} : evt.target.setAttribute('id', evt.target.textContent);
                     var greenEls = document.getElementsByClassName('label-green');
                     var data = {
                         id: evt.target.id,
                         x: evt.clientX,
                         y: evt.clientY,
-                        options: { tRect: evt.target.getBoundingClientRect(), sortby: "value" },
+                        options: { tRect: evt.target.getBoundingClientRect() },
                         title: {
                             uuid: `uuid-${evt.target.id}`,
-                            name: `Количество слов на зеленом фоне - ${greenEls.length}`,
-                            descr: 'На диаграмме показано количество букв в каждом слове',
+                            name: `Number of words on a green background - ${greenEls.length}`,
+                            descr: 'The pie shows the number of letters in each word',
                             color: 'red',
                             link: `https://www.google.com/search?q=${evt.target.textContent}`,
+                            value: greenEls.length,
                             descrFormat: '$DESCR$'
                         },
                         targets: []
@@ -174,6 +172,39 @@
                         }
                         data.targets.push(subTarget);
                     }
+                    SmartTooltip.showTooltip(data, evt);
+                });
+                item.addEventListener('mousemove', function(evt) {
+                    SmartTooltip.moveTooltip(evt);
+                });
+                item.addEventListener('mouseout', function(evt) {
+                    SmartTooltip.hideTooltip(evt);
+                });
+            }
+            els = document.getElementsByClassName('label-blue');
+            for (item of els) {
+                item.addEventListener('mouseover', function(evt) {
+                    var data = {
+                        id: evt.target.id,
+                        x: evt.clientX,
+                        y: evt.clientY,
+                        options: {
+                            tRect: evt.target.getBoundingClientRect()
+                            , scale: 0.7
+                            , cssVars: {
+                                "--smartTip-frame-fill": "rgb(200, 255, 255)"
+                                // "--smartTip-legend-fill":"#000",
+                              , "--smartTip-font-color": "rgb(19, 147, 233)"
+                              , "--smartTip-border-color": "rgb(19, 147, 233)"
+                            }
+                            //, mode: 'float' - // not yet implemented
+                        },
+                        title: {
+                            uuid: `uuid-${evt.target.id}`,
+                            name: `"${evt.target.textContent}" on a blue background`,
+
+                        }
+                    };
                     SmartTooltip.showTooltip(data, evt);
                 });
                 item.addEventListener('mousemove', function(evt) {

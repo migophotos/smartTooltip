@@ -168,7 +168,7 @@ class SmartTooltip {
 		window.SmartTooltip.show(evt, data);
 	}
 	static moveTooltip(evt = null) {
-		// call move(..) in any case, lets this function make it's own decision :) 
+		// call move(..) in any case, lets this function make it's own decision :)
 		if (window.SmartTooltip) {
 			window.SmartTooltip.move(evt);
 		} else {
@@ -176,7 +176,7 @@ class SmartTooltip {
 		}
 	}
 	static hideTooltip(evt = null) {
-		// call hide(..) in any case, lets this function make it's own decision :) 
+		// call hide(..) in any case, lets this function make it's own decision :)
 		if (window.SmartTooltip) {
 			window.SmartTooltip.hide(evt);
 		} else {
@@ -917,11 +917,6 @@ class SmartTooltip {
 					evt.preventDefault();
 				});
 
-				// this._ttipGroup.addEventListener('mouseup', function (evt) {
-				// 	if (evt.button == 2) {
-				// 		return;
-				// 	}
-
 				this._ttipGroup.addEventListener('click', function (evt) {
 					let linkto = evt.target.dataset['linkto'];
 					if (typeof linkto !== 'undefined' && typeof linkto.length === 'number' && linkto.length) {
@@ -952,21 +947,16 @@ class SmartTooltip {
 					}
 				});
 			}
-			if (this._ttipHelpMe) {
+			if (this._ttipHelpMe) { // show 'help' panel
 				this._ttipHelpMe.addEventListener('click', function(evt) {
-					
-					window.SmartTooltip._ttipRef.style['display'] = 'none';
-					//window.SmartTooltip._ttipRef.classList.add('hidden');				
 
-					this._ttipGroup.setAttribute('opacity', 0);
+					window.SmartTooltip._ttipRef.style['display'] = 'none';
 					evt.preventDefault();
 				})
 			}
-			if (this._ttipCloseMe) {
+			if (this._ttipCloseMe) { // 'close' toolip window
 				this._ttipCloseMe.addEventListener('click', function(evt) {
 					window.SmartTooltip._ttipRef.style['display'] = 'none';
-					//window.SmartTooltip._ttipRef.classList.add('hidden');				
-					this._ttipGroup.setAttribute('opacity', 0);
 					evt.preventDefault();
 				})
 			}
@@ -1032,7 +1022,7 @@ class SmartTooltip {
 					window.SmartTooltip._checkMouseMoving();
 					return;
 				}
-			} //else if (evt.type === 'fakeEvent') 
+			} //else if (evt.type === 'fakeEvent')
 			{
 
 				if (!needMoveForNewId) {
@@ -1123,9 +1113,9 @@ class SmartTooltip {
 				this._ttipBoundGroup   = this._root.getElementById('bound-group');
 				this._ttipValue50      = this._root.getElementById('value-50');
 				this._ttipValue100     = this._root.getElementById('value-100');
-				
+
 				this._ttipRef.style['display'] = 'none';
-				// window.SmartTooltip._ttipRef.classList.add('hidden');				
+				// window.SmartTooltip._ttipRef.classList.add('hidden');
 
 				this._initEvents();
 
@@ -1159,7 +1149,7 @@ class SmartTooltip {
 					this._ttipFrameBGroup.setAttribute('transform', 'translate(0, 0)');
 				}
 
-				// this._ttipRef.classList.remove('hidden');				
+				// this._ttipRef.classList.remove('hidden');
 				this._ttipRef.style['display'] = '';
 
 				let ownerBodyRect = {left: 0, top: 0, right: 0, bottom: 0};
@@ -1404,7 +1394,15 @@ class SmartTooltip {
 						this.move(fakeEvt, forId, ownerBodyRect);
 					}
 				}
+
 				// resize the frame rectange of toolip window
+				// hide button 'closeMe' in 'float' mode and show in 'pinned' and 'custom'
+				if (this._ttipCloseMe) {
+					this._ttipCloseMe.parentNode.removeAttribute('display');
+					if (!this._pinned && !this._customPin) {
+						this._ttipCloseMe.parentNode.setAttribute('display', 'none');
+					}
+				}
 				ttipBoundGroupBR = this._ttipBoundGroup.getBoundingClientRect();
 				this._ttipFrame.setAttributeNS(null, 'width', ttipBoundGroupBR.width + 12);
 				this._ttipFrame.setAttributeNS(null, 'height', ttipBoundGroupBR.height + 12);
@@ -1428,7 +1426,7 @@ class SmartTooltip {
 		if (typeof evt === 'undefined') {
 			// hide!!!
 			this._ttipRef.style['display'] = 'none';
-			// this._ttipRef.classList.add('hidden');				
+			// this._ttipRef.classList.add('hidden');
 
 			return;
 		}
@@ -1618,6 +1616,8 @@ class SmartTooltipElement extends HTMLElement {
 		if (!this._shadowDOM) {
 			throw new Error('Unfortunately, your browser does not support shadow DOM v1. Think about switching to a last release of Chrome browser that supports all new technologies!');
 		}
+		// get custom properties
+		getComputedStyle(this).getPropertyValue("--sttip-sortby")
 
 		SmartTooltip.initTooltip();
 	}

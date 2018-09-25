@@ -26,6 +26,10 @@
             cursor: pointer;
             background-color: rgb(19, 233, 19);
         }
+        .label-blue {
+            cursor: pointer;
+            background-color: rgb(19, 147, 233);
+        }
     </style>
 
 </head>
@@ -41,18 +45,19 @@
     <p>The tooltip window "<b><label id="l2" class="sttip-link">crawls</label></b>" behind the mouse pointer, but it can be fixed. To do this,
         move the mouse pointer to the SmartTooltip window.
         In the left, upper corner of the tooltip window is a blue circle. This is the "pinMe" button. If you press it, the tooltip will be "pinned" to any
-        subsequent element on which you move the mouse pointer.</p>
+        subsequent element on which you move the mouse <label id="l5" class="label-red">pointer</label>.</p>
     <p>Try clicking on the "pinMe" button and move the mouse pointer to the word "Diam" written in red ...
         Look at how the behavior of the tooltip window changed - now it does not crawl, but jumps! And It remembers its condition even after the page is reloaded.</p>
 
-    <p>Now point the mouse at the word "Integer", located near the word "accumsan". It is possible that a pop-up tooltip window will close it. This is because the
-        window is trying to fit on the screen and ... well, in general - I'll fix it someday. What can be done now? <br>There is one secret:
+    <p>Now point the <label id="m1" class="label-blue">mouse</label> at the word "Integer", located near the <label id="m2" class="label-blue">word</label> "accumsan".
+        It is <label id="m3" class="label-blue">possible</label> that a pop-up tooltip window will close it. This is because <label id="m4" class="label-blue">the</label>
+        window is trying to fit on the screen and ... well, <label id="m5" class="label-blue">in</label> general - I'll fix it <label id="m6" class="label-blue">someday</label>. What can be done now? <br>There is one secret:
         The tooltip window can be moved with the mouse to any place on the screen! <br>Just click anywhere in the free gray box and drag. Just drag and drop!
-        Once you stop moving the window, it will remember its coordinates and will not crawl and jump anywhere else. Simply will constantly hang on the screen and display
+        Once you stop moving the window, it will <label id="m7" class="label-blue">remember</label> its coordinates and will not crawl and jump <label id="m8" class="label-blue">anywere</label> else. Simply will constantly hang on the screen and display
          tips when you hover over the hot pies. You can move the window anyplace else at any time, it does not care. It will remember the new coordinates until you press
-         the "pinMe" button again.</p>
+         the "<label id="m0" class="label-blue">pinMe</label>" button again.</p>
 
-         <p>Quisque tempor <label id="l5" class="label-red">diam</label> sit amet vulputate porttitor.
+         <p>Quisque tempor diam sit amet vulputate porttitor.
             auctor nisi in erat viverra, a consectetur enim egestas. Quisque ut
             massa pharetra, posuere tortor in, viverra ipsum. Donec consectetur
             quam in tempor tincidunt. Nulla mauris tortor, ornare ac porttitor
@@ -176,6 +181,40 @@
                         }
                         data.targets.push(subTarget);
                     }
+                    SmartTooltip.showTooltip(data, evt);
+                });
+                item.addEventListener('mousemove', function(evt) {
+                    SmartTooltip.moveTooltip(evt);
+                });
+                item.addEventListener('mouseout', function(evt) {
+                    SmartTooltip.hideTooltip(evt);
+                });
+            }
+            els = document.getElementsByClassName('label-blue');
+            for (item of els) {
+                item.addEventListener('mouseover', function(evt) {
+                    var data = {
+                        id: evt.target.id,
+                        x: evt.clientX,
+                        y: evt.clientY,
+                        options: {
+                            tRect: evt.target.getBoundingClientRect()
+                            , scale: 0.6
+                            , cssVars: {
+                                "--smartTip-frame-fill": "rgb(200, 255, 255)"
+                                // "--smartTip-legend-fill":"#000",
+                              , "--smartTip-font-color": "rgb(19, 147, 233)"
+                              , "--smartTip-border-color": "rgb(19, 147, 233)"
+                            }
+
+                            //, mode: 'float' - // not yet implemented
+                        },
+                        title: {
+                            uuid: `uuid-${evt.target.id}`,
+                            name: `"${evt.target.textContent}" on a blue background`,
+
+                        }
+                    };
                     SmartTooltip.showTooltip(data, evt);
                 });
                 item.addEventListener('mousemove', function(evt) {
