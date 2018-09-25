@@ -1,0 +1,178 @@
+<svg class="sttip" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <filter id="drop-shadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2.2"/>
+            <feOffset dx="2" dy="2" result="offsetblur"/>
+            <feFlood flood-color="rgba(0,0,0,0.5)"/>
+            <feComposite in2="offsetblur" operator="in"/>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        <pattern id="sttip-pattern-stripe"
+            width="4" height="4"
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(45)">
+            <rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+        </pattern>
+        <mask id="sttip-mask-stripe">
+            <rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe)" />
+        </mask>
+
+    </defs>
+    <style>
+        svg.sttip {
+            overflow: visible;
+            vector-effect: non-scaling-stroke;
+
+            --smartTip-scale-font-size: 12px;
+            --smartTip-legend-font-size: 16px;
+            --smartTip-title-font-size: 30px;
+            --smartTip-descr-font-size: 28px;
+            --smartTip-legend-stroke: #666;
+            --smartTip-legend-fill: #fff;
+            --smartTip-run-color: #0f0;
+            --smartTip-stop-color: #f00;
+            --smartTip-border-radius: 2;
+
+            --legend-frm-border-width: 2;
+            --legend-frm-border-radius: var(--smartTip-border-radius, 2);
+            --legend-frm-border-color: var(--smartTip-legend-stroke, #666);
+            --legend-frm-fill: var(--smartTip-legend-fill, #ffc6c6);
+
+            --no-color:	none;
+            --run-color: var(--smartwdg-run-color, green);
+            --stop-color: var(--smartwdg-stop-color, red);
+
+
+
+        }
+        .sttip-scale-line {
+            fill: none;
+            stroke: #0a0a0a;
+            stroke-width: 2;
+            stroke-linecap: butt;
+        }
+        text.sttip-text {
+            font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+            font-stretch: condensed;
+            pointer-events: none;
+        }
+        .sttip-scale-text {
+            font-size:var(--smartTip-scale-font-size, 12px);
+        }
+        .sttip-title {
+            font-size: var(--smartTip-title-font-size, 30px);
+        }
+        .sttip-description {
+            font-size: var(--smartTip-descr-font-size, 28px);
+        }
+        .sttip-legend-value, .sttip-legend-name {
+            font-size: var(--smartTip-legend-font-size, 18px);
+        }
+        .sttip-legend-rect {
+            fill:var(--legend-frm-fill);
+        }
+        .sttip-legend-frame {
+            fill:var(--legend-frm-fill);
+            fill-opacity: 0.1;
+            rx: var(--legend-frm-border-radius);
+            ry: var(--legend-frm-border-radius);
+        }
+        .sttip-frame {
+            fill:var(--legend-frm-fill);
+            fill-opacity: 0.8;
+            rx: var(--legend-frm-border-radius);
+            ry: var(--legend-frm-border-radius);
+        }
+
+        .sttip-legend-rect {
+            fill:var(--no-color);
+            rx: var(--legend-frm-border-radius);
+            ry: var(--legend-frm-border-radius);
+        }
+        .sttip-run-indicator {
+            stroke: #969696;
+            stroke-width: 1px;
+        }
+        .sttip-value-gauge {
+            fill: #ff9191;
+        }
+        .sttip-run {
+            fill: var(--run-color);
+        }
+        .sttip-stop {
+            fill: var(--stop-color);
+        }
+        .sttip-shadowed {
+            filter: url(#drop-shadow);
+        }
+        .sttip-linked {
+            cursor: pointer;
+        }
+        .sttip-animated {
+            transition:all 1s;
+        }
+        .sttip-selected {
+            mask: url(#sttip-mask-stripe);
+        }
+        .sttip-current {
+            stroke-width: 1.5;
+            stroke: var(--legend-frm-border-color);
+        }
+
+        .sttip-max-value {
+            width: 265px;
+        }
+        .sttip-min-value {
+            width: 0;
+        }
+        rect.sttip-legend-rect:hover {
+            stroke-dasharray: 2 2;
+            stroke: var(--legend-frm-border-color);
+        }
+        .sttip-diagram:hover {
+            mask: url(#sttip-mask-stripe);
+        }
+
+    </style>
+    <g id="tooltip-group">
+        <rect id="tooltip-frame" class="sttip-frame sttip-shadowed" x="120" y="80" width="289" height="329.501" fill-opacity="0.8"/>
+        <g id="bound-group">
+            <g id="title-group" data-x="210">
+                <text id="tooltip-title" class="sttip-text sttip-title" x="210px" y="104.175px">Tooltip Title</text>
+            </g>
+            <g id="scale-group">
+                <text id="pct-0" x="152.264px" y="324px" class="sttip-text sttip-scale-text">0</text>
+                <text id="pct-25" x="146.715px" y="273px" class="sttip-text sttip-scale-text">25</text>
+                <text id="pct-50" x="146.791px" y="222px" class="sttip-text sttip-scale-text">50</text>
+                <text id="pct-75" x="146.791px" y="171px" class="sttip-text sttip-scale-text">75</text>
+                <text id="pct-751" x="124.974px" y="225px" class="sttip-text sttip-scale-text">%</text>
+                <text id="pct-100" x="141.318px" y="119px" class="sttip-text sttip-scale-text">100</text>
+                <path id="y-0" d="M160,320l210,0" class="sttip-scale-line" stroke-width="2"/>
+                <path id="y-25" d="M160,268.75l210,0" class="sttip-scale-line" stroke-width="1" stroke-dasharray="2,2,0,0"/>
+                <path id="y-50" d="M160,217.5l210,0" class="sttip-scale-line" stroke-width="1" stroke-dasharray="2,2,0,0"/>
+                <path id="y-75" d="M160,166.25l210,0" class="sttip-scale-line" stroke-width="1" stroke-dasharray="2,2,0,0"/>
+                <path id="y-100" d="M160,115l210,0" class="sttip-scale-line" stroke-width="1" stroke-dasharray="2,2,0,0"/>
+            </g>
+            <g id="legend-group">
+                <path id="legend-frame" d="M170,115l0,294.501l193.43,0l0,-294.501l-193.43,0Z" class="sttip-legend-frame"/>
+                <g id="legend-stroke">
+                    <path id="legend-rect" d="M176.32,115l0,294.501l27,0l0,-294.501l-27,0Z" class="sttip-legend-rect sttip-linked"/>
+                    <path id="legend-color" d="M183,115l0,205l20,0l0,-205l-20,0Z" class="sttip-legend-color"/>
+                    <g id="legend-name" class="sttip-text sttip-legend-name" transform="matrix(0.707107,-0.707107,0.707107,0.707107,-279.473,-42.947)">
+                        <text x="-21.578px" y="605.88px" >Legend stroke</text>
+                    </g>
+                </g>
+                <g id="legend-stroke" transform="translate(30,0)">
+                    <path id="legend-rect" d="M176.32,115l0,294.501l27,0l0,-294.501l-27,0Z" class="sttip-legend-rect sttip-linked"/>
+                    <path id="legend-color" d="M183,115l0,205l20,0l0,-205l-20,0Z" class="sttip-legend-color"/>
+                    <g id="legend-name" class="sttip-text sttip-legend-name" transform="matrix(0.707107,-0.707107,0.707107,0.707107,-279.473,-42.947)">
+                        <text x="-21.578px" y="605.88px" >Legend stroke</text>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

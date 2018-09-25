@@ -1,0 +1,182 @@
+<svg class="sttip" id="tooltip-vert-bars" width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <filter id="drop-shadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2.2"/>
+            <feOffset dx="2" dy="2" result="offsetblur"/>
+            <feFlood flood-color="rgba(0,0,0,0.5)"/>
+            <feComposite in2="offsetblur" operator="in"/>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        <pattern id="sttip-pattern-stripe45"
+            width="4" height="4"
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(45)">
+            <rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+        </pattern>
+        <pattern id="sttip-pattern-stripe-45"
+            width="4" height="4"
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(-45)">
+            <rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+        </pattern>
+        <mask id="sttip-mask-stripe">
+            <rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+        </mask>
+        <mask id="sttip-mask-cross">
+            <rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+            <rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe-45)" />
+        </mask>
+
+    </defs>
+    <style>
+        svg.sttip {
+            overflow: visible;
+            vector-effect: non-scaling-stroke;
+
+            --smartTip-scale-font-size: 12px;
+            --smartTip-legend-font-size: 22px;
+            --smartTip-title-font-size: 30px;
+            --smartTip-descr-font-size: 28px;
+            --smartTip-legend-stroke: #666;
+            --smartTip-legend-fill: #fff;
+            --smartTip-run-color: #0f0;
+            --smartTip-stop-color: #f00;
+            --smartTip-border-radius: 2;
+
+            --legend-frm-border-width: 2;
+            --legend-frm-border-radius: var(--smartTip-border-radius, 2);
+            --legend-frm-border-color: var(--smartTip-legend-stroke, #666);
+            --legend-frm-fill: var(--smartTip-legend-fill, #ffc6c6);
+
+            --no-color:	none;
+            --run-color: var(--smartwdg-run-color, green);
+            --stop-color: var(--smartwdg-stop-color, red);
+
+
+
+        }
+        .sttip-scale-line {
+            fill: none;
+            stroke: #0a0a0a;
+            stroke-width: 2;
+            stroke-linecap: butt;
+        }
+        text.sttip-text {
+            font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+            font-stretch: condensed;
+            pointer-events: none;
+        }
+        .sttip-scale-text {
+            font-size:var(--smartTip-scale-font-size, 12px);
+        }
+        .sttip-title {
+            font-size: var(--smartTip-title-font-size, 30px);
+        }
+        .sttip-description {
+            font-size: var(--smartTip-descr-font-size, 28px);
+        }
+        .sttip-legend-value, .sttip-legend-name {
+            font-size: var(--smartTip-legend-font-size, 18px);
+        }
+        .sttip-legend-rect {
+            fill:var(--legend-frm-fill);
+        }
+        .sttip-legend-frame {
+            fill:var(--legend-frm-fill);
+            fill-opacity: 0.1;
+            rx: var(--legend-frm-border-radius);
+            ry: var(--legend-frm-border-radius);
+        }
+        .sttip-frame {
+            fill:var(--legend-frm-fill);
+            fill-opacity: 0.8;
+            rx: var(--legend-frm-border-radius);
+            ry: var(--legend-frm-border-radius);
+        }
+
+        .sttip-legend-rect {
+            fill:var(--no-color);
+            fill:var(--legend-frm-fill);
+            rx: var(--legend-frm-border-radius);
+            ry: var(--legend-frm-border-radius);
+        }
+        .sttip-run-indicator {
+            stroke: #969696;
+            stroke-width: 1px;
+        }
+        .sttip-value-gauge {
+            fill: #ff9191;
+        }
+        .sttip-run {
+            fill: var(--run-color);
+        }
+        .sttip-stop {
+            fill: var(--stop-color);
+        }
+        .sttip-shadowed {
+            filter: url(#drop-shadow);
+        }
+        .sttip-linked {
+            cursor: pointer;
+        }
+        .sttip-animated {
+            transition:all 1s;
+        }
+        .sttip-selected {
+            mask: url(#sttip-mask-cross);
+        }
+        .sttip-current > rect {
+            stroke-width: 1.5;
+            stroke: var(--legend-frm-border-color);
+        }
+        .sttip-current > text {
+            font-weight: bold;
+        }
+
+        .sttip-max-value {
+            width: 265px;
+        }
+        .sttip-min-value {
+            width: 0;
+        }
+        rect.sttip-legend-rect:hover {
+            stroke-dasharray: 2 2;
+            stroke: var(--legend-frm-border-color);
+        }
+        .sttip-diagram:hover, path.sttip-linked:hover {
+            mask: url(#sttip-mask-stripe);
+        }
+        g#legend-text-stroke {
+            pointer-events: none;
+        }
+    </style>
+
+    <g id="tooltip-group">
+        <rect id="tooltip-frame" class="sttip-frame sttip-shadowed" x="0" y="0" fill-opacity="0.8" width="290" height="300"/>
+        <g id="bound-group">
+            <g id="scale-group">
+                <path id="y-0" d="M40,240.363l210,0" style="fill:none;stroke:#0a0a0a;stroke-width:2px;stroke-linecap:butt;"/>
+                <text id="pct-0" x="32.264px" y="244.369px" style="font-family:'ArialNarrow', 'Arial Narrow', sans-serif;font-stretch:condensed;font-size:12.018px;">0</text>
+                <text id="pct-25" x="26.715px" y="193.292px" style="font-family:'ArialNarrow', 'Arial Narrow', sans-serif;font-stretch:condensed;font-size:12.018px;">25</text>
+                <text id="pct-50" x="26.791px" y="142.215px" style="font-family:'ArialNarrow', 'Arial Narrow', sans-serif;font-stretch:condensed;font-size:12.018px;">50</text>
+                <text id="pct-75" x="26.791px" y="91.138px" style="font-family:'ArialNarrow', 'Arial Narrow', sans-serif;font-stretch:condensed;font-size:12.018px;">75</text>
+                <text id="pct" x="4.974px" y="145.22px" style="font-family:'ArialNarrow', 'Arial Narrow', sans-serif;font-stretch:condensed;font-size:20.03px;">%</text>
+                <text id="pct-100" x="21.318px" y="39.059px" style="font-family:'ArialNarrow', 'Arial Narrow', sans-serif;font-stretch:condensed;font-size:12.018px;">100</text>
+                <path id="y-25" d="M40,189.036l210,0" style="fill:none;stroke:#0a0a0a;stroke-width:1px;stroke-linecap:butt;stroke-dasharray:2,2,0,0;"/>
+                <path id="y-50" d="M40,137.708l210,0" style="fill:none;stroke:#0a0a0a;stroke-width:1px;stroke-linecap:butt;stroke-dasharray:2,2,0,0;"/>
+                <path id="y-75" d="M40,86.381l210,0" style="fill:none;stroke:#0a0a0a;stroke-width:1px;stroke-linecap:butt;stroke-dasharray:2,2,0,0;"/>
+                <path id="y-100" d="M40,35.053l210,0" style="fill:none;stroke:#0a0a0a;stroke-width:1px;stroke-linecap:butt;"/>
+            </g>
+            <g id="legend-group">
+                <rect id="legend-rect" class="sttip-value-gauge sttip-animated" data-maxh="205" data-maxh="20" x="63" y="238" width="20" height="1"/>
+                <g id="legend-text-stroke">
+                    <text id="legend-name" class="sttip-text sttip-legend-name" text-anchor="middle" transform="translate(-125, 90), rotate(-45)" x="-13.179px" y="255.181px">Legend stroke</text>
+                </g>
+            </g>
+            <text id="tooltip-title" class="sttip-text sttip-title" x="90px" y="24.212px">Tooltip Title</text>
+        </g>
+    </g>
+</svg>

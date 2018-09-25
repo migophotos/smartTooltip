@@ -431,6 +431,8 @@ class SmartTooltip {
 				}
 				#pinMe.sttip-custom #tippex {
 					display: block;
+					stroke: var(--smartTip-frame-fill, white);
+					stroke-width: 1.5;
 				}
 				#pinMe.sttip-pinned {
 					transform: rotate(-45deg);
@@ -462,7 +464,7 @@ class SmartTooltip {
 					<g transform="translate(4,4)">
 						<g id="pinMe">
 							<path id="pin" d="M8,8L24,7L24,9Z" pointer-events="none" />
-							<path id="tippex" d="M8,8L12,7L12,9Z" stroke="white" stroke-width="1" />
+							<path id="tippex" d="M8,8L12,7L12,9Z" />
 							<circle id="rosh-pin" cx="24" cy="8" r="5" />
 						</g>
 					</g>
@@ -814,15 +816,14 @@ class SmartTooltip {
 		return foundEl;
 	}
 	_drag(event) {
-		const div = window.SmartTooltip._ttipRef;
-		var x = parseInt(div.style.left),
-		y = parseInt(div.style.top),
-		mouseX = event.clientX,
-		mouseY = event.clientY;
+		const div = window.SmartTooltip._ttipRef,
+		      scroll = SmartTooltip.getScroll();
+		let x = parseInt(div.style.left),
+			y = parseInt(div.style.top),
+			mouseX = event.clientX + scroll.X,
+			mouseY = event.clientY + scroll.Y;
 
 		var left = x + mouseX - div._currentX, top = y + mouseY - div._currentY;
-
-		//div.setPosition();
 		div.style.left = left + "px";
 		div.style.top = Math.max(top, 0) + "px";
 
@@ -834,10 +835,15 @@ class SmartTooltip {
 		const ref = window.SmartTooltip;
 		const div = window.SmartTooltip._ttipRef;
 		// before storing position of tooltip window in local storage, lets check it's current position. may be it is now moved by user
-		const x = parseInt(div.style.left)
+		let x = parseInt(div.style.left)
 			, y = parseInt(div.style.top);
 		if (Math.abs(div._currentX - div._startX) > 5 || Math.abs(div._currentY - div._startY) > 5) {
 			if (window.SmartTooltip._pinned) {
+				// save coordinates without scroll sizes!
+				const scroll = SmartTooltip.getScroll();
+				x -= scroll.X;
+				y -= scroll.Y;
+				// console.log(`Save Y as ${y}`);
 				SmartTooltip._saveInLocalStorage('SmartTooltip.x', x);
 				SmartTooltip._saveInLocalStorage('SmartTooltip.y', y);
 				ref._ttipPinMe.classList.remove("sttip-pinned");
@@ -863,9 +869,10 @@ class SmartTooltip {
 		document.addEventListener("mousemove", this._drag);
 		document.addEventListener("mouseup", this._endDrag);
 
-		const div = window.SmartTooltip._ttipRef;
-		div._currentX = div._startX = event.clientX;
-		div._currentY = div._startY = event.clientY;
+		const div = window.SmartTooltip._ttipRef,
+			  scroll = SmartTooltip.getScroll();
+		div._currentX = div._startX = event.clientX + scroll.X;
+		div._currentY = div._startY = event.clientY + scroll.Y;
 		event.preventDefault();
 	}
 
@@ -1022,8 +1029,8 @@ class SmartTooltip {
 					window.SmartTooltip._checkMouseMoving();
 					return;
 				}
-			} //else if (evt.type === 'fakeEvent')
-			{
+			} 
+			{ //else if (evt.type === 'fakeEvent')
 
 				if (!needMoveForNewId) {
 					if (this._pinned) {
@@ -1377,9 +1384,12 @@ class SmartTooltip {
 					if (forId) {
 						left = Number(localStorage.getItem('SmartTooltip.x'));
 						top = Number(localStorage.getItem('SmartTooltip.y'));
+						
 					}
 					if (left && top) { // move here!
 						const scroll = SmartTooltip.getScroll();
+						// console.log(`saved Y = ${top}, scroll by Y = ${scroll.Y}`);
+						// append current scroll positions to saved coordinates (was stored without its on 'endDrag)
 						left += scroll.X;
 						top += scroll.Y;
 
