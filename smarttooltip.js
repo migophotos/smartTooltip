@@ -211,299 +211,298 @@ class SmartTooltip {
 	static getDefaultTooltip() {
 		const defttip = {
 			name: 'default_tt.svg',
-			value: `
+			opt: {},
+			template: `
 			<svg class="sttip" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
-			<defs>
-				<filter id="drop-shadow">
-					<feGaussianBlur in="SourceAlpha" stdDeviation="2.2"/>
-					<feOffset dx="2" dy="2" result="offsetblur"/>
-					<feFlood flood-color="rgba(0,0,0,0.5)"/>
-					<feComposite in2="offsetblur" operator="in"/>
-					<feMerge>
-						<feMergeNode/>
-						<feMergeNode in="SourceGraphic"/>
-					</feMerge>
-				</filter>
-				<pattern id="sttip-pattern-stripe45"
-					width="4" height="4"
-					patternUnits="userSpaceOnUse"
-					patternTransform="rotate(45)">
-					<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
-				</pattern>
-				<pattern id="sttip-pattern-stripe-45"
-					width="4" height="4"
-					patternUnits="userSpaceOnUse"
-					patternTransform="rotate(-45)">
-					<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
-				</pattern>
-				<pattern id="sttip-pattern-stripe-45-black"
-					width="4" height="4"
-					patternUnits="userSpaceOnUse"
-					patternTransform="rotate(-45)">
-					<rect width="2" height="4" transform="translate(0,0)" fill="black"></rect>
-				</pattern>
-				<mask id="sttip-mask-stripe">
-					<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
-				</mask>
-				<mask id="sttip-mask-stripe-black">
-					<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
-				</mask>
-				<mask id="sttip-mask-cross">
-					<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
-					<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe-45)" />
-				</mask>
+				<defs>
+					<filter id="drop-shadow">
+						<feGaussianBlur in="SourceAlpha" stdDeviation="2.2"/>
+						<feOffset dx="2" dy="2" result="offsetblur"/>
+						<feFlood flood-color="rgba(0,0,0,0.5)"/>
+						<feComposite in2="offsetblur" operator="in"/>
+						<feMerge>
+							<feMergeNode/>
+							<feMergeNode in="SourceGraphic"/>
+						</feMerge>
+					</filter>
+					<pattern id="sttip-pattern-stripe45"
+						width="4" height="4"
+						patternUnits="userSpaceOnUse"
+						patternTransform="rotate(45)">
+						<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+					</pattern>
+					<pattern id="sttip-pattern-stripe-45"
+						width="4" height="4"
+						patternUnits="userSpaceOnUse"
+						patternTransform="rotate(-45)">
+						<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+					</pattern>
+					<pattern id="sttip-pattern-stripe-45-black"
+						width="4" height="4"
+						patternUnits="userSpaceOnUse"
+						patternTransform="rotate(-45)">
+						<rect width="2" height="4" transform="translate(0,0)" fill="black"></rect>
+					</pattern>
+					<mask id="sttip-mask-stripe">
+						<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+					</mask>
+					<mask id="sttip-mask-stripe-black">
+						<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+					</mask>
+					<mask id="sttip-mask-cross">
+						<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+						<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe-45)" />
+					</mask>
 
-			</defs>
-			<style>
-				svg.sttip {
-					overflow: visible;
-					vector-effect: non-scaling-stroke;
+				</defs>
+				<style>
+					svg.sttip {
+						overflow: visible;
+						vector-effect: non-scaling-stroke;
 
-					--smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
-					--smartTip-font-stretch: condensed;
-					--smartTip-font-color: #666;
-					--smartTip-scale-font-size: 12px;
-					--smartTip-legend-font-size: 22px;
-					--smartTip-title-font-size: 30px;
-					--smartTip-descr-font-size: 28px;
+						--smartTip-mouse-delay: 250;
+						--smartTip-mouse-noactive: 2000;
 
-					--smartTip-run-color: #0f0;
-					--smartTip-stop-color: #f00;
-					--smartTip-def-color: #666;
+						--smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+						--smartTip-font-stretch: condensed;
+						--smartTip-font-color: #666;
+						--smartTip-scale-font-size: 12px;
+						--smartTip-legend-font-size: 22px;
+						--smartTip-title-font-size: 30px;
+						--smartTip-descr-font-size: 28px;
 
-					--smartTip-frame-fill: #fff;
-					--smartTip-frame-opacity: 0.95;
-					--smartTip-frame-scale: 0.8;
-					--smartTip-border-color: none;
-					--smartTip-border-width: 2;
-					--smartTip-border-radius: 2;
+						--smartTip-run-color: #0f0;
+						--smartTip-stop-color: #f00;
+						--smartTip-def-color: #666;
 
-					--smartTip-legend-fill: #fff;
-					--smartTip-legend-stroke: #666;
+						--smartTip-frame-fill: #fff;
+						--smartTip-frame-opacity: 0.95;
+						--smartTip-frame-scale: 0.8;
+						--smartTip-border-color: none;
+						--smartTip-border-width: 2;
+						--smartTip-border-radius: 2;
 
-
-					--legend-frm-border-width: 2;
-					--legend-frm-border-radius: var(--smartTip-border-radius, 2);
-					--legend-frm-border-color: var(--smartTip-legend-stroke, #666);
-					--legend-frm-fill: var(--smartTip-legend-fill, #ffc6c6);
-
-					--no-color:	none;
-					--run-color: var(--smartwdg-run-color, green);
-					--stop-color: var(--smartwdg-stop-color, red);
+						--smartTip-legend-fill: #fff;
+						--smartTip-legend-stroke: #666;
 
 
+						--legend-frm-border-width: 2;
+						--legend-frm-border-radius: var(--smartTip-border-radius, 2);
+						--legend-frm-border-color: var(--smartTip-legend-stroke, #666);
+						--legend-frm-fill: var(--smartTip-legend-fill, #ffc6c6);
 
-				}
-				.sttip-scale-line {
-					fill: none;
-					stroke: var(--smartTip-font-color);
-					stroke-width: 2;
-					stroke-linecap: butt;
-				}
-				text.sttip-text {
-					font-family: var(--smartTip-font-family);
-					font-stretch: var(--smartTip-font-stretch);
-					pointer-events: none;
-					fill: var(--smartTip-font-color);
-				}
-				.sttip-scale-text {
-					font-size:var(--smartTip-scale-font-size, 12px);
-				}
-				.sttip-title {
-					font-size: var(--smartTip-title-font-size, 30px);
-				}
-				.sttip-description {
-					font-size: var(--smartTip-descr-font-size, 28px);
-				}
-				.sttip-legend-value, .sttip-legend-name {
-					font-size: var(--smartTip-legend-font-size, 18px);
-				}
-				.sttip-legend-rect {
-					fill:var(--legend-frm-fill);
-				}
-				.sttip-legend-frame {
-					fill:var(--legend-frm-fill);
-					fill-opacity: 0.1;
-					rx: var(--legend-frm-border-radius);
-					ry: var(--legend-frm-border-radius);
-				}
-				.sttip-frame {
-					fill:var(--smartTip-frame-fill);
-					fill-opacity: var(--smartTip-frame-opacity, 1);
-					stroke: var(--smartTip-border-color);
-					stroke-width: var(--smartTip-border-width);
-					rx: var(--smartTip-border-radius);
-					ry: var(--smartTip-border-radius);
-				}
+						--no-color:	none;
+						--run-color: var(--smartwdg-run-color, green);
+						--stop-color: var(--smartwdg-stop-color, red);
+					}
+					.sttip-scale-line {
+						fill: none;
+						stroke: var(--smartTip-font-color);
+						stroke-width: 2;
+						stroke-linecap: butt;
+					}
+					text.sttip-text {
+						font-family: var(--smartTip-font-family);
+						font-stretch: var(--smartTip-font-stretch);
+						pointer-events: none;
+						fill: var(--smartTip-font-color);
+					}
+					.sttip-scale-text {
+						font-size:var(--smartTip-scale-font-size, 12px);
+					}
+					.sttip-title {
+						font-size: var(--smartTip-title-font-size, 30px);
+					}
+					.sttip-description {
+						font-size: var(--smartTip-descr-font-size, 28px);
+					}
+					.sttip-legend-value, .sttip-legend-name {
+						font-size: var(--smartTip-legend-font-size, 18px);
+					}
+					.sttip-legend-rect {
+						fill:var(--legend-frm-fill);
+					}
+					.sttip-legend-frame {
+						fill:var(--legend-frm-fill);
+						fill-opacity: 0.1;
+						rx: var(--legend-frm-border-radius);
+						ry: var(--legend-frm-border-radius);
+					}
+					.sttip-frame {
+						fill:var(--smartTip-frame-fill);
+						fill-opacity: var(--smartTip-frame-opacity, 1);
+						stroke: var(--smartTip-border-color);
+						stroke-width: var(--smartTip-border-width);
+						rx: var(--smartTip-border-radius);
+						ry: var(--smartTip-border-radius);
+					}
 
-				#SmartTooltip.hidden {
-					transition: all 500ms ease-in-out;
-				}
+					#SmartTooltip.hidden {
+						transition: all 500ms ease-in-out;
+					}
 
-				.sttip-legend-rect {
-					fill:var(--no-color);
-					fill:var(--legend-frm-fill);
-					rx: var(--legend-frm-border-radius);
-					ry: var(--legend-frm-border-radius);
-				}
-				.sttip-run-indicator {
-					stroke: #969696;
-					stroke-width: 1px;
-				}
-				.sttip-value-gauge {
-					fill: #ff9191;
-				}
-				.sttip-run {
-					fill: var(--run-color);
-				}
-				.sttip-stop {
-					fill: var(--stop-color);
-				}
-				.sttip-shadowed {
-					filter: url(#drop-shadow);
-				}
-				.sttip-linked {
-					cursor: pointer;
-				}
-				.sttip-animated {
-					transition:all 1s;
-				}
-				.sttip-selected {
-					mask: url(#sttip-mask-cross);
-				}
-				.sttip-current > rect {
-					stroke-width: 1.5;
-					stroke: var(--legend-frm-border-color);
-				}
-				.sttip-current > text {
-					font-weight: bold;
-				}
-				.sttip-hover {
-					mask: url(#sttip-mask-stripe);
-				}
-				.sttip-lightgray {
-					fill: lightgray;
-				}
+					.sttip-legend-rect {
+						fill:var(--no-color);
+						fill:var(--legend-frm-fill);
+						rx: var(--legend-frm-border-radius);
+						ry: var(--legend-frm-border-radius);
+					}
+					.sttip-run-indicator {
+						stroke: #969696;
+						stroke-width: 1px;
+					}
+					.sttip-value-gauge {
+						fill: #ff9191;
+					}
+					.sttip-run {
+						fill: var(--run-color);
+					}
+					.sttip-stop {
+						fill: var(--stop-color);
+					}
+					.sttip-shadowed {
+						filter: url(#drop-shadow);
+					}
+					.sttip-linked {
+						cursor: pointer;
+					}
+					.sttip-animated {
+						transition:all 1s;
+					}
+					.sttip-selected {
+						mask: url(#sttip-mask-cross);
+					}
+					.sttip-current > rect {
+						stroke-width: 1.5;
+						stroke: var(--legend-frm-border-color);
+					}
+					.sttip-current > text {
+						font-weight: bold;
+					}
+					.sttip-hover {
+						mask: url(#sttip-mask-stripe);
+					}
+					.sttip-lightgray {
+						fill: lightgray;
+					}
 
-				.sttip-max-value {
-					width: 265px;
-				}
-				.sttip-min-value {
-					width: 0;
-				}
+					.sttip-max-value {
+						width: 265px;
+					}
+					.sttip-min-value {
+						width: 0;
+					}
 
-				rect.sttip-legend-rect:hover {
-					fill: lightgray;
-				}
-				.sttip-diagram:hover, path.sttip-linked:hover {
-					mask: url(#sttip-mask-stripe);
-				}
-				g#legend-text-stroke {
-					pointer-events: none;
-				}
+					rect.sttip-legend-rect:hover {
+						fill: lightgray;
+					}
+					.sttip-diagram:hover, path.sttip-linked:hover {
+						mask: url(#sttip-mask-stripe);
+					}
+					g#legend-text-stroke {
+						pointer-events: none;
+					}
 
-				#pinMe {
-					fill: gray;
-					stroke: black;
-					stroke-width: 0.5;
-					transition: all 500ms ease-in-out;
-				}
-				#pinMe:hover {
-					cursor: pointer;
-					fill: lightgray;
-				}
-				#frmBtns rect {
-					fill: none;
-					stroke: black;
-					stroke-width: 0.5;
-					pointer-events: bounding-box;
-					cursor: pointer;
-				}
-				#frmBtns rect:hover {
-					fill: lightgray;
-				}
+					#pinMe {
+						fill: gray;
+						stroke: black;
+						stroke-width: 0.5;
+						transition: all 500ms ease-in-out;
+					}
+					#pinMe:hover {
+						cursor: pointer;
+						fill: lightgray;
+					}
+					#frmBtns rect {
+						fill: none;
+						stroke: black;
+						stroke-width: 0.5;
+						pointer-events: bounding-box;
+						cursor: pointer;
+					}
+					#frmBtns rect:hover {
+						fill: lightgray;
+					}
 
-				#pinMe.sttip-custom circle {
-					fill: red;
-				}
-				#pinMe #tippex {
-					display: none;
-				}
-				#pinMe.sttip-custom #tippex {
-					display: block;
-					stroke: var(--smartTip-frame-fill, white);
-					stroke-width: 1.5;
-				}
-				#pinMe.sttip-pinned {
-					transform: rotate(-45deg);
-					transform-origin: 8px 8px;
-					transform-box: border-box;
-				}
-				#pinMe.sttip-custom {
-					transform: rotate(-45deg);
-					transform-origin: 12px 12px;
-					transform-box: border-box;
-				}
+					#pinMe.sttip-custom circle {
+						fill: red;
+					}
+					#pinMe #tippex {
+						display: none;
+					}
+					#pinMe.sttip-custom #tippex {
+						display: block;
+						stroke: var(--smartTip-frame-fill, white);
+						stroke-width: 1.5;
+					}
+					#pinMe.sttip-pinned {
+						transform: rotate(-45deg);
+						transform-origin: 8px 8px;
+						transform-box: border-box;
+					}
+					#pinMe.sttip-custom {
+						transform: rotate(-45deg);
+						transform-origin: 12px 12px;
+						transform-box: border-box;
+					}
 
-			</style>
-
-
-			<g id="tooltip-group">
-				<rect id="tooltip-frame" class="sttip-frame sttip-shadowed" x="0" y="0" fill-opacity="0.8" width="432" height="0"/>
-				<g id="bound-group">
-					<g id="frmBtns" transform="translate(0, 4)">
-						<g transform="translate(0, 0)">
-							<rect id="helpMe" x="0" y="0" width="16" height="16" />
-							<text text-anchor="middle" pointer-events="none" x="8" y="13">?</text>
+				</style>
+				<g id="tooltip-group">
+					<rect id="tooltip-frame" class="sttip-frame sttip-shadowed" x="0" y="0" fill-opacity="0.8" width="432" height="0"/>
+					<g id="bound-group">
+						<g id="frmBtns" transform="translate(0, 4)">
+							<g transform="translate(0, 0)">
+								<rect id="helpMe" x="0" y="0" width="16" height="16" />
+								<text text-anchor="middle" pointer-events="none" x="8" y="13">?</text>
+							</g>
+							<g transform="translate(20, 0)">
+								<rect id="closeMe" x="0" y="0" width="16" height="16"  />
+								<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
+							</g>
 						</g>
-						<g transform="translate(20, 0)">
-							<rect id="closeMe" x="0" y="0" width="16" height="16"  />
-							<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
+						<g transform="translate(4,4)">
+							<g id="pinMe">
+								<path id="pin" d="M8,8L24,7L24,9Z" pointer-events="none" />
+								<path id="tippex" d="M8,8L12,7L12,9Z" />
+								<circle id="rosh-pin" cx="24" cy="8" r="5" />
+							</g>
 						</g>
-					</g>
-					<g transform="translate(4,4)">
-						<g id="pinMe">
-							<path id="pin" d="M8,8L24,7L24,9Z" pointer-events="none" />
-							<path id="tippex" d="M8,8L12,7L12,9Z" />
-							<circle id="rosh-pin" cx="24" cy="8" r="5" />
+						<circle id="diagram" class="sttip-diagram" cx="72.5" cy="72.5" r="65" style="fill:#fff;"/>
+						<g id="diagram-group">
 						</g>
-					</g>
-					<circle id="diagram" class="sttip-diagram" cx="72.5" cy="72.5" r="65" style="fill:#fff;"/>
-					<g id="diagram-group">
-					</g>
-					<g id="legend-group" data-x="6.5" >
-						<circle id="run-indicator" class="sttip-run-indicator sttip-stop" cx="16.5" cy="157.5" r="5"/>
-						<g id="legend-stroke">
-							<rect id="legend-rect" class="sttip-legend-rect" x="22" y="172" width="396" height="34"/>
-							<g id="legend-text-stroke">
-								<rect id="legend-color" class="sttip-legend-color" x="26.5" y="178.5" width="20" height="20" fill="#ff0600"/>
-								<text id="legend-name" data-format="$NAME$" class="sttip-text sttip-legend-name" x="53.5px" y="196.5" text-anchor="left">Legend stroke</text>
-								<text id="legend-value" data-format="$VALUE$" class="sttip-text sttip-legend-value" x="359.794px" y="196.5" text-anchor="left">Value</text>
+						<g id="legend-group" data-x="6.5" >
+							<circle id="run-indicator" class="sttip-run-indicator sttip-stop" cx="16.5" cy="157.5" r="5"/>
+							<g id="legend-stroke">
+								<rect id="legend-rect" class="sttip-legend-rect" x="22" y="172" width="396" height="34"/>
+								<g id="legend-text-stroke">
+									<rect id="legend-color" class="sttip-legend-color" x="26.5" y="178.5" width="20" height="20" fill="#ff0600"/>
+									<text id="legend-name" data-format="$NAME$" class="sttip-text sttip-legend-name" x="53.5px" y="196.5" text-anchor="left">Legend stroke</text>
+									<text id="legend-value" data-format="$VALUE$" class="sttip-text sttip-legend-value" x="359.794px" y="196.5" text-anchor="left">Value</text>
+								</g>
+							</g>
+						</g>
+						<g id="title-group" data-x="147" >
+							<g id="scale-group">
+								<rect id="tooltip-value" class="sttip-value-gauge sttip-animated" data-maxw="265" data-maxh="20" x="147" y="83" width="20" height="20"/>
+								<path id="scale-line" class="sttip-scale-line" d="M147,105.5l265,0"/>
+								<path id="scale-0" class="sttip-scale-line" d="M148,111.827l0,-7.327"/>
+								<path id="scale-25" class="sttip-scale-line" d="M213.25,109.827l0,-5.327"/>
+								<path id="scale-50" class="sttip-scale-line" d="M279.5,111.827l0,-7.327"/>
+								<path id="scale-75" class="sttip-scale-line" d="M345.75,109.827l0,-5.327"/>
+								<path id="scale-100" class="sttip-scale-line" d="M411,111.827l0,-7.327"/>
+								<text id="value-0" class="sttip-text sttip-scale-text" x="145.155px" y="122.5px">0</text>
+								<text id="value-50" class="sttip-text sttip-scale-text" text-anchor="middle" x="280" y="122.5px">50%</text>
+								<text id="value-100" class="sttip-text sttip-scale-text" text-anchor="middle" x="412" y="122.5px">100%</text>
+							</g>
+							<g id="descr-group">
+								<text id="tooltip-title" data-format="$NAME$" class="sttip-text sttip-title" x="147" y="47">Tooltip Title</text>
+								<text id="tooltip-description" data-format="$VALUE$" class="sttip-text sttip-description" x="147" y="75">Tooltip description</text>
 							</g>
 						</g>
 					</g>
-					<g id="title-group" data-x="147" >
-						<g id="scale-group">
-							<rect id="tooltip-value" class="sttip-value-gauge sttip-animated" data-maxw="265" data-maxh="20" x="147" y="83" width="20" height="20"/>
-							<path id="scale-line" class="sttip-scale-line" d="M147,105.5l265,0"/>
-							<path id="scale-0" class="sttip-scale-line" d="M148,111.827l0,-7.327"/>
-							<path id="scale-25" class="sttip-scale-line" d="M213.25,109.827l0,-5.327"/>
-							<path id="scale-50" class="sttip-scale-line" d="M279.5,111.827l0,-7.327"/>
-							<path id="scale-75" class="sttip-scale-line" d="M345.75,109.827l0,-5.327"/>
-							<path id="scale-100" class="sttip-scale-line" d="M411,111.827l0,-7.327"/>
-							<text id="value-0" class="sttip-text sttip-scale-text" x="145.155px" y="122.5px">0</text>
-							<text id="value-50" class="sttip-text sttip-scale-text" text-anchor="middle" x="280" y="122.5px">50%</text>
-							<text id="value-100" class="sttip-text sttip-scale-text" text-anchor="middle" x="412" y="122.5px">100%</text>
-						</g>
-						<g id="descr-group">
-							<text id="tooltip-title" data-format="$NAME$" class="sttip-text sttip-title" x="147" y="47">Tooltip Title</text>
-							<text id="tooltip-description" data-format="$VALUE$" class="sttip-text sttip-description" x="147" y="75">Tooltip description</text>
-						</g>
-					</g>
 				</g>
-			</g>
-		</svg>
-		`
+			</svg>
+			`
 		};
 		return defttip;
 	}
@@ -728,10 +727,9 @@ class SmartTooltip {
 			this._initialized = false;
 			this._pinned = false;
 			this._instance = '';	// contains tooltip template string that show now
-			// this map will contains pairs: widget id (as key) : object with template file name (as name) and loaded external tooltip template string (as value)
+			// this map will contains pairs: widget id (as key) : object with template file name (as name) and loaded external tooltip template string (as template)
 			// the function 'show(...)' will load the corresponding template into the body of the tooltip and fill it with the data received from outside
 			this._definitions = new Map();
-			this._o = Object.assign({}, SmartTooltipElement.defOptions());
 			//this._o = { ...SmartTooltipElement.defOptions() }; // function setOptions(...) may customize this options, and/or append custom optios for specific elemet, stored in _defenitions
 
 			let div = window.document.createElement('div');
@@ -743,7 +741,7 @@ class SmartTooltip {
 			this._ttipGroup = null;
 
 			const deftt = SmartTooltip.getDefaultTooltip();
-			this._definitions.set('0', {name: deftt.name, value: deftt.value});
+			this._definitions.set('0', {name: deftt.name, template: deftt.template, opt: deftt.opt});
 
 			this._pinned = (SmartTooltip._readFromLocalStorage('SmartTooltip.pinned') === 'true');
 
@@ -807,7 +805,6 @@ class SmartTooltip {
 		for (let el of els) {
 			if (el.dataset['uuid'] === uuid) {
 				foundEl = el;
-				console.info(`Todo: possible bug in IE11: "<svg> does not have 'Element.classList' in IE11"`);
 				el.classList.add(effect);
 			} else {
 				el.classList.remove(effect);
@@ -894,23 +891,19 @@ class SmartTooltip {
 				this._ttipGroup.addEventListener("mousedown", this._startDrag);
 
 				this._ttipGroup.addEventListener('mouseover', function (evt) {
-					if (evt.target.classList) {
-						if (evt.target.classList.value.match('sttip-legend-rect')) {
+					if (evt.target.classList.contains('sttip-legend-rect')) {
 							window.SmartTooltip._setOverEffect('sub-target', evt.target.dataset['uuid'], 'sttip-hover');
-						}
-						if (evt.target.classList.value.match('sub-target')) {
+					} else
+					if (evt.target.classList.contains('sub-target')) {
 							window.SmartTooltip._setOverEffect('sttip-legend-rect', evt.target.dataset['uuid'], 'sttip-lightgray');
-						}
 					}
 				});
 				this._ttipGroup.addEventListener('mouseout', function (evt) {
-					if (evt.target.classList) {
-						if (evt.target.classList.value.match('sttip-legend-rect')) {
+					if (evt.target.classList.contains('sttip-legend-rect')) {
 							window.SmartTooltip._setOverEffect('sub-target', 'resetall', 'sttip-hover');
-						}
-						if (evt.target.classList.value.match('sub-target')) {
+					} else
+					if (evt.target.classList.contains('sub-target')) {
 							window.SmartTooltip._setOverEffect('sttip-legend-rect', 'resetall', 'sttip-lightgray');
-						}
 					}
 				});
 
@@ -969,24 +962,23 @@ class SmartTooltip {
 			}
 		}
 	}
-	_checkMouseMoving() {
+	_checkMouseMoving(delay = null) {
 		if (window.SmartTooltip._interval) {
 			clearTimeout(window.SmartTooltip._interval);
 		}
+		let noMouseActive = delay || Number(getComputedStyle(window.SmartTooltip._svg).getPropertyValue('--smartTip-mouse-noactive'));
 		window.SmartTooltip._interval = setTimeout(function () {
-			console.log('time is out, close tooltip window now!');
 			if (window.SmartTooltip._pinned) {
-				console.log('but pinned, so dont close! :)')
 				return;
 			}
 			if (typeof window.SmartTooltip.isDrag !== 'undefined' && window.SmartTooltip.isDrag === true) {
-				console.log('but dragged, so dont close! :)')
 				return;
 			}
 
+			console.log(`${noMouseActive} ms delay is out, hide tooltip window now!`);
 			window.SmartTooltip.hide();
 			window.SmartTooltip._interval = null;
-		}, 2000); // 5000 - 5 second for showing tooltip on the screen without any mouse activity on it
+		}, noMouseActive); // 5000 - 5 second for showing tooltip on the screen without any mouse activity on it
 	}
 
 	init(id, tmplFileName = null) {
@@ -994,7 +986,7 @@ class SmartTooltip {
 		if (tmplFileName) {
 			SmartTooltip.httpGet(tmplFileName)
 				.then((response) => {
-					this._definitions.set(id, {name: tmplFileName, value: response});
+					this._definitions.set(id, {name: tmplFileName, template: response, opt: {}});
 				})
 				.catch((error) => {
 					console.error(error); // Error: Not Found
@@ -1008,10 +1000,20 @@ class SmartTooltip {
 
 	// see block started with "if (typeof data.options === 'object')" in function show(..)
 	// in case of id specified, store this options for specific element
-	setOptions(options, id=null) {
-		if(typeof options === 'object') {
-			for (let key in options) {
-				this._o[key] = options[key];
+	setOptions(options, id = null) {
+		let optRef = null,
+			ttdef;
+		id = (!id || id == '') ? '0' : id;
+
+		ttdef = this._definitions.get(id);
+		if (ttdef) {
+			optRef = ttdef.opt;
+		}
+		if (optRef) {
+			if(typeof options === 'object') {
+				for (let key in options) {
+					optRef[key] = options[key];
+				}
 			}
 		}
 	}
@@ -1029,7 +1031,7 @@ class SmartTooltip {
 					window.SmartTooltip._checkMouseMoving();
 					return;
 				}
-			} 
+			}
 			{ //else if (evt.type === 'fakeEvent')
 
 				if (!needMoveForNewId) {
@@ -1090,8 +1092,15 @@ class SmartTooltip {
 				}
 
 				this._initialized = false;
-				this._root.innerHTML = ttipdef.value;
+				this._root.innerHTML = ttipdef.template;
 				this._svg = this._root.firstElementChild;
+				// merge default options with custom
+				if (ttipdef.hasOwnProperty("opt")) {
+					this._o = Object.assign({}, SmartTooltipElement.defOptions(), ttipdef.opt);
+				} else {
+					this._o = Object.assign({}, SmartTooltipElement.defOptions());
+				}
+
 
 				this._ttipGroup 	   = this._root.getElementById('tooltip-group');
 				this._ttipPinMe		   = this._root.getElementById('pinMe');
@@ -1384,7 +1393,7 @@ class SmartTooltip {
 					if (forId) {
 						left = Number(localStorage.getItem('SmartTooltip.x'));
 						top = Number(localStorage.getItem('SmartTooltip.y'));
-						
+
 					}
 					if (left && top) { // move here!
 						const scroll = SmartTooltip.getScroll();
@@ -1445,9 +1454,9 @@ class SmartTooltip {
 				if (evt && (evt.ctrlKey || evt.metaKey || evt.buttons == 2)) {
 					console.log("out with buttons");
 				}
-				// instead of hiding, lets delay for 2s interval
-				// this._ttipRef.style['display'] = 'none';
-				window.SmartTooltip._checkMouseMoving();
+				// instead of hiding, lets delay for some small interval
+				const delay = Number(getComputedStyle(this._svg).getPropertyValue('--smartTip-mouse-delay')) || 250;
+				window.SmartTooltip._checkMouseMoving(delay);
 			}
 		}
 	}
