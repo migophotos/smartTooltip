@@ -1,0 +1,129 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <script src="smarttooltip.js"></script>
+    <style>
+        .container {
+          width: 80%;
+          margin: 0 auto;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            /*padding-bottom: 27px;*/
+        }
+        text {
+            font-size: 18pt;
+            text-shadow: #4A4A4A 1px 1px 8px;
+        }
+        .label-red {
+            cursor: pointer;
+            background-color: red;
+        }
+        .label-green {
+            cursor: pointer;
+            background-color: rgb(19, 233, 19);
+        }
+        .label-blue {
+            cursor: pointer;
+            background-color: rgb(19, 147, 233);
+        }
+    </style>
+
+</head>
+
+<body>
+    <smart-tooltip is-shadow="0">Sorry, yout browser does not support custom elements.</smart-tooltip>
+    <div class="container">
+        <h3>SmartTooltip - больше, чем просто tooltip!</h3>
+        <p>Окно элемента разделено на несколько функциональных регионов, назначение которых показано на рисунке.<br>
+        <img src="tooltip-descr.png" width="350px">
+        <div><b>View mode</b> - режимы отображения. Последовательное нажатие на данный элемент управления переводит подсказку в один из следующих режимов отображения:
+            <ul>
+                <li>плавающий</li> - Окно подсказки появляется и следует за курсором, передвигающимся над элементом.
+                Автоматически прячется через заданный промежуток времени. Кнопка "close" не отображается.
+                <li>приколотый</li> - Окно подсказки появляется справа от элемента и не прячется до принудительного закрытия кнопкой "close".
+                <li>фиксированный</li> - Окно подсказки появляется в заданной пользователем позиции на экране. Не прячется до принудительного закрытия кнопкой "close".
+            </ul>
+            Выбранный режим сохраняется в локальном хранилище браузера и восстанавливается при перезагрузке страницы.<br><br>
+            <b>help</b> - кнопка, открывающая панель помощи и настроек<br>
+            <b>close</b> - кнопка, позволяющая принудительно закрыть окно подсказки.<br>
+        </div>
+        <b>tooltip-title</b> - заголовок, может содержать любой текст, включая значение параметра <code>title.value</code>. Формат определяется опциональным параметром <code>title.titleFormat</code>. По умолчанию выводится параметр <code>title.legend</code> или <code>title.name</code>.<br>
+        <b>tooltip-description</b> - описание, может содержать любой текст, включая значение параметра <code>title.value</code>. Формат определяется опциональным параметром <code>title.descrFormat</code>. По умолчанию выводится параметр <code>title.value</code>.<br>
+        <b>linear value inidicator</b> - линейный индикатор, отображает значение параметра <code>title.value</code> в виде полоски, окрашенной в цвет, определяемый параметром <code>title.color</code> или <code>title.status</code>. <br>
+        Шкала индикатора отображает проценты, если значение параметра <code>title.value</code> меньше, либо равно 100. Любое значение больше 100 интерпретируется как абсолютное число и масштабируется на шкале, при наличии параметра <code>title.maxValue</code>.
+        При отстутствии этого параметра, значение считается максимумом и отображается соответствующим образом на шкале.<br>Важное дополнение: при отсутствии параметра <code>title.value</code> линейный индикатор не отображается. Ширина индикатора изменяется соответственно ширине <code>tooltip-title</code> или <code>tooltip-description</code>.<br>
+        <b>multitarget pie diagram</b> - графический элемент отображающий значения массива "targets" в виде сегментов круговой диаграммы. Угловая величина сегментов зависит от количества элементов массива "targets" и от конкретного значения параметра <code>target.value</code>. Цвет сегмента определяется параметром <code>target.color</code>. При наличии параметра <code>target.link</code> тип курсора, проходящего над соответствующим сегментом, меняется на указатель и клик левой кнопкой мыши приведет к переходу на указанный ресурс. Сегменты диаграммы сортируются в зависимости от параметра <code>options.sortby</code>, который может принимать значения, описывающие параметр, по которому осуществляется сортировка, такие как: 'asis', 'name', 'value', 'color', 'state'. Значение 'asis' отключает сортировку.<br>Важное дополнение: при отсутствии массива "targets" диаграмма не показыватеся и область заголовка смещается к левому краю окна подсказки.<br>
+        <b>runtime indicator</b> - независимый элемент, отображающий дополнительный статус элемента. Цвет индикатора определяется параметром <code>options.isRun</code> и может быть красным при значении 0 или зеленым, при значении 1.<br>
+        <b>legend</b> - представляет собой список строк. Каждая строка списка отображает один из элементов массива "targets". Цвет квадрата слева, определяется параметром <code>target.color</code>. Текст по центру - параметром <code>target.legend</code> (по умолчанию), либо опциональной форматирующей строкой <code>target.legendFormat</code>. Текст справа - параметром <code>target.value</code> (по умолчанию), либо опциональной форматирующей строкой <code>target.legendValFormat</code>.<br><br>
+        Опциональный параметр <code>options.scale</code> определяет общий размер окна подсказки и может варьироваться от 1 до 0. По умолчанию используется значение 0.8 На практике, значения меньше 0.5 неприменимы.<br>
+        Опциональные параметры, определяющие внешний вид окна подсказки, задаются объектом "options.cssVars". По умолчанию, эти параметры имеют следующие значения:<br>
+        <pre><code>
+        --smartTip-mouse-delay: 250;
+        --smartTip-mouse-noactive: 2000;
+
+        --smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+        --smartTip-font-stretch: condensed;
+        --smartTip-font-color: #666;
+        --smartTip-scale-font-size: 12px;
+        --smartTip-legend-font-size: 22px;
+        --smartTip-title-font-size: 30px;
+        --smartTip-descr-font-size: 28px;
+
+        --smartTip-run-color: #0f0;
+        --smartTip-stop-color: #f00;
+        --smartTip-def-color: #666;
+
+        --smartTip-frame-fill: #fff;
+        --smartTip-frame-opacity: 0.95;
+        --smartTip-frame-scale: 0.8;
+        --smartTip-border-color: none;
+        --smartTip-border-width: 2;
+        --smartTip-border-radius: 2;
+
+        --smartTip-legend-fill: #fff;
+        --smartTip-legend-stroke: #666;
+        </code></pre>
+        Включение элемента SmartTooltip на страницу может осуществляется двумя способами: декларативно, с помощью добавления пользовательского элемента <code>smart-tooltip</code> в любом месте страницы, либо посредством вызова статической функции <code>SmartTooltip.initTooltip(..)</code> или <code>SmartTooltip.showTooltip(..)</code> из секции JavaScript кода.<br>
+        Функция <code>SmartTooltip.initTooltip(..)</code> принимает два необязательных параметра <code>id</code> <code>templateFileName</code>. При отсутствии параметров происходит загрузка встроенного шаблона окна подсказки, а при наличии параметров - асинхронная загрузка указанного шаблона (в SVG формате) и привязка его к элементу страницы, определяемого по указанному <code>id</code>.<br>Важное дополнение: внешние шаблоны имеют предопределенную структуру и поставляются в комплекте с элементом SmartTooltip.<br><br>
+        Функция <code>SmartTooltip.showTooltip(..)</code> принимает два обязательных параметра - <code>data</code> <code>evt</code> и должна быть вызвана в теле обработчика события <code>mouseover</code>. Параметр <code>data</code> представляет собой объект следующей структуры: <pre><code>var data = {
+            id: evt.target.id,
+            x: evt.clientX,
+            y: evt.clientY,
+            options: {
+                tRect: evt.target.getBoundingClientRect(),
+                scale: number,
+                isRun: number
+                cssVars: {
+                    "--smartTip-параметр": number | string
+                } },
+            title: {
+                uuid: string,
+                name: string,
+                descr: string,
+                color: string,
+                link: string,
+                value: string | number,
+                titleFormt: string,
+                descrFormat: string
+            },
+            targets: [{
+                uuid: string,
+                name: string,
+                color: string,
+                value: string | number,
+                link: string,
+                legendFormat: string,
+                legendValFormat: string
+            }]
+        };</code></pre>
+        Первый вызов функции <code>SmartTooltip.showTooltip(..)</code> инициализирует, если необходимо элемент SmartTooltip, встроенным шаблоном.<br><br>
+        Статические функции <code>SmartTooltip.moveTooltip(evt)</code> и <code>SmartTooltip.hideTooltip(evt)</code> вызываются из тела обработчика событий <code>mousemove</code> <code>mouseout</code> соответственно.<br>
+        Важное дополнение: эти функции запрещено вызывать до первого вызова, инициализирующих элемент, функций!
+        </p>
+    </div>
+</body>
+</html>
