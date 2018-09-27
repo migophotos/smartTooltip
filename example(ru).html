@@ -36,6 +36,7 @@
 </head>
 
 <body>
+    <smart-tooltip is-shadow="0" start-from="float">Sorry, yout browser does not support custom elements.</smart-tooltip>
     <div class="container">
         <h2>Как эффективно использовать SmartTooltip:<br> (настоятельно рекомендую прочитать этот абзац, и потренироваться в управлении этим умным виджетом)!</h2>
 
@@ -164,7 +165,9 @@
                     options: {
                         tRect: evt.target.getBoundingClientRect()
                         , frameScale: 0.5
-                        ,cssVars: {
+                        , showMode: 'pinned'
+                        , isRun: 1
+                        , cssVars: {
                             "--smartTip-mouse-noactive": 5000
                         } },
                     title: {
@@ -207,14 +210,14 @@
                     y: evt.clientY,
                     options: {
                         tRect: evt.target.getBoundingClientRect()
-                        , frameScale: 0.5
+                        , frameScale: 0.6
+                        , showMode: 'float'
                         , cssVars: {
                             "--smartTip-frame-fill": "rgb(200, 255, 255)"
                             // "--smartTip-legend-fill":"#000",
                             , "--smartTip-font-color": "rgb(19, 147, 233)"
                             , "--smartTip-border-color": "rgb(19, 147, 233)"
                         }
-                        //, mode: 'float' - // not yet implemented
                     },
                     title: {
                         uuid: `uuid-${evt.target.id}`,

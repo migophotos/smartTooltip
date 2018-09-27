@@ -35,7 +35,7 @@
 </head>
 
 <body>
-    <smart-tooltip is-shadow="0">Sorry, yout browser does not support custom elements.</smart-tooltip>
+    <smart-tooltip is-shadow="0" start-from="float">Sorry, yout browser does not support custom elements.</smart-tooltip>
     <div class="container">
         <h2>How to effectively use SmartTooltip<br>(I highly recommend that you read this paragraph, and practice in managing this smart widget)!</h2>
 
@@ -151,6 +151,8 @@
                     options: {
                         tRect: evt.target.getBoundingClientRect()
                         , frameScale: 0.5
+                        , showMode: 'pinned'
+                        , isRun: 1
                         , cssVars: {
                             "--smartTip-mouse-noactive": 5000
                         } },
@@ -161,7 +163,6 @@
                         color: 'red',
                         link: `https://www.google.com/search?q=${evt.target.textContent}`,
                         value: greenEls.length,
-                        descrFormat: '$DESCR$'
                     },
                     targets: []
                 };
@@ -195,19 +196,17 @@
                     options: {
                         tRect: evt.target.getBoundingClientRect()
                         , frameScale: 0.6
+                        , showMode: 'float'
                         , cssVars: {
                             "--smartTip-frame-fill": "rgb(200, 255, 255)"
                             // "--smartTip-legend-fill":"#000",
                             , "--smartTip-font-color": "rgb(19, 147, 233)"
                             , "--smartTip-border-color": "rgb(19, 147, 233)"
                         }
-
-                        //, mode: 'float' - // not yet implemented
                     },
                     title: {
                         uuid: `uuid-${evt.target.id}`,
-                        name: `"${evt.target.textContent}" on a blue background`,
-
+                        name: `Pointing on a "${evt.target.textContent}" on a blue background`,
                     }
                 };
                 SmartTooltip.showTooltip(data, evt);

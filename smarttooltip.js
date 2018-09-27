@@ -495,8 +495,8 @@ class SmartTooltip {
 								<text id="value-100" class="sttip-text sttip-scale-text" text-anchor="middle" x="412" y="122.5px">100%</text>
 							</g>
 							<g id="descr-group">
-								<text id="tooltip-title" data-format="$NAME$" class="sttip-text sttip-title" x="147" y="47">Tooltip Title</text>
-								<text id="tooltip-description" data-format="$VALUE$" class="sttip-text sttip-description" x="147" y="75">Tooltip description</text>
+								<text id="tooltip-title" class="sttip-text sttip-title" x="147" y="47">Tooltip Title</text>
+								<text id="tooltip-description" class="sttip-text sttip-description" x="147" y="75">Tooltip description</text>
 							</g>
 						</g>
 					</g>
@@ -743,7 +743,7 @@ class SmartTooltip {
 			const deftt = SmartTooltip.getDefaultTooltip();
 			this._definitions.set('0', {name: deftt.name, template: deftt.template, opt: deftt.opt});
 
-			this._pinned = (SmartTooltip._readFromLocalStorage('SmartTooltip.pinned') === 'true');
+			// this._pinned = (SmartTooltip._readFromLocalStorage('SmartTooltip.pinned') === 'true');
 
 		}
 	}
@@ -831,21 +831,20 @@ class SmartTooltip {
 	_endDrag(event) {
 		const ref = window.SmartTooltip;
 		const div = window.SmartTooltip._ttipRef;
-		// before storing position of tooltip window in local storage, lets check it's current position. may be it is now moved by user
+		// before storing position of tooltip window in local storage, lets check it's current position. may be it was moved by user
 		let x = parseInt(div.style.left)
 			, y = parseInt(div.style.top);
 		if (Math.abs(div._currentX - div._startX) > 5 || Math.abs(div._currentY - div._startY) > 5) {
-			if (window.SmartTooltip._pinned) {
+			if (window.SmartTooltip._o.showMode === '' && window.SmartTooltip._pinned) {
 				// save coordinates without scroll sizes!
 				const scroll = SmartTooltip.getScroll();
 				x -= scroll.X;
 				y -= scroll.Y;
-				// console.log(`Save Y as ${y}`);
 				SmartTooltip._saveInLocalStorage('SmartTooltip.x', x);
 				SmartTooltip._saveInLocalStorage('SmartTooltip.y', y);
 				ref._ttipPinMe.classList.remove("sttip-pinned");
 				ref._ttipPinMe.classList.add("sttip-custom");
-				ref._customPin = true; // over from just pinned to custom pinned mode
+				ref._fixed = true; // over from just pinned to fixed mode
 			}
 		} else {
 			console.log("drag more!")
@@ -910,7 +909,6 @@ class SmartTooltip {
 				this._ttipGroup.addEventListener('mousemove', function (evt) {
 					if (evt.buttons == 1) {
 						evt.preventDefault();
-						console.log("dragging");
 						return;
 					}
 					window.SmartTooltip._checkMouseMoving();
@@ -933,8 +931,8 @@ class SmartTooltip {
 						SmartTooltip._saveInLocalStorage('SmartTooltip.pinned', true);
 						this.classList.add('sttip-pinned');
 					} else {
-						if (ref._customPin) { // return from 'custom pinned' mode to 'just pinned' mode
-							ref._customPin = false;
+						if (ref._fixed) { // return from 'fixed' mode to 'pinned' mode
+							ref._fixed = false;
 							this.classList.remove('sttip-custom');
 							SmartTooltip.clearLocalStorage('SmartTooltip.x');
 							SmartTooltip.clearLocalStorage('SmartTooltip.y');
@@ -979,6 +977,44 @@ class SmartTooltip {
 			window.SmartTooltip.hide();
 			window.SmartTooltip._interval = null;
 		}, noMouseActive); // 5000 - 5 second for showing tooltip on the screen without any mouse activity on it
+	}
+
+	_applyCustomOptions(options = null) {
+		if (options) {
+			if (typeof options.showMode === 'string') {
+				// hide pinMe button in case of tooltip for specific element has optional showMode
+				this._ttipPinMe.setAttribute('display', 'none'); 
+				this._o.showMode = options.showMode;
+
+				if (options.showMode === 'pinned') {
+					this._pinned = true;
+					this._fixed = false;
+				}
+				if (options.showMode === 'fixed') {
+					this._pinned = true;
+					this._fixed = true;
+				}
+				if (options.showMode === 'float') {
+					this._pinned = false;
+					this._fixed = false;
+				}
+			}
+			if (typeof options.sortBy === 'string') {
+				this._o.sortBy = options.sortBy;
+			}
+			if (typeof options.frameScale === 'number') {
+				this._o.frameScale = options.frameScale;
+			}
+			if (typeof options.tRect === 'object') {
+				this._o.position = options.tRect;
+			}
+			if (this._ttipRunIndicator && options.isRun !== 'undefined') {
+				this._o.isRun = options.isRun;
+				// change apperiance of run indicator (if exists)
+				this._ttipRunIndicator.classList.replace((this._o.isRun ? 'sttip-stop' : 'sttip-run'), (this._o.isRun ? 'sttip-run' : 'sttip-stop'));
+			}
+
+		}
 	}
 
 	init(id, tmplFileName = null) {
@@ -1094,13 +1130,6 @@ class SmartTooltip {
 				this._initialized = false;
 				this._root.innerHTML = ttipdef.template;
 				this._svg = this._root.firstElementChild;
-				// merge default options with custom
-				if (ttipdef.hasOwnProperty("opt")) {
-					this._o = Object.assign({}, SmartTooltipElement.defOptions(), ttipdef.opt);
-				} else {
-					this._o = Object.assign({}, SmartTooltipElement.defOptions());
-				}
-
 
 				this._ttipGroup 	   = this._root.getElementById('tooltip-group');
 				this._ttipPinMe		   = this._root.getElementById('pinMe');
@@ -1131,25 +1160,40 @@ class SmartTooltip {
 				this._ttipValue100     = this._root.getElementById('value-100');
 
 				this._ttipRef.style['display'] = 'none';
-				// window.SmartTooltip._ttipRef.classList.add('hidden');
-
 				this._initEvents();
+			}
+			// merge default options with custom
+			this._o = Object.assign({}, SmartTooltipElement.defOptions(), ttipdef.opt);
 
-				if (this._ttipPinMe) {
-					if (this._pinned) { // restore 'custom pinned' mode from local storage
-						if (localStorage.getItem('SmartTooltip.x')) {
-							this._customPin = true;
-							this._ttipPinMe.classList.add('sttip-custom')
-						} else { // just prepare _customPin parameter
-							this._customPin = false;
-							this._ttipPinMe.classList.add('sttip-pinned');
-						}
-					}
+			if (this._ttipPinMe) {
+				// if pinMe button was hided by previous element, then show it!
+				this._ttipPinMe.removeAttribute('display');
+			}
+			
+			// set pinned and fixed mode by 'startFrom' parameter
+			this._pinned = this._fixed = false;
+			if (this._o.startFrom === 'pinned') {
+				this._pinned = true;
+				this._fixed = false;
+			}
+			if (this._o.startFrom === 'fixed') {
+				this._pinned = true;
+				this._fixed = true;
+			}
+			// now get 'pinned' and 'fixed' modes from local storage
+			const pinned = (localStorage.getItem('SmartTooltip.pinned') === 'true');
+			const fixed  = localStorage.getItem('SmartTooltip.x');
+			this._pinned = pinned || this._pinned;
+			this._fixed  = fixed || this._fixed;
+			// set apropriated class on 'pinMe' button
+			if (this._ttipPinMe && this._pinned) {
+				if (this._fixed) {
+					this._ttipPinMe.classList.add('sttip-custom');
 				}
+				this._ttipPinMe.classList.add('sttip-pinned');			
 			}
 
 			if (this._ttipRef && this._ttipGroup) {
-
 				const legendGroupX = this._ttipLegendGroup? (this._ttipLegendGroup.dataset['x']) : 0;
 				const titleGroupX  = this._ttipTitleGroup ? (this._ttipTitleGroup.dataset['x']) : 0;
 				let ttipBoundGroupBR, format, sText;
@@ -1168,27 +1212,9 @@ class SmartTooltip {
 				// this._ttipRef.classList.remove('hidden');
 				this._ttipRef.style['display'] = '';
 
-				let ownerBodyRect = {left: 0, top: 0, right: 0, bottom: 0};
-				// specified parameter options.scale will change this variable and SmartTooltip window will be scaled by specified factor
-				// the default is 0.8
-				let scaleToolipFactor = this._o.frameScale;
-
 				if (typeof data.options === 'object') {
-					// change apperiance of run indicator (if exists)
-					if (this._ttipRunIndicator && typeof data.options.isRun !== 'undefined') {
-						this._ttipRunIndicator.classList.replace((data.options.isRun ? 'sttip-stop' : 'sttip-run'), (data.options.isRun ? 'sttip-run' : 'sttip-stop'));
-					}
-					// tRect - the client rectangle coordinates of correspondent element.
-					// this coordinates will be used for positioning 'the pinned' tooltip window near correspondent element
-					if (typeof data.options.tRect === 'object') {
-						ownerBodyRect = data.options.tRect;
-					}
-					if (typeof data.options.frameScale === 'number') {
-						scaleToolipFactor = data.options.frameScale;
-					}
-					if (typeof data.options.sortBy === 'string') {
-						this._o.sortBy = data.options.sortBy;
-					}
+					this._applyCustomOptions(data.options);
+
 					this._svg.removeAttribute('style');
 					if (typeof data.options.cssVars === 'object') {
 						const css = data.options.cssVars;
@@ -1223,11 +1249,9 @@ class SmartTooltip {
 							for (let index = 0; index < targets.length; index++) {
 								if (this._ttipLegendName) {
 									if (typeof targets[index].legendFormat === 'string') {
-										format = targets[index].legendFormat;
-									} else {
-										format = null;
+										this._o.legendFormat = targets[index].legendFormat;
 									}
-									text = SmartTooltip.formatString((format || this._ttipLegendName.dataset['format'] || '$LEGEND$'), targets[index]);
+									text = SmartTooltip.formatString(this._o.legendFormat, targets[index]);
 									if (text.length > C1.maxL) {
 										C1.maxL = text.length;
 										C1.maxInd = index;
@@ -1236,11 +1260,9 @@ class SmartTooltip {
 								}
 								if (this._ttipLegendValue) {
 									if (typeof targets[index].legendValFormat === 'string') {
-										format = targets[index].legendValFormat;
-									} else {
-										format = null;
+										this._o.legendValFormat = targets[index].legendValFormat;
 									}
-									text = SmartTooltip.formatString((format || this._ttipLegendValue.dataset['format'] || '$VALUE$'), targets[index]);
+									text = SmartTooltip.formatString(this._o.legendValFormat, targets[index]);
 									if (text.length > C2.maxL) {
 										C2.maxL = text.length;
 										C2.maxInd = index;
@@ -1305,22 +1327,17 @@ class SmartTooltip {
 					// title - legend or name
 					if (this._ttipTitle) {
 						if (typeof data.title.titleFormat === 'string') {
-							format = data.title.titleFormat;
-						} else {
-							format = null;
+							this._o.titleFormat = data.title.titleFormat;
 						}
-
-						sText = SmartTooltip.formatString((format || this._ttipTitle.dataset['format'] || '$LEGEND$'), data.title);
+						sText = SmartTooltip.formatString(this._o.titleFormat, data.title);
 						this._ttipTitle.textContent = sText;
 					}
 					// description - formatted value
 					if (this._ttipDescription) {
 						if (typeof data.title.descrFormat === 'string') {
-							format = data.title.descrFormat;
-						} else {
-							format = null;
+							this._o.descrFormat = data.title.descrFormat;
 						}
-						sText = SmartTooltip.formatString(format || this._ttipDescription.dataset['format'] ||  '$VALUE$', data.title);
+						sText = SmartTooltip.formatString(this._o.descrFormat, data.title);
 						this._ttipDescription.textContent = sText;
 					}
 					let descrRect = 0; 		// resize scale group for this size
@@ -1388,12 +1405,14 @@ class SmartTooltip {
 						forId = this._shownFor;
 					}
 					// before moving to position of forId element, check the local storage x and y coordinates
-					// and move to these coordinates (the tooltip window was moved by user interaction to seautable place (i hope))
+					// and move to these coordinates (the tooltip window was moved by user interaction to sutable place (i hope))
+					// but all this happens only in case of 'fixed' mode!!!
 					let left=0, top=0
-					if (forId) {
-						left = Number(localStorage.getItem('SmartTooltip.x'));
-						top = Number(localStorage.getItem('SmartTooltip.y'));
-
+					if (this._fixed) {
+						if (forId) {
+							left = Number(localStorage.getItem('SmartTooltip.x'));
+							top = Number(localStorage.getItem('SmartTooltip.y'));
+						}
 					}
 					if (left && top) { // move here!
 						const scroll = SmartTooltip.getScroll();
@@ -1410,7 +1429,7 @@ class SmartTooltip {
 							y: data.y,
 							type: 'fakeEvent'
 						}
-						this.move(fakeEvt, forId, ownerBodyRect);
+						this.move(fakeEvt, forId, this._o.position);
 					}
 				}
 
@@ -1418,7 +1437,7 @@ class SmartTooltip {
 				// hide button 'closeMe' in 'float' mode and show in 'pinned' and 'custom'
 				if (this._ttipCloseMe) {
 					this._ttipCloseMe.parentNode.removeAttribute('display');
-					if (!this._pinned && !this._customPin) {
+					if (!this._pinned && !this._fixed) {
 						this._ttipCloseMe.parentNode.setAttribute('display', 'none');
 					}
 				}
@@ -1432,7 +1451,7 @@ class SmartTooltip {
 					this._ttipFrameBGroup.setAttribute('transform', `translate(${btnX}, 4)`);
 				}
 
-				this._ttipGroup.setAttribute('transform', `scale(${scaleToolipFactor})`);
+				this._ttipGroup.setAttribute('transform', `scale(${this._o.frameScale})`);
 				// get real (after scaling) size of #toolip-group and resize the root SVG
 				ttipBoundGroupBR = this._ttipGroup.getBoundingClientRect();
 				this._svg.setAttributeNS(null, 'width', ttipBoundGroupBR.width);
@@ -1497,10 +1516,13 @@ class SmartTooltipElement extends HTMLElement {
 									// but more complecs element, for example SmartGauge widget will returns it's data in array, with name 'targets' for example.
 									// By default this value has 'data-tooltip' for custom HTML element and 'targets' for SVG-based element.
 			'output-mode',			// 'what to show?' parameter. Possible values are: 'all-targets' and 'curTarget'. The default is 'all-targets'
-			'position',				// the value describes the place, or location of tooltip window. The default value is 'pinned' - show tooltip near hosted element. Another
-									// possible values are: 'float' - show tooltip near the cursor that hover over an element or 'fixed' - user-specific position of tooltip
-									// window. This value may be specified by screen coordinates in attribute in form 'position(left top)', or setted by draging the window to
-									// specific position on the screen. The last one will override attributed position and will saved in localStorage/
+			'start-from',			// this property describes one of three started showing modes: 'float', 'pinned', 'fixed'. By default it equals 'pinned' and this means
+									// that user may change it as he wish. In case of optional parameter 'options.showMode' or attribute 'show-mode' specified, 
+									// user cannot change apperance of tooltip window!
+			'show-mode',			// optional parameter describes show mode and overides 'start-from'
+			'position',				// the value describes location of tooltip window in 'pinned' show-mode. Default value is 'rt' which means right-top conner of element.
+									// this parameter may contains the client rectangle coordinates of correspondent element, for tooltip positioning in pinned mode
+									// in form {left, top, right, bottom} 
 
 			'delay-in',				// the time delay interval before tooltip window will be shown on the screen. The default is 0 (ms)
 			'delay-out',  			// the time delay interval when tooltip window will be hided. The default is 250 (ms). This delayed interval will counted after mouse pointer
@@ -1546,10 +1568,12 @@ class SmartTooltipElement extends HTMLElement {
 			isRun:					0,
 			sortBy:					'value',
 			sortDir:				1,
-			template:				'internal',
+			template:				'pie',
 			dataSection:			'data-tooltip',
 			outputMode:				'all-targets',
-			position:				'pinned',
+			startFrom:				'pinned',
+			showMode:				'',
+			position:				'rt',
 			delayIn:				0,
 			delayOut:				250,
 			delayOn:				2000,
@@ -1679,7 +1703,6 @@ class SmartTooltipElement extends HTMLElement {
 		// validate it (if in list of known numeric)
 		SmartTooltipElement.convertNumericProps(this._o, paramName);
 		// all specific work will done in SmartTooltip
-		const param = paramName.toString();
 		const opt = {};
 		opt[paramName] = this._o[paramName];
 		window.SmartTooltip.setOptions(opt, this.id);
