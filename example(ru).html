@@ -65,6 +65,19 @@
         на экране и отображать подсказки при наведении курсора на "горячие" пирожки. Ты можешь в любой момент передвинуть окошко куда-нибудь еще, ему все равно
         Оно будет запоминать новые координаты до тех пор пока ты снова не нажмешь на кнопку "<label id="m0" class="label-blue">pinMe</label>". :)</p>
     </div>
+    <svg width="500" height="200">
+        <defs>
+            <path id="myTextPath2" d="M65,20 l100,0 M75,40 l100,0 M75,60 l100,0 M75,80 l100,0 M75,100 l100,0"></path>
+        </defs>
+    
+        <text x="10" y="100" >
+            <textPath xlink:href="#myTextPath2">
+                An example of wraped text inside rectangle
+            </textPath>
+        </text>
+    
+    </svg>
+
     <script>
         var val2color = function(val) {
             var color;

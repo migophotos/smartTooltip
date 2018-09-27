@@ -1481,26 +1481,29 @@ class SmartTooltipElement extends HTMLElement {
 			'descr-format',			// ---
 			'legend-format',		// ---
 			'legend-val-format',	// ---
-			'is-run',				// runtime status indicator. The default value is 0 - 'stopped' in opposite to 1 - 'runned'.
-			'zoom',					// template scale parameter. The default is 0.8
-			'sortby',				// sort parameter for multiple data. May contains one of the data parameters name: 'asis', 'name', 'value', 'color', 'state'
+			
+			'sort-by',				// sort parameter for multiple data. May contains one of the data parameters name: 'asis', 'name', 'value', 'color', 'state'
 			'sort-dir',				// sorting direction parameter. the default value is '1', wich means from low to high. Possible values: -1, 0, 1.
-			'template',				// default value for this property is 'internal', wich means the using of internal SmartTooltip template definition.
-									// the custom template may be specified as full url name, for example 'templates/vert_bars.svg'.
+			
+			'template',				// default value for this property is 'pie', wich means the using of internal SmartTooltip pie template definition.
+									// The custom template may be specified as full url name, for example 'templates/vert_bars.svg'. The case of specified name without
+									// extension means an internal name of template. Currently only 'pie' is implemented.
 			'data-section',			// maybe targets or anything else? Simple host element may use the data-specific attribute, for example: 'data-tooltip',
 									// but more complecs element, for example SmartGauge widget will returns it's data in array, with name 'targets' for example.
 									// By default this value has 'data-tooltip' for custom HTML element and 'targets' for SVG-based element.
-			'output-mode',			// 'what to show?' parameter. Possible values are: 'all-targets' ans 'curTarget'. The default is 'all-targets'
+			'output-mode',			// 'what to show?' parameter. Possible values are: 'all-targets' and 'curTarget'. The default is 'all-targets'
 			'position',				// the value describes the place, or location of tooltip window. The default value is 'pinned' - show tooltip near hosted element. Another
-									// possible values are: 'float' - show tooltip near the cursor that hover over an element or 'custom' - user-specific position of tooltip
+									// possible values are: 'float' - show tooltip near the cursor that hover over an element or 'fixed' - user-specific position of tooltip
 									// window. This value may be specified by screen coordinates in attribute in form 'position(left top)', or setted by draging the window to
 									// specific position on the screen. The last one will override attributed position and will saved in localStorage/
+			
 			'delay-in',				// the time delay interval before tooltip window will be shown on the screen. The default is 0 (ms)
-			'delay-out',  			// the time delay interval when tooltip window will be hided. The default is 2000 (ms). This delayed interval will counted after mouse pointer
+			'delay-out',  			// the time delay interval when tooltip window will be hided. The default is 250 (ms). This delayed interval will counted after mouse pointer
 									// will out ftom element.
-			'non-active',			// the time delay interval when tooltip window will disappear from screen after non-activity of mouse pointer. The default value is 2000 (ms)
+			'delay-on',				// the time delay interval when tooltip window will disappear from screen after non-activity of mouse pointer. The default value is 2000 (ms)
 			'transition-in',		// opacity transition in process of showing tooltip window. The default value is 0 means immidiatly showing.
 			'transition-out',		// opacity transition in process of disappearing of tooltip window. The defaul value is immidiatly hiding.
+
 			'font-family',
 			'font-stretch',
 			'font-size',
@@ -1510,14 +1513,18 @@ class SmartTooltipElement extends HTMLElement {
 			'legend-size',			// legend font size. Internal template specifies it as 22px.
 			'title-size',			// title font size. Internal template specifies it as 30px.
 			'descr-size',			// description font size. Internal template value is 28px.
+
+			'is-run',				// runtime status indicator. The default value is 0 - 'stopped' in opposite to 1 - 'runned'.
 			'run-color',			// fill color for 'runned' state of runtime status indicator. The default value is '#0f0'.
 			'stop-color',			// fill color for 'stopped' state of runtime status indicator. The default value is '#f00'.
+			
 			'frame-fill',			// the fill color of tooltip window background. Internal template defines it as '#fff'.
 			'border-color',			// the border color of tooltip window. Internal template defines it as 'none'.
 			'fill-opacity',			// opacity value of tooltip window background. Internal template defines it as 0.95.
 			'border-width',			// the border width of tooltip window. Internal template defines it as 2px.
-			'window-radius',		// the radius of tooltip window. Internal template defines it as 2px.
-			'is-shadow'				// enables shadows around of tooltip window. The default value is 1.
+			'border-radius',		// the radius of tooltip window. Internal template defines it as 2px.
+			'is-shadow',			// enables shadows around of tooltip window. The default value is 1.
+			'zoom'					// template scale parameter. The default is 0.8
 		];
 	}
 
@@ -1529,15 +1536,15 @@ class SmartTooltipElement extends HTMLElement {
 			legendValFormat:		'$VALUE$',
 			isRun:					0,
 			zoom:					0.8,
-			sortby:					'name',
+			sortBy:					'name',
 			sortDir:				1,
 			template:				'internal',
 			dataSection:			'data-tooltip',
 			outputMode:				'all-targets',
 			position:				'pinned',
 			delayIn:				0,
-			delayOut:				2000,
-			nonActive:				2000,
+			delayOut:				250,
+			delayOn:				2000,
 			transitionIn:			0,
 			transitionOut:			0,
 			fontFamily:				'Arial Narrow, DIN Condensed, Noteworthy, sans-serif',
@@ -1554,7 +1561,7 @@ class SmartTooltipElement extends HTMLElement {
 			borderColor:			'none',
 			fillOpacity:			0.95,
 			borderWidth:			2,
-			windowRadius:			2,
+			borderRadius:			2,
 			isShadow:				1
 		}
 	}
@@ -1575,12 +1582,12 @@ class SmartTooltipElement extends HTMLElement {
 			'sortDir',
 			'delayIn',
 			'delayOut',
-			'nonActive',
+			'delayOn',
 			'transitionIn',
 			'transitionOut',
 			'fillOpacity',
 			'borderWidth',
-			'windowRadius',
+			'borderRadius',
 			'isShadow'
 		];
 		let count = 0;
