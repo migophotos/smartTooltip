@@ -117,7 +117,7 @@
                             // "--smartTip-legend-fill":"#000",
                             "--smartTip-border-radius": "10"
                         }
-                        , scale: 0.9
+                        , frameScale: 0.9
                     },
                     title: {
                         uuid: `uuid-${evt.target.id}`,
@@ -149,8 +149,9 @@
                     x: evt.clientX,
                     y: evt.clientY,
                     options: {
-                        tRect: evt.target.getBoundingClientRect(),
-                        cssVars: {
+                        tRect: evt.target.getBoundingClientRect()
+                        , frameScale: 0.5
+                        , cssVars: {
                             "--smartTip-mouse-noactive": 5000
                         } },
                     title: {
@@ -193,7 +194,7 @@
                     y: evt.clientY,
                     options: {
                         tRect: evt.target.getBoundingClientRect()
-                        , scale: 0.6
+                        , frameScale: 0.6
                         , cssVars: {
                             "--smartTip-frame-fill": "rgb(200, 255, 255)"
                             // "--smartTip-legend-fill":"#000",

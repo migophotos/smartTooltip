@@ -18,7 +18,7 @@
  * An Internal template implementation shows the array of data as flat pie diagramm with legend.
  *
  *
- * The structure of data in function showTemplate have the next structure:
+ * The data in function showTemplate has the next structure:
  * const data = {
  * 		id: target identificator,
 		x: evt.clientX,
@@ -46,7 +46,7 @@
 			// any other word 	- sort by this 'word' parameter. For example: link
 			// Note: This option parameter may be specified only once. After this it will be used for all tooltips on the page
 			//       If you want to show different tooltips with different sort orders, please specify this parameter each time!
-			sortby: 'asis',
+			sortBy: 'asis',
 
 			// here you have an ability to re-style SmartTooltip window by changing svg.sttip css variables
 			// there is no need to define all the style variables, you can specify only some of them or do not specify anything at all,
@@ -125,14 +125,14 @@
  * window.SmartTooltip.init(idElement, templateFileName);
  * ...
  * //collect data object and call the next function
- * var data = { id, x, y, options:{rRect, isRun, scale, sortby}, targets:[{uuid, name, value, color, link}], title:{uuid, name, value, color, link} };
+ * var data = { id, x, y, options:{rRect, isRun, scale, sortBy}, targets:[{uuid, name, value, color, link}], title:{uuid, name, value, color, link} };
  * window.SmartTooltip.show(data)
  * window.SmartTooltip.move(evt.clientX, evt.clientY);
  * window.SmartTooltip.hide();
  *
  * 2. Use internal template
  * //collect data object and call the next function
- * var data = { id, x, y, options:{rRect, isRun, scale, sortby, cssVars:{...}}, targets:[{uuid, name, value, color, link}], title:{uuid, name, value, color, link} };
+ * var data = { id, x, y, options:{rRect, isRun, scale, sortBy, cssVars:{...}}, targets:[{uuid, name, value, color, link}], title:{uuid, name, value, color, link} };
  * SmartTooltip.showTooltip(data);
  * SmartTooltip.moveTooltip(evt.clientX, evt.clientY);
  * SmartTooltip.hideTooltip();
@@ -1171,7 +1171,7 @@ class SmartTooltip {
 				let ownerBodyRect = {left: 0, top: 0, right: 0, bottom: 0};
 				// specified parameter options.scale will change this variable and SmartTooltip window will be scaled by specified factor
 				// the default is 0.8
-				let scaleToolipFactor = 0.8;
+				let scaleToolipFactor = this._o.frameScale;
 
 				if (typeof data.options === 'object') {
 					// change apperiance of run indicator (if exists)
@@ -1183,11 +1183,11 @@ class SmartTooltip {
 					if (typeof data.options.tRect === 'object') {
 						ownerBodyRect = data.options.tRect;
 					}
-					if (typeof data.options.scale === 'number') {
-						scaleToolipFactor = data.options.scale;
+					if (typeof data.options.frameScale === 'number') {
+						scaleToolipFactor = data.options.frameScale;
 					}
-					if (typeof data.options.sortby === 'string') {
-						this.sortby = data.options.sortby;
+					if (typeof data.options.sortBy === 'string') {
+						this._o.sortBy = data.options.sortBy;
 					}
 					this._svg.removeAttribute('style');
 					if (typeof data.options.cssVars === 'object') {
@@ -1203,8 +1203,8 @@ class SmartTooltip {
 					const targets = Array.from(data.targets);
 					// const targets = { ...data.targets }; - cannot be used here, because I use internal Array functions in sorting!
 
-					// now sort it by optional parameter 'sortby'
-					SmartTooltip.sortDataByParam(targets, this.sortby || 'value');
+					// now sort it by optional parameter 'sortBy'
+					SmartTooltip.sortDataByParam(targets, this._o.sortBy || 'value');
 					if (targets.length) {
 						this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = '') : {};
 						this._ttipDiagram ? (this._ttipDiagram.style['display'] = '') : {};
@@ -1473,7 +1473,7 @@ class SmartTooltipElement extends HTMLElement {
 	 * Returns an array of custom properties. Each of the custom property has corresponding declarative attribute in form first-second == prefix-first-second
 	 * and option parameter with name "firstSecond".
 	 * for example: '--sttip-title-format' property equals to attribute 'title-format' and options.titleFormat parameter, but
-	 * '--sttip-sortby' property equals to 'sortby' attribute and options.sortby parameter.
+	 * '--sttip-zoom' property equals to 'zoom' attribute and options.zoom parameter.
 	 */
 	static getCustomProperties() {
 		return [
@@ -1481,10 +1481,15 @@ class SmartTooltipElement extends HTMLElement {
 			'descr-format',			// ---
 			'legend-format',		// ---
 			'legend-val-format',	// ---
-			
-			'sort-by',				// sort parameter for multiple data. May contains one of the data parameters name: 'asis', 'name', 'value', 'color', 'state'
+
+			'title-text-wrap',		// sets the line height (line-height attribute) for wrapped text. in case of 0 wrap disabled. the defaul is 0
+			'title-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
+			'descr-text-wrap',		// sets the line height (line-height attribute) for wrapped text. in case of 0 wrap disabled. the defaul is 1.5em
+			'descr-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
+
+			'sort-by',				// sort parameter for multiple data. May contains one of the data parameters name: 'asis', 'name', 'value', 'color', 'state'. the default is 'value'
 			'sort-dir',				// sorting direction parameter. the default value is '1', wich means from low to high. Possible values: -1, 0, 1.
-			
+
 			'template',				// default value for this property is 'pie', wich means the using of internal SmartTooltip pie template definition.
 									// The custom template may be specified as full url name, for example 'templates/vert_bars.svg'. The case of specified name without
 									// extension means an internal name of template. Currently only 'pie' is implemented.
@@ -1496,7 +1501,7 @@ class SmartTooltipElement extends HTMLElement {
 									// possible values are: 'float' - show tooltip near the cursor that hover over an element or 'fixed' - user-specific position of tooltip
 									// window. This value may be specified by screen coordinates in attribute in form 'position(left top)', or setted by draging the window to
 									// specific position on the screen. The last one will override attributed position and will saved in localStorage/
-			
+
 			'delay-in',				// the time delay interval before tooltip window will be shown on the screen. The default is 0 (ms)
 			'delay-out',  			// the time delay interval when tooltip window will be hided. The default is 250 (ms). This delayed interval will counted after mouse pointer
 									// will out ftom element.
@@ -1517,14 +1522,14 @@ class SmartTooltipElement extends HTMLElement {
 			'is-run',				// runtime status indicator. The default value is 0 - 'stopped' in opposite to 1 - 'runned'.
 			'run-color',			// fill color for 'runned' state of runtime status indicator. The default value is '#0f0'.
 			'stop-color',			// fill color for 'stopped' state of runtime status indicator. The default value is '#f00'.
-			
+
 			'frame-fill',			// the fill color of tooltip window background. Internal template defines it as '#fff'.
 			'border-color',			// the border color of tooltip window. Internal template defines it as 'none'.
-			'fill-opacity',			// opacity value of tooltip window background. Internal template defines it as 0.95.
+			'frame-opacity',		// opacity value of tooltip window background. Internal template defines it as 0.95.
+			'frame-scale',			// template scale parameter. The default is 0.8
 			'border-width',			// the border width of tooltip window. Internal template defines it as 2px.
 			'border-radius',		// the radius of tooltip window. Internal template defines it as 2px.
-			'is-shadow',			// enables shadows around of tooltip window. The default value is 1.
-			'zoom'					// template scale parameter. The default is 0.8
+			'is-shadow'				// enables shadows around of tooltip window. The default value is 1.
 		];
 	}
 
@@ -1534,9 +1539,12 @@ class SmartTooltipElement extends HTMLElement {
 			descrFormat:			'$DESCR$',
 			legendFormat:			'$LEGEND$',
 			legendValFormat:		'$VALUE$',
+			titleTextWrap:			'0',
+			titleTextAlign:			'left',
+			descrTextWrap:			'1.5em',
+			descrTextAlign:			'left',
 			isRun:					0,
-			zoom:					0.8,
-			sortBy:					'name',
+			sortBy:					'value',
 			sortDir:				1,
 			template:				'internal',
 			dataSection:			'data-tooltip',
@@ -1559,7 +1567,8 @@ class SmartTooltipElement extends HTMLElement {
 			stopColor:				'#f00',
 			frameFill:				'#fff',
 			borderColor:			'none',
-			fillOpacity:			0.95,
+			frameOpacity:			0.95,
+			frameScale:				0.8,
 			borderWidth:			2,
 			borderRadius:			2,
 			isShadow:				1
@@ -1642,8 +1651,8 @@ class SmartTooltipElement extends HTMLElement {
 		if (!this._shadowDOM) {
 			throw new Error('Unfortunately, your browser does not support shadow DOM v1. Think about switching to a last release of Chrome browser that supports all new technologies!');
 		}
-		// get custom properties
-		getComputedStyle(this).getPropertyValue("--sttip-sortby")
+		// get custom properties for example, only
+		getComputedStyle(this).getPropertyValue("--sttip-sort-by")
 
 		SmartTooltip.initTooltip();
 	}

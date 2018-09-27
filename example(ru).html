@@ -36,7 +36,6 @@
 </head>
 
 <body>
-    <smart-tooltip is-shadow="0">Sorry, yout browser does not support custom elements.</smart-tooltip>
     <div class="container">
         <h2>Как эффективно использовать SmartTooltip:<br> (настоятельно рекомендую прочитать этот абзац, и потренироваться в управлении этим умным виджетом)!</h2>
 
@@ -65,17 +64,18 @@
         на экране и отображать подсказки при наведении курсора на "горячие" пирожки. Ты можешь в любой момент передвинуть окошко куда-нибудь еще, ему все равно
         Оно будет запоминать новые координаты до тех пор пока ты снова не нажмешь на кнопку "<label id="m0" class="label-blue">pinMe</label>". :)</p>
     </div>
-    <svg width="500" height="200">
+    <svg width="1200" height="200">
         <defs>
-            <path id="myTextPath2" d="M65,20 l100,0 M75,40 l100,0 M75,60 l100,0 M75,80 l100,0 M75,100 l100,0"></path>
+            <path id="myTextPath2" d="M65,20 l200,0 M75,40 l200,0 M75,60 l200,0 M75,80 l200,0 M75,100 l200,0"></path>
+            <path id="strightLine" d="M10,40 l1000,0"></path>
         </defs>
-    
-        <text x="10" y="100" >
-            <textPath xlink:href="#myTextPath2">
-                An example of wraped text inside rectangle
-            </textPath>
+
+        <text>
+            <textPath xlink:href="#myTextPath2" >Окно подсказки можно передвинуть с помощью мышки в любое место экрана! Просто кликни мышкой где нибудь в свободном сером поле и тяни. Просто dtag & drop! Как только ты перестанешь передвигать окошко, оно запомнит свои координаты и больше никуда не будет ползать и прыгать.</textPath>
         </text>
-    
+
+        <rect x="1" y="1" width="1100" height="199" stroke="blue" fill="none"></rect>
+
     </svg>
 
     <script>
@@ -130,7 +130,7 @@
                             // "--smartTip-legend-fill":"#000",
                             "--smartTip-border-radius": "10"
                         }
-                        , scale: 0.9
+                        , frameScale: 0.9
                     },
                     title: {
                         uuid: `uuid-${evt.target.id}`,
@@ -162,8 +162,9 @@
                     x: evt.clientX,
                     y: evt.clientY,
                     options: {
-                        tRect: evt.target.getBoundingClientRect(),
-                        cssVars: {
+                        tRect: evt.target.getBoundingClientRect()
+                        , frameScale: 0.5
+                        ,cssVars: {
                             "--smartTip-mouse-noactive": 5000
                         } },
                     title: {
@@ -206,7 +207,7 @@
                     y: evt.clientY,
                     options: {
                         tRect: evt.target.getBoundingClientRect()
-                        , scale: 0.7
+                        , frameScale: 0.5
                         , cssVars: {
                             "--smartTip-frame-fill": "rgb(200, 255, 255)"
                             // "--smartTip-legend-fill":"#000",
