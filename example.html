@@ -35,7 +35,7 @@
 </head>
 
 <body>
-    <smart-tooltip is-shadow="0" start-from="float">Sorry, yout browser does not support custom elements.</smart-tooltip>
+    <smart-tooltip is-shadow="0" start-from="pinned" template="pie">Sorry, yout browser does not support custom elements.</smart-tooltip>
     <div class="container">
         <h2>How to effectively use SmartTooltip<br>(I highly recommend that you read this paragraph, and practice in managing this smart widget)!</h2>
 
@@ -110,7 +110,9 @@
                     x: evt.clientX,
                     y: evt.clientY,
                     options: {
-                        tRect: evt.target.getBoundingClientRect()
+                        tRect: evt.target.getBoundingClientRect(),
+                        template: 'pie',
+                        startFrom: 'float'
                         , cssVars: {
                             // "--smartTip-frame-fill": "#000",
                             // "--smartTip-font-color": "#fff",
@@ -194,10 +196,12 @@
                     x: evt.clientX,
                     y: evt.clientY,
                     options: {
-                        tRect: evt.target.getBoundingClientRect()
-                        , frameScale: 0.6
-                        , showMode: 'float'
-                        , cssVars: {
+                        //tRect: evt.target.getBoundingClientRect(),
+                        //frameScale: 0.6,
+                        startFrom: "float",
+                        //showMode: 'pinned',
+                        template: 'simple',
+                        cssVars: {
                             "--smartTip-frame-fill": "rgb(200, 255, 255)"
                             // "--smartTip-legend-fill":"#000",
                             , "--smartTip-font-color": "rgb(19, 147, 233)"
@@ -206,7 +210,8 @@
                     },
                     title: {
                         uuid: `uuid-${evt.target.id}`,
-                        name: `Pointing on a "${evt.target.textContent}" on a blue background`,
+                        name: `Wrapped description `,
+                        descr: `Pointing on a "${evt.target.textContent}" on a blue background`
                     }
                 };
                 SmartTooltip.showTooltip(data, evt);

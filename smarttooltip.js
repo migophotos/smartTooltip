@@ -208,303 +208,501 @@ class SmartTooltip {
 		return frmStr;
 	}
 
-	static getDefaultTooltip() {
-		const defttip = {
-			name: 'default_tt.svg',
-			opt: {},
-			template: `
-			<svg class="sttip" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
-				<defs>
-					<filter id="drop-shadow">
-						<feGaussianBlur in="SourceAlpha" stdDeviation="2.2"/>
-						<feOffset dx="2" dy="2" result="offsetblur"/>
-						<feFlood flood-color="rgba(0,0,0,0.5)"/>
-						<feComposite in2="offsetblur" operator="in"/>
-						<feMerge>
-							<feMergeNode/>
-							<feMergeNode in="SourceGraphic"/>
-						</feMerge>
-					</filter>
-					<pattern id="sttip-pattern-stripe45"
-						width="4" height="4"
-						patternUnits="userSpaceOnUse"
-						patternTransform="rotate(45)">
-						<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
-					</pattern>
-					<pattern id="sttip-pattern-stripe-45"
-						width="4" height="4"
-						patternUnits="userSpaceOnUse"
-						patternTransform="rotate(-45)">
-						<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
-					</pattern>
-					<pattern id="sttip-pattern-stripe-45-black"
-						width="4" height="4"
-						patternUnits="userSpaceOnUse"
-						patternTransform="rotate(-45)">
-						<rect width="2" height="4" transform="translate(0,0)" fill="black"></rect>
-					</pattern>
-					<mask id="sttip-mask-stripe">
-						<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
-					</mask>
-					<mask id="sttip-mask-stripe-black">
-						<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
-					</mask>
-					<mask id="sttip-mask-cross">
-						<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
-						<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe-45)" />
-					</mask>
 
-				</defs>
-				<style>
-					svg.sttip {
-						overflow: visible;
-						vector-effect: non-scaling-stroke;
+	// getDefaultTooltip
+	static getinternalTemplate(templateName = '') {
+		const internalTemplates = new Map([
+			['pie', {
+				name: 'pie',
+				opt: {},
+				template: `
+					<svg class="sttip" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+						<defs>
+							<filter id="drop-shadow">
+								<feGaussianBlur in="SourceAlpha" stdDeviation="2.2"/>
+								<feOffset dx="2" dy="2" result="offsetblur"/>
+								<feFlood flood-color="rgba(0,0,0,0.5)"/>
+								<feComposite in2="offsetblur" operator="in"/>
+								<feMerge>
+									<feMergeNode/>
+									<feMergeNode in="SourceGraphic"/>
+								</feMerge>
+							</filter>
+							<pattern id="sttip-pattern-stripe45"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+							</pattern>
+							<pattern id="sttip-pattern-stripe-45"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(-45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+							</pattern>
+							<pattern id="sttip-pattern-stripe-45-black"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(-45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="black"></rect>
+							</pattern>
+							<mask id="sttip-mask-stripe">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+							</mask>
+							<mask id="sttip-mask-stripe-black">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+							</mask>
+							<mask id="sttip-mask-cross">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe-45)" />
+							</mask>
 
-						--smartTip-mouse-delay: 250;
-						--smartTip-mouse-noactive: 2000;
+						</defs>
+						<style>
+							svg.sttip {
+								overflow: visible;
+								vector-effect: non-scaling-stroke;
 
-						--smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
-						--smartTip-font-stretch: condensed;
-						--smartTip-font-color: #666;
-						--smartTip-scale-font-size: 12px;
-						--smartTip-legend-font-size: 22px;
-						--smartTip-title-font-size: 30px;
-						--smartTip-descr-font-size: 28px;
+								--smartTip-mouse-delay: 250;
+								--smartTip-mouse-noactive: 2000;
 
-						--smartTip-run-color: #0f0;
-						--smartTip-stop-color: #f00;
-						--smartTip-def-color: #666;
+								--smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+								--smartTip-font-stretch: condensed;
+								--smartTip-font-color: #666;
+								--smartTip-scale-font-size: 12px;
+								--smartTip-legend-font-size: 22px;
+								--smartTip-title-font-size: 30px;
+								--smartTip-descr-font-size: 28px;
 
-						--smartTip-frame-fill: #fff;
-						--smartTip-frame-opacity: 0.95;
-						--smartTip-frame-scale: 0.8;
-						--smartTip-border-color: none;
-						--smartTip-border-width: 2;
-						--smartTip-border-radius: 2;
+								--smartTip-run-color: #0f0;
+								--smartTip-stop-color: #f00;
+								--smartTip-def-color: #666;
 
-						--smartTip-legend-fill: #fff;
-						--smartTip-legend-stroke: #666;
+								--smartTip-frame-fill: #fff;
+								--smartTip-frame-opacity: 0.95;
+								--smartTip-frame-scale: 0.8;
+								--smartTip-border-color: none;
+								--smartTip-border-width: 2;
+								--smartTip-border-radius: 2;
+
+								--smartTip-legend-fill: #fff;
+								--smartTip-legend-stroke: #666;
 
 
-						--legend-frm-border-width: 2;
-						--legend-frm-border-radius: var(--smartTip-border-radius, 2);
-						--legend-frm-border-color: var(--smartTip-legend-stroke, #666);
-						--legend-frm-fill: var(--smartTip-legend-fill, #ffc6c6);
+								--legend-frm-border-width: 2;
+								--legend-frm-border-radius: var(--smartTip-border-radius, 2);
+								--legend-frm-border-color: var(--smartTip-legend-stroke, #666);
+								--legend-frm-fill: var(--smartTip-legend-fill, #ffc6c6);
 
-						--no-color:	none;
-						--run-color: var(--smartwdg-run-color, green);
-						--stop-color: var(--smartwdg-stop-color, red);
-					}
-					.sttip-scale-line {
-						fill: none;
-						stroke: var(--smartTip-font-color);
-						stroke-width: 2;
-						stroke-linecap: butt;
-					}
-					text.sttip-text {
-						font-family: var(--smartTip-font-family);
-						font-stretch: var(--smartTip-font-stretch);
-						pointer-events: none;
-						fill: var(--smartTip-font-color);
-					}
-					.sttip-scale-text {
-						font-size:var(--smartTip-scale-font-size, 12px);
-					}
-					.sttip-title {
-						font-size: var(--smartTip-title-font-size, 30px);
-					}
-					.sttip-description {
-						font-size: var(--smartTip-descr-font-size, 28px);
-					}
-					.sttip-legend-value, .sttip-legend-name {
-						font-size: var(--smartTip-legend-font-size, 18px);
-					}
-					.sttip-legend-rect {
-						fill:var(--legend-frm-fill);
-					}
-					.sttip-legend-frame {
-						fill:var(--legend-frm-fill);
-						fill-opacity: 0.1;
-						rx: var(--legend-frm-border-radius);
-						ry: var(--legend-frm-border-radius);
-					}
-					.sttip-frame {
-						fill:var(--smartTip-frame-fill);
-						fill-opacity: var(--smartTip-frame-opacity, 1);
-						stroke: var(--smartTip-border-color);
-						stroke-width: var(--smartTip-border-width);
-						rx: var(--smartTip-border-radius);
-						ry: var(--smartTip-border-radius);
-					}
+								--no-color:	none;
+								--run-color: var(--smartwdg-run-color, green);
+								--stop-color: var(--smartwdg-stop-color, red);
+							}
+							.sttip-scale-line {
+								fill: none;
+								stroke: var(--smartTip-font-color);
+								stroke-width: 2;
+								stroke-linecap: butt;
+							}
+							text.sttip-text {
+								font-family: var(--smartTip-font-family);
+								font-stretch: var(--smartTip-font-stretch);
+								pointer-events: none;
+								fill: var(--smartTip-font-color);
+							}
+							.sttip-scale-text {
+								font-size:var(--smartTip-scale-font-size, 12px);
+							}
+							.sttip-title {
+								font-size: var(--smartTip-title-font-size, 30px);
+							}
+							.sttip-description {
+								font-size: var(--smartTip-descr-font-size, 28px);
+							}
+							.sttip-legend-value, .sttip-legend-name {
+								font-size: var(--smartTip-legend-font-size, 18px);
+							}
+							.sttip-legend-rect {
+								fill:var(--legend-frm-fill);
+							}
+							.sttip-legend-frame {
+								fill:var(--legend-frm-fill);
+								fill-opacity: 0.1;
+								rx: var(--legend-frm-border-radius);
+								ry: var(--legend-frm-border-radius);
+							}
+							.sttip-frame {
+								fill:var(--smartTip-frame-fill);
+								fill-opacity: var(--smartTip-frame-opacity, 1);
+								stroke: var(--smartTip-border-color);
+								stroke-width: var(--smartTip-border-width);
+								rx: var(--smartTip-border-radius);
+								ry: var(--smartTip-border-radius);
+							}
 
-					#SmartTooltip.hidden {
-						transition: all 500ms ease-in-out;
-					}
+							#SmartTooltip.hidden {
+								transition: all 500ms ease-in-out;
+							}
 
-					.sttip-legend-rect {
-						fill:var(--no-color);
-						fill:var(--legend-frm-fill);
-						rx: var(--legend-frm-border-radius);
-						ry: var(--legend-frm-border-radius);
-					}
-					.sttip-run-indicator {
-						stroke: #969696;
-						stroke-width: 1px;
-					}
-					.sttip-value-gauge {
-						fill: #ff9191;
-					}
-					.sttip-run {
-						fill: var(--run-color);
-					}
-					.sttip-stop {
-						fill: var(--stop-color);
-					}
-					.sttip-shadowed {
-						filter: url(#drop-shadow);
-					}
-					.sttip-linked {
-						cursor: pointer;
-					}
-					.sttip-animated {
-						transition:all 1s;
-					}
-					.sttip-selected {
-						mask: url(#sttip-mask-cross);
-					}
-					.sttip-current > rect {
-						stroke-width: 1.5;
-						stroke: var(--legend-frm-border-color);
-					}
-					.sttip-current > text {
-						font-weight: bold;
-					}
-					.sttip-hover {
-						mask: url(#sttip-mask-stripe);
-					}
-					.sttip-lightgray {
-						fill: lightgray;
-					}
+							.sttip-legend-rect {
+								fill:var(--no-color);
+								fill:var(--legend-frm-fill);
+								rx: var(--legend-frm-border-radius);
+								ry: var(--legend-frm-border-radius);
+							}
+							.sttip-run-indicator {
+								stroke: #969696;
+								stroke-width: 1px;
+							}
+							.sttip-value-gauge {
+								fill: #ff9191;
+							}
+							.sttip-run {
+								fill: var(--run-color);
+							}
+							.sttip-stop {
+								fill: var(--stop-color);
+							}
+							.sttip-shadowed {
+								filter: url(#drop-shadow);
+							}
+							.sttip-linked {
+								cursor: pointer;
+							}
+							.sttip-animated {
+								transition:all 1s;
+							}
+							.sttip-selected {
+								mask: url(#sttip-mask-cross);
+							}
+							.sttip-current > rect {
+								stroke-width: 1.5;
+								stroke: var(--legend-frm-border-color);
+							}
+							.sttip-current > text {
+								font-weight: bold;
+							}
+							.sttip-hover {
+								mask: url(#sttip-mask-stripe);
+							}
+							.sttip-lightgray {
+								fill: lightgray;
+							}
 
-					.sttip-max-value {
-						width: 265px;
-					}
-					.sttip-min-value {
-						width: 0;
-					}
+							.sttip-max-value {
+								width: 265px;
+							}
+							.sttip-min-value {
+								width: 0;
+							}
 
-					rect.sttip-legend-rect:hover {
-						fill: lightgray;
-					}
-					.sttip-diagram:hover, path.sttip-linked:hover {
-						mask: url(#sttip-mask-stripe);
-					}
-					g#legend-text-stroke {
-						pointer-events: none;
-					}
+							rect.sttip-legend-rect:hover {
+								fill: lightgray;
+							}
+							.sttip-diagram:hover, path.sttip-linked:hover {
+								mask: url(#sttip-mask-stripe);
+							}
+							g#legend-text-stroke {
+								pointer-events: none;
+							}
 
-					#pinMe {
-						fill: gray;
-						stroke: black;
-						stroke-width: 0.5;
-						transition: all 500ms ease-in-out;
-					}
-					#pinMe:hover {
-						cursor: pointer;
-						fill: lightgray;
-					}
-					#frmBtns rect {
-						fill: none;
-						stroke: black;
-						stroke-width: 0.5;
-						pointer-events: bounding-box;
-						cursor: pointer;
-					}
-					#frmBtns rect:hover {
-						fill: lightgray;
-					}
+							#pinMe {
+								fill: gray;
+								stroke: black;
+								stroke-width: 0.5;
+								transition: all 500ms ease-in-out;
+							}
+							#pinMe:hover {
+								cursor: pointer;
+								fill: lightgray;
+							}
+							#frmBtns rect {
+								fill: none;
+								stroke: black;
+								stroke-width: 0.5;
+								pointer-events: bounding-box;
+								cursor: pointer;
+							}
+							#frmBtns rect:hover {
+								fill: lightgray;
+							}
 
-					#pinMe.sttip-custom circle {
-						fill: red;
-					}
-					#pinMe #tippex {
-						display: none;
-					}
-					#pinMe.sttip-custom #tippex {
-						display: block;
-						stroke: var(--smartTip-frame-fill, white);
-						stroke-width: 1.5;
-					}
-					#pinMe.sttip-pinned {
-						transform: rotate(-45deg);
-						transform-origin: 8px 8px;
-						transform-box: border-box;
-					}
-					#pinMe.sttip-custom {
-						transform: rotate(-45deg);
-						transform-origin: 12px 12px;
-						transform-box: border-box;
-					}
+							#pinMe.sttip-custom circle {
+								fill: red;
+							}
+							#pinMe #tippex {
+								display: none;
+							}
+							#pinMe.sttip-custom #tippex {
+								display: block;
+								stroke: var(--smartTip-frame-fill, white);
+								stroke-width: 1.5;
+							}
+							#pinMe.sttip-pinned {
+								transform: rotate(-45deg);
+								transform-origin: 8px 8px;
+								transform-box: border-box;
+							}
+							#pinMe.sttip-custom {
+								transform: rotate(-45deg);
+								transform-origin: 12px 12px;
+								transform-box: border-box;
+							}
 
-				</style>
-				<g id="tooltip-group">
-					<rect id="tooltip-frame" class="sttip-frame sttip-shadowed" x="0" y="0" fill-opacity="0.8" width="432" height="0"/>
-					<g id="bound-group">
-						<g id="frmBtns" transform="translate(0, 4)">
-							<g transform="translate(0, 0)">
-								<rect id="helpMe" x="0" y="0" width="16" height="16" />
-								<text text-anchor="middle" pointer-events="none" x="8" y="13">?</text>
-							</g>
-							<g transform="translate(20, 0)">
-								<rect id="closeMe" x="0" y="0" width="16" height="16"  />
-								<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
-							</g>
-						</g>
-						<g transform="translate(4,4)">
-							<g id="pinMe">
-								<path id="pin" d="M8,8L24,7L24,9Z" pointer-events="none" />
-								<path id="tippex" d="M8,8L12,7L12,9Z" />
-								<circle id="rosh-pin" cx="24" cy="8" r="5" />
-							</g>
-						</g>
-						<circle id="diagram" class="sttip-diagram" cx="72.5" cy="72.5" r="65" style="fill:#fff;"/>
-						<g id="diagram-group">
-						</g>
-						<g id="legend-group" data-x="6.5" >
-							<circle id="run-indicator" class="sttip-run-indicator sttip-stop" cx="16.5" cy="157.5" r="5"/>
-							<g id="legend-stroke">
-								<rect id="legend-rect" class="sttip-legend-rect" x="22" y="172" width="396" height="34"/>
-								<g id="legend-text-stroke">
-									<rect id="legend-color" class="sttip-legend-color" x="26.5" y="178.5" width="20" height="20" fill="#ff0600"/>
-									<text id="legend-name" data-format="$NAME$" class="sttip-text sttip-legend-name" x="53.5px" y="196.5" text-anchor="left">Legend stroke</text>
-									<text id="legend-value" data-format="$VALUE$" class="sttip-text sttip-legend-value" x="359.794px" y="196.5" text-anchor="left">Value</text>
+						</style>
+						<g id="tooltip-group">
+							<rect id="tooltip-frame" class="sttip-frame sttip-shadowed" x="0" y="0" fill-opacity="0.8" width="432" height="0"/>
+							<g id="bound-group">
+								<g id="frmBtns" transform="translate(0, 4)">
+									<g transform="translate(0, 0)">
+										<rect id="helpMe" x="0" y="0" width="16" height="16" />
+										<text text-anchor="middle" pointer-events="none" x="8" y="13">?</text>
+									</g>
+									<g transform="translate(20, 0)">
+										<rect id="closeMe" x="0" y="0" width="16" height="16"  />
+										<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
+									</g>
+								</g>
+								<g transform="translate(4,4)">
+									<g id="pinMe">
+										<path id="pin" d="M8,8L24,7L24,9Z" pointer-events="none" />
+										<path id="tippex" d="M8,8L12,7L12,9Z" />
+										<circle id="rosh-pin" cx="24" cy="8" r="5" />
+									</g>
+								</g>
+								<circle id="diagram" class="sttip-diagram" cx="72.5" cy="72.5" r="65" style="fill:#fff;"/>
+								<g id="diagram-group">
+								</g>
+								<g id="legend-group" data-x="6.5" >
+									<circle id="run-indicator" class="sttip-run-indicator sttip-stop" cx="16.5" cy="157.5" r="5"/>
+									<g id="legend-stroke">
+										<rect id="legend-rect" class="sttip-legend-rect" x="22" y="172" width="396" height="34"/>
+										<g id="legend-text-stroke">
+											<rect id="legend-color" class="sttip-legend-color" x="26.5" y="178.5" width="20" height="20" fill="#ff0600"/>
+											<text id="legend-name" data-format="$NAME$" class="sttip-text sttip-legend-name" x="53.5px" y="196.5" text-anchor="left">Legend stroke</text>
+											<text id="legend-value" data-format="$VALUE$" class="sttip-text sttip-legend-value" x="359.794px" y="196.5" text-anchor="left">Value</text>
+										</g>
+									</g>
+								</g>
+								<g id="title-group" data-x="147" >
+									<g id="scale-group">
+										<rect id="tooltip-value" class="sttip-value-gauge sttip-animated" data-maxw="265" data-maxh="20" x="147" y="83" width="20" height="20"/>
+										<path id="scale-line" class="sttip-scale-line" d="M147,105.5l265,0"/>
+										<path id="scale-0" class="sttip-scale-line" d="M148,111.827l0,-7.327"/>
+										<path id="scale-25" class="sttip-scale-line" d="M213.25,109.827l0,-5.327"/>
+										<path id="scale-50" class="sttip-scale-line" d="M279.5,111.827l0,-7.327"/>
+										<path id="scale-75" class="sttip-scale-line" d="M345.75,109.827l0,-5.327"/>
+										<path id="scale-100" class="sttip-scale-line" d="M411,111.827l0,-7.327"/>
+										<text id="value-0" class="sttip-text sttip-scale-text" x="145.155px" y="122.5px">0</text>
+										<text id="value-50" class="sttip-text sttip-scale-text" text-anchor="middle" x="280" y="122.5px">50%</text>
+										<text id="value-100" class="sttip-text sttip-scale-text" text-anchor="middle" x="412" y="122.5px">100%</text>
+									</g>
+									<g id="descr-group">
+										<text id="tooltip-title" class="sttip-text sttip-title" x="147" y="47">Tooltip Title</text>
+										<text id="tooltip-description" class="sttip-text sttip-description" x="147" y="75">Tooltip description</text>
+									</g>
 								</g>
 							</g>
 						</g>
-						<g id="title-group" data-x="147" >
-							<g id="scale-group">
-								<rect id="tooltip-value" class="sttip-value-gauge sttip-animated" data-maxw="265" data-maxh="20" x="147" y="83" width="20" height="20"/>
-								<path id="scale-line" class="sttip-scale-line" d="M147,105.5l265,0"/>
-								<path id="scale-0" class="sttip-scale-line" d="M148,111.827l0,-7.327"/>
-								<path id="scale-25" class="sttip-scale-line" d="M213.25,109.827l0,-5.327"/>
-								<path id="scale-50" class="sttip-scale-line" d="M279.5,111.827l0,-7.327"/>
-								<path id="scale-75" class="sttip-scale-line" d="M345.75,109.827l0,-5.327"/>
-								<path id="scale-100" class="sttip-scale-line" d="M411,111.827l0,-7.327"/>
-								<text id="value-0" class="sttip-text sttip-scale-text" x="145.155px" y="122.5px">0</text>
-								<text id="value-50" class="sttip-text sttip-scale-text" text-anchor="middle" x="280" y="122.5px">50%</text>
-								<text id="value-100" class="sttip-text sttip-scale-text" text-anchor="middle" x="412" y="122.5px">100%</text>
-							</g>
-							<g id="descr-group">
-								<text id="tooltip-title" class="sttip-text sttip-title" x="147" y="47">Tooltip Title</text>
-								<text id="tooltip-description" class="sttip-text sttip-description" x="147" y="75">Tooltip description</text>
+					</svg>
+					`
+			}],
+			['simple', {
+				name: 'simple',
+				opt: {},
+				template:
+					`<svg class="sttip" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+						<defs>
+							<filter id="drop-shadow">
+								<feGaussianBlur in="SourceAlpha" stdDeviation="2.2"/>
+								<feOffset dx="2" dy="2" result="offsetblur"/>
+								<feFlood flood-color="rgba(0,0,0,0.5)"/>
+								<feComposite in2="offsetblur" operator="in"/>
+								<feMerge>
+									<feMergeNode/>
+									<feMergeNode in="SourceGraphic"/>
+								</feMerge>
+							</filter>
+							<pattern id="sttip-pattern-stripe45"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+							</pattern>
+							<pattern id="sttip-pattern-stripe-45"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(-45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+							</pattern>
+							<pattern id="sttip-pattern-stripe-45-black"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(-45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="black"></rect>
+							</pattern>
+							<mask id="sttip-mask-stripe">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+							</mask>
+							<mask id="sttip-mask-stripe-black">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+							</mask>
+							<mask id="sttip-mask-cross">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe-45)" />
+							</mask>
+						</defs>
+						<style>
+							svg.sttip {
+								overflow: visible;
+								vector-effect: non-scaling-stroke;
+
+								--smartTip-mouse-delay: 250;
+								--smartTip-mouse-noactive: 2000;
+
+								--smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+								--smartTip-font-stretch: condensed;
+								--smartTip-font-color: #666;
+								--smartTip-scale-font-size: 12px;
+								--smartTip-legend-font-size: 22px;
+								--smartTip-title-font-size: 30px;
+								--smartTip-descr-font-size: 28px;
+
+								--smartTip-run-color: #0f0;
+								--smartTip-stop-color: #f00;
+								--smartTip-def-color: #666;
+
+								--smartTip-frame-fill: #fff;
+								--smartTip-frame-opacity: 0.95;
+								--smartTip-frame-scale: 0.8;
+								--smartTip-border-color: none;
+								--smartTip-border-width: 2;
+								--smartTip-border-radius: 2;
+
+								--smartTip-legend-fill: #fff;
+								--smartTip-legend-stroke: #666;
+
+
+								--legend-frm-border-width: 2;
+								--legend-frm-border-radius: var(--smartTip-border-radius, 2);
+								--legend-frm-border-color: var(--smartTip-legend-stroke, #666);
+								--legend-frm-fill: var(--smartTip-legend-fill, #ffc6c6);
+
+								--no-color:	none;
+								--run-color: var(--smartwdg-run-color, green);
+								--stop-color: var(--smartwdg-stop-color, red);
+							}
+							text.sttip-text {
+								font-family: var(--smartTip-font-family);
+								font-stretch: var(--smartTip-font-stretch);
+								pointer-events: none;
+								fill: var(--smartTip-font-color);
+							}
+							.sttip-title {
+								font-size: var(--smartTip-title-font-size, 30px);
+							}
+							.sttip-description {
+								font-size: var(--smartTip-descr-font-size, 28px);
+							}
+							text#tooltip-description.wrapped {
+								text-anchor: 'start';
+							}
+							.sttip-frame {
+								fill:var(--smartTip-frame-fill);
+								fill-opacity: var(--smartTip-frame-opacity, 1);
+								stroke: var(--smartTip-border-color);
+								stroke-width: var(--smartTip-border-width);
+								rx: var(--smartTip-border-radius);
+								ry: var(--smartTip-border-radius);
+							}
+							#SmartTooltip.hidden {
+								transition: all 500ms ease-in-out;
+							}
+							.sttip-shadowed {
+								filter: url(#drop-shadow);
+							}
+							.sttip-linked {
+								cursor: pointer;
+							}
+							.sttip-animated {
+								transition:all 1s;
+							}
+							#pinMe {
+								fill: gray;
+								stroke: black;
+								stroke-width: 0.5;
+								transition: all 500ms ease-in-out;
+							}
+							#pinMe:hover {
+								cursor: pointer;
+								fill: lightgray;
+							}
+							#frmBtns rect {
+								fill: none;
+								stroke: black;
+								stroke-width: 0.5;
+								pointer-events: bounding-box;
+								cursor: pointer;
+							}
+							#frmBtns rect:hover {
+								fill: lightgray;
+							}
+							#pinMe.sttip-custom circle {
+								fill: red;
+							}
+							#pinMe #tippex {
+								display: none;
+							}
+							#pinMe.sttip-custom #tippex {
+								display: block;
+								stroke: var(--smartTip-frame-fill, white);
+								stroke-width: 1.5;
+							}
+							#pinMe.sttip-pinned {
+								transform: rotate(-45deg);
+								transform-origin: 8px 8px;
+								transform-box: border-box;
+							}
+							#pinMe.sttip-custom {
+								transform: rotate(-45deg);
+								transform-origin: 12px 12px;
+								transform-box: border-box;
+							}
+						</style>
+						<g id="tooltip-group">
+							<rect id="tooltip-frame" class="sttip-frame sttip-shadowed" x="0" y="0" fill-opacity="0.8" width="432" height="0"/>
+							<g id="bound-group">
+								<g id="pinmeGr" transform="translate(4,4)">
+									<g id="pinMe">
+										<path id="pin" d="M8,8L24,7L24,9Z" pointer-events="none" />
+										<path id="tippex" d="M8,8L12,7L12,9Z" />
+										<circle id="rosh-pin" cx="24" cy="8" r="5" />
+									</g>
+								</g>
+								<g id="frmBtns" transform="translate(0, 4)">
+									<g transform="translate(0, 0)">
+										<rect id="helpMe" x="0" y="0" width="16" height="16" />
+										<text text-anchor="middle" pointer-events="none" x="8" y="13">?</text>
+									</g>
+									<g transform="translate(20, 0)">
+										<rect id="closeMe" x="0" y="0" width="16" height="16"  />
+										<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
+									</g>
+								</g>
+								<g id="title-group" data-x="4" >
+									<g id="descr-group">
+										<text id="tooltip-title" class="sttip-text sttip-title" style="text-anchor:middle;" x="10" y="35">Tooltip Title</text>
+										<text id="tooltip-description" class="sttip-text sttip-description wrapped" x="6" y="75">Tooltip description</text>
+									</g>
+								</g>
 							</g>
 						</g>
-					</g>
-				</g>
-			</svg>
-			`
-		};
-		return defttip;
+					</svg>`
+			}]
+		]);
+		if (templateName === '')
+			templateName = 'pie';
+		return internalTemplates.get(templateName);
 	}
 
 	// all browser compatible function that returns an object with curren scroll amount.
@@ -548,8 +746,8 @@ class SmartTooltip {
 	// creates svg element, sets attributes and append it to parent, if it not null
 	// the new element returned
 	// usage example: createElement('circle',{cx:50,cy:50,r:10})
-	// special case for 'text' element creation: uppend pair text:'any text...' into params object
-	// and this text will be automathically appended to 'text' element
+	// special case for 'text' and 'tspan' element creation: append pair text:'any text...' into params object
+	// and this text will be automathically appended to 'text' or 'tspan' element
 	static addElement(type, params, parent = null, doc = null) {
 		if (!doc) { // try to main document in case of doc not specified
 			if (parent) {
@@ -578,7 +776,7 @@ class SmartTooltip {
 		if (typeof parent !== 'undefined' && parent) {
 			parent.appendChild(elem);
 		}
-		if (type === 'text') {
+		if (type === 'text' || type === 'tspan') {
 			elem.appendChild(doc.createTextNode(textData));
 		}
 		return elem;
@@ -726,11 +924,10 @@ class SmartTooltip {
 		if (!window.SmartTooltip) {
 			this._initialized = false;
 			this._pinned = false;
-			this._instance = '';	// contains tooltip template string that show now
+			this._instance = '';	// contains current tooltip template string
 			// this map will contains pairs: widget id (as key) : object with template file name (as name) and loaded external tooltip template string (as template)
 			// the function 'show(...)' will load the corresponding template into the body of the tooltip and fill it with the data received from outside
 			this._definitions = new Map();
-			//this._o = { ...SmartTooltipElement.defOptions() }; // function setOptions(...) may customize this options, and/or append custom optios for specific elemet, stored in _defenitions
 
 			let div = window.document.createElement('div');
 			div.setAttribute('id', 'SmartTooltip');
@@ -740,10 +937,8 @@ class SmartTooltip {
 			this._ttipRef = div;
 			this._ttipGroup = null;
 
-			const deftt = SmartTooltip.getDefaultTooltip();
+			const deftt = SmartTooltip.getinternalTemplate();	// default template is 'pie'
 			this._definitions.set('0', {name: deftt.name, template: deftt.template, opt: deftt.opt});
-
-			// this._pinned = (SmartTooltip._readFromLocalStorage('SmartTooltip.pinned') === 'true');
 
 		}
 	}
@@ -981,9 +1176,37 @@ class SmartTooltip {
 
 	_applyCustomOptions(options = null) {
 		if (options) {
+			if (typeof options.startFrom === 'string') {
+				this._o.startFrom = options.startFrom;
+				// reset all
+				this._pinned = this._fixed = false;
+				this._ttipPinMe.classList.remove('sttip-custom');
+				this._ttipPinMe.classList.remove('sttip-pinned');
+				// now anilize and set apropriated
+				if (this._o.startFrom === 'pinned') {
+					this._pinned = true;
+					this._fixed = false;
+				}
+				if (this._o.startFrom === 'fixed') {
+					this._pinned = true;
+					this._fixed = true;
+				}
+				// now get 'pinned' and 'fixed' modes from local storage
+				const pinned = (localStorage.getItem('SmartTooltip.pinned') === 'true');
+				const fixed  = localStorage.getItem('SmartTooltip.x');
+				this._pinned = pinned || this._pinned;
+				this._fixed  = fixed || this._fixed;
+				// set apropriated class on 'pinMe' button
+				if (this._ttipPinMe && this._pinned) {
+					if (this._fixed) {
+						this._ttipPinMe.classList.add('sttip-custom');
+					}
+					this._ttipPinMe.classList.add('sttip-pinned');
+				}
+			}
 			if (typeof options.showMode === 'string') {
 				// hide pinMe button in case of tooltip for specific element has optional showMode
-				this._ttipPinMe.setAttribute('display', 'none'); 
+				this._ttipPinMe.setAttribute('display', 'none');
 				this._o.showMode = options.showMode;
 
 				if (options.showMode === 'pinned') {
@@ -1013,13 +1236,24 @@ class SmartTooltip {
 				// change apperiance of run indicator (if exists)
 				this._ttipRunIndicator.classList.replace((this._o.isRun ? 'sttip-stop' : 'sttip-run'), (this._o.isRun ? 'sttip-run' : 'sttip-stop'));
 			}
-
+			if (typeof options.template === 'string') {
+				this._o.template = options.template;
+			}
 		}
 	}
 
 	init(id, tmplFileName = null) {
 		this._ttipGroup = null;
 		if (tmplFileName) {
+			if (!tmplFileName.match('.svg')) {
+				let ttdef = SmartTooltip.getinternalTemplate(tmplFileName);
+				if (!ttdef) { // not found, so load one known
+					ttdef = SmartTooltip.getinternalTemplate('pie');
+				}
+				this._definitions.set(id, {name: ttdef.name, template: ttdef.template, opt: ttdef.opt});
+				return;
+			}
+			// in case tmplFileName ends with '.svg', try to load it from server
 			SmartTooltip.httpGet(tmplFileName)
 				.then((response) => {
 					this._definitions.set(id, {name: tmplFileName, template: response, opt: {}});
@@ -1112,7 +1346,18 @@ class SmartTooltip {
 			if (this._definitions.has(data.id)) {
 				ttipdef = this._definitions.get(data.id);
 			} else {
-				ttipdef = this._definitions.get('0');	// get default
+				ttipdef = this._definitions.get('0');	// by default use default :)
+				if (typeof data.options === 'object' && typeof data.options.template === 'string') {
+					const template = data.options.template;
+					if (template.match('.svg')) {
+						console.log(`Template ${template} must to be loaded before call showTooltip(..)!`);
+						return;
+					}
+					const ttdef = SmartTooltip.getinternalTemplate(template);
+					if (ttdef) {
+						ttipdef = ttdef;
+					}
+				}
 			}
 			if (!ttipdef) {
 				this._ttipGroup = null;
@@ -1121,7 +1366,7 @@ class SmartTooltip {
 			}
 			// don't rebuild tooltip in case of same instance name
 			if (this._instance !== ttipdef.name) {
-				this._instance = ttipdef.name;
+				this._instance = ''; // rebuild template each time!! // ttipdef.name;
 
 				if (window.SmartTooltip._interval) {
 					clearTimeout(window.SmartTooltip._interval);
@@ -1169,7 +1414,7 @@ class SmartTooltip {
 				// if pinMe button was hided by previous element, then show it!
 				this._ttipPinMe.removeAttribute('display');
 			}
-			
+
 			// set pinned and fixed mode by 'startFrom' parameter
 			this._pinned = this._fixed = false;
 			if (this._o.startFrom === 'pinned') {
@@ -1190,7 +1435,7 @@ class SmartTooltip {
 				if (this._fixed) {
 					this._ttipPinMe.classList.add('sttip-custom');
 				}
-				this._ttipPinMe.classList.add('sttip-pinned');			
+				this._ttipPinMe.classList.add('sttip-pinned');
 			}
 
 			if (this._ttipRef && this._ttipGroup) {
@@ -1198,18 +1443,21 @@ class SmartTooltip {
 				const titleGroupX  = this._ttipTitleGroup ? (this._ttipTitleGroup.dataset['x']) : 0;
 				let ttipBoundGroupBR, format, sText;
 
-				// delete all 'legend-stroke' clones from 'legend-group'
-				const lsa = this._ttipLegendGroup ? this._ttipLegendGroup.getElementsByClassName('clone-ls') : null;
-				while (lsa.length) {
-					lsa[0].remove();
+				if (this._ttipLegendGroup) {
+					// delete all 'legend-stroke' clones from 'legend-group'
+					const lsa = this._ttipLegendGroup ? this._ttipLegendGroup.getElementsByClassName('clone-ls') : null;
+					while (lsa.length) {
+						lsa[0].remove();
+					}
+				}
+				if (this._ttipTitleGroup) {
+					this._ttipGroup.setAttribute('transform', 'scale(1, 1)');
 				}
 
-				this._ttipGroup.setAttribute('transform', 'scale(1, 1)');
 				if (this._ttipFrameBGroup) {
 					this._ttipFrameBGroup.setAttribute('transform', 'translate(0, 0)');
 				}
 
-				// this._ttipRef.classList.remove('hidden');
 				this._ttipRef.style['display'] = '';
 
 				if (typeof data.options === 'object') {
@@ -1319,7 +1567,9 @@ class SmartTooltip {
 					this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = 'none') : {};
 					this._ttipDiagram ? (this._ttipDiagram.style['display'] = 'none') : {};
 					this._ttipDiagramGroup ? (this._ttipDiagramGroup.style['display'] = 'none') : {};
-					this._ttipTitleGroup ? (this._ttipTitleGroup.setAttributeNS(null, 'transform', `translate(-${titleGroupX - legendGroupX}, 0)`)) : {};
+					if (this._ttipLegendGroup) {
+						this._ttipTitleGroup ? (this._ttipTitleGroup.setAttributeNS(null, 'transform', `translate(-${titleGroupX - legendGroupX}, 0)`)) : {};
+					}
 				}
 
 				if (typeof data.title === 'object') {
@@ -1329,8 +1579,24 @@ class SmartTooltip {
 						if (typeof data.title.titleFormat === 'string') {
 							this._o.titleFormat = data.title.titleFormat;
 						}
+						// clear title text
+						while (this._ttipTitle.hasChildNodes()) {
+							this._ttipTitle.removeChild(this._ttipTitle.firstChild);
+						}
+
 						sText = SmartTooltip.formatString(this._o.titleFormat, data.title);
-						this._ttipTitle.textContent = sText;
+						if (this._o.template === 'simple') {
+							const anchor = this._ttipTitle.style.getPropertyValue('text-anchor');
+							if (anchor == 'middle') {
+								const left = Number(this._ttipTitle.getAttribute('x'));
+								const width = Number(this._ttipFrame.getAttribute('width'));
+								let dx = left + width / 2;
+								SmartTooltip.addElement('tspan', { x: dx, dy: 0, text: sText }, this._ttipTitle);
+								console.log(`left = ${left} width = ${width} tspanX = ${dx}`);
+							}
+						} else {
+							this._ttipTitle.textContent = sText;
+						}
 					}
 					// description - formatted value
 					if (this._ttipDescription) {
@@ -1346,7 +1612,7 @@ class SmartTooltip {
 
 					if (this._ttipDescrGroup) {
 						descrRect = this._ttipDescrGroup.getBoundingClientRect();
-						if (maxWidth < descrRect.width) {
+						if (maxWidth && maxWidth < descrRect.width) {
 							scaleFactor = descrRect.width / maxWidth;
 						}
 					}
@@ -1517,12 +1783,12 @@ class SmartTooltipElement extends HTMLElement {
 									// By default this value has 'data-tooltip' for custom HTML element and 'targets' for SVG-based element.
 			'output-mode',			// 'what to show?' parameter. Possible values are: 'all-targets' and 'curTarget'. The default is 'all-targets'
 			'start-from',			// this property describes one of three started showing modes: 'float', 'pinned', 'fixed'. By default it equals 'pinned' and this means
-									// that user may change it as he wish. In case of optional parameter 'options.showMode' or attribute 'show-mode' specified, 
+									// that user may change it as he wish. In case of optional parameter 'options.showMode' or attribute 'show-mode' specified,
 									// user cannot change apperance of tooltip window!
 			'show-mode',			// optional parameter describes show mode and overides 'start-from'
 			'position',				// the value describes location of tooltip window in 'pinned' show-mode. Default value is 'rt' which means right-top conner of element.
 									// this parameter may contains the client rectangle coordinates of correspondent element, for tooltip positioning in pinned mode
-									// in form {left, top, right, bottom} 
+									// in form {left, top, right, bottom}
 
 			'delay-in',				// the time delay interval before tooltip window will be shown on the screen. The default is 0 (ms)
 			'delay-out',  			// the time delay interval when tooltip window will be hided. The default is 250 (ms). This delayed interval will counted after mouse pointer
