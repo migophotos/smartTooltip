@@ -151,11 +151,11 @@
                     x: evt.clientX,
                     y: evt.clientY,
                     options: {
-                        tRect: evt.target.getBoundingClientRect()
-                        , frameScale: 0.5
-                        , showMode: 'pinned'
-                        , isRun: 1
-                        , cssVars: {
+                        // tRect: evt.target.getBoundingClientRect(),
+                        frameScale: 0.5,
+                        showMode: 'pinned',
+                        isRun: 1,
+                        cssVars: {
                             "--smartTip-mouse-noactive": 5000
                         } },
                     title: {
@@ -201,6 +201,10 @@
                         startFrom: "float",
                         //showMode: 'pinned',
                         template: 'simple',
+                        titleTextWrap: 360,
+                        titleTextAlign: 'center',
+                        descrTextWrap: 360,
+                        descrTextAlign: 'justify',
                         cssVars: {
                             "--smartTip-frame-fill": "rgb(200, 255, 255)"
                             // "--smartTip-legend-fill":"#000",
@@ -210,8 +214,8 @@
                     },
                     title: {
                         uuid: `uuid-${evt.target.id}`,
-                        name: `Wrapped description `,
-                        descr: `Pointing on a "${evt.target.textContent}" on a blue background`
+                        name: `Wrapped description And once more for wrapped text test`,
+                        descr: `Pointing on a "${evt.target.textContent}" on a blue background. And once more for wrapped text test: Pointing on a "${evt.target.textContent}" on a blue background.`
                     }
                 };
                 SmartTooltip.showTooltip(data, evt);

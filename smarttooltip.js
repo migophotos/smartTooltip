@@ -498,8 +498,8 @@ class SmartTooltip {
 										<text id="value-100" class="sttip-text sttip-scale-text" text-anchor="middle" x="412" y="122.5px">100%</text>
 									</g>
 									<g id="descr-group">
-										<text id="tooltip-title" class="sttip-text sttip-title" x="147" y="47">Tooltip Title</text>
-										<text id="tooltip-description" class="sttip-text sttip-description" x="147" y="75">Tooltip description</text>
+										<text id="tooltip-title" class="sttip-text sttip-title" x="147" y="47"></text>
+										<text id="tooltip-description" class="sttip-text sttip-description" x="147" y="75"></text>
 									</g>
 								</g>
 							</g>
@@ -563,10 +563,8 @@ class SmartTooltip {
 								--smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
 								--smartTip-font-stretch: condensed;
 								--smartTip-font-color: #666;
-								--smartTip-scale-font-size: 12px;
-								--smartTip-legend-font-size: 22px;
-								--smartTip-title-font-size: 30px;
-								--smartTip-descr-font-size: 28px;
+								--smartTip-title-font-size: 24px;
+								--smartTip-descr-font-size: 18px;
 
 								--smartTip-run-color: #0f0;
 								--smartTip-stop-color: #f00;
@@ -603,9 +601,6 @@ class SmartTooltip {
 							}
 							.sttip-description {
 								font-size: var(--smartTip-descr-font-size, 28px);
-							}
-							text#tooltip-description.wrapped {
-								text-anchor: 'start';
 							}
 							.sttip-frame {
 								fill:var(--smartTip-frame-fill);
@@ -691,8 +686,8 @@ class SmartTooltip {
 								</g>
 								<g id="title-group" data-x="4" >
 									<g id="descr-group">
-										<text id="tooltip-title" class="sttip-text sttip-title" style="text-anchor:middle;" x="10" y="35">Tooltip Title</text>
-										<text id="tooltip-description" class="sttip-text sttip-description wrapped" x="6" y="75">Tooltip description</text>
+										<text id="tooltip-title" class="sttip-text sttip-title" x="10" y="40"></text>
+										<text id="tooltip-description" class="sttip-text sttip-description" x="10" y="60"></text>
 									</g>
 								</g>
 							</g>
@@ -781,6 +776,60 @@ class SmartTooltip {
 		}
 		return elem;
 	};
+
+	static wrapText(text, textElem, widthMax, align) {
+		function layout(text, align, maxWidth, elem) {
+			const result = {
+				dx: Number(elem.parentElement.getAttribute('x')),
+				x: 0,
+				wspace: 0,
+				anchor: 'start'
+			};
+			const words = text.split(' ');
+			if (align === 'justify' && words.length > 1) {
+				const lineWidth = elem.getComputedTextLength();
+				result.wspace = (maxWidth - lineWidth) / words.length - 1;
+				elem.setAttributeNS(null, 'word-spacing', result.wspace);
+			} else if (align === 'center') {
+				result.anchor = 'middle';
+				result.x = maxWidth / 2;
+			} else if (align === 'right') {
+				result.anchor = 'end';
+				result.x = maxWidth;
+			}
+			elem.setAttribute('x', result.dx + result.x);
+			elem.parentElement.style.setProperty('text-anchor', result.anchor);
+		}
+
+		// split the text into the words
+		const words = text.split(' ');
+		let lineNumber = 0, line = '';
+		let tspanElem;
+
+		// tspan for processing
+		const testElem = SmartTooltip.addElement('tspan', { text: 'busy' }, textElem);
+		for(let n = 0; n < words.length; n++) {
+			const testLine = line + words[n] + ' ';
+			// add line to test element
+			testElem.textContent = testLine;
+			// messure test element
+			const testLength = testElem.getComputedTextLength();
+			if (testLength > widthMax && n > 0) {
+				tspanElem = SmartTooltip.addElement('tspan', { x: 0, dy: (lineNumber ? '1em' : 0), text: line }, textElem);
+				layout(line, align, widthMax, tspanElem);
+				lineNumber++;
+				line = words[n] + ' ';
+			} else {
+				line = testLine;
+			}
+		}
+		tspanElem = SmartTooltip.addElement('tspan', { x: 0, dy: (lineNumber ? '1em' : 0), text: line }, textElem);
+		if (align === 'justify') { // the last line of justified text must be left aligned only
+			align = 'left';
+		}
+		layout(line, align, widthMax, tspanElem);
+		testElem.remove();
+	}
 
 	// calculate and draw segment by center. radius, start and end angles
 	static polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -1239,6 +1288,18 @@ class SmartTooltip {
 			if (typeof options.template === 'string') {
 				this._o.template = options.template;
 			}
+			if (typeof options.titleTextAlign === 'string') {
+				this._o.titleTextAlign = options.titleTextAlign;
+			}
+			if (typeof options.descrTextAlign === 'string') {
+				this._o.descrTextAlign = options.descrTextAlign;
+			}
+			if (typeof options.titleTextWrap !== 'undefined') {
+				this._o.titleTextWrap = Number(options.titleTextWrap);
+			}
+			if (typeof options.descrTextWrap !== 'undefined') {
+				this._o.descrTextWrap = Number(options.descrTextWrap);
+			}
 		}
 	}
 
@@ -1471,128 +1532,130 @@ class SmartTooltip {
 						}
 					}
 				}
+				if (this._ttipLegendGroup) {
+					if (typeof data.targets === 'object' && data.targets.length) {
+						// create the temporary array for working with it (sorting,...)
+						const targets = Array.from(data.targets);
+						// const targets = { ...data.targets }; - cannot be used here, because I use internal Array functions in sorting!
 
-				if (typeof data.targets === 'object' && data.targets.length) {
-					// create the temporary array for working with it (sorting,...)
-					const targets = Array.from(data.targets);
-					// const targets = { ...data.targets }; - cannot be used here, because I use internal Array functions in sorting!
+						// now sort it by optional parameter 'sortBy'
+						SmartTooltip.sortDataByParam(targets, this._o.sortBy || 'value');
+						if (targets.length) {
+							this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = '') : {};
+							this._ttipDiagram ? (this._ttipDiagram.style['display'] = '') : {};
+							this._ttipDiagramGroup ? (this._ttipDiagramGroup.style['display'] = '') : {};
+							this._ttipTitleGroup ? (this._ttipTitleGroup.setAttributeNS(null, 'transform', `translate(0, 0)`)) : {};
 
-					// now sort it by optional parameter 'sortBy'
-					SmartTooltip.sortDataByParam(targets, this._o.sortBy || 'value');
-					if (targets.length) {
-						this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = '') : {};
-						this._ttipDiagram ? (this._ttipDiagram.style['display'] = '') : {};
-						this._ttipDiagramGroup ? (this._ttipDiagramGroup.style['display'] = '') : {};
-						this._ttipTitleGroup ? (this._ttipTitleGroup.setAttributeNS(null, 'transform', `translate(0, 0)`)) : {};
-
-						let y = 0;
-						// show template
-						if (this._ttipLegendGroup && this._ttipLegendStroke) {
-							this._ttipLegendStroke.style['display'] = '';
-							// calculate max length for first (name) and second (value) columns
-							let C1 = {maxL: 0, maxInd: -1, rows: []},
-								C2 = {maxL: 0, maxInd: -1, rows: []},
-								gap = 10,
-								text;
-							for (let index = 0; index < targets.length; index++) {
-								if (this._ttipLegendName) {
-									if (typeof targets[index].legendFormat === 'string') {
-										this._o.legendFormat = targets[index].legendFormat;
+							let y = 0;
+							// show template
+							if (this._ttipLegendGroup && this._ttipLegendStroke) {
+								this._ttipLegendStroke.style['display'] = '';
+								// calculate max length for first (name) and second (value) columns
+								let C1 = {maxL: 0, maxInd: -1, rows: []},
+									C2 = {maxL: 0, maxInd: -1, rows: []},
+									gap = 10,
+									text;
+								for (let index = 0; index < targets.length; index++) {
+									if (this._ttipLegendName) {
+										if (typeof targets[index].legendFormat === 'string') {
+											this._o.legendFormat = targets[index].legendFormat;
+										}
+										text = SmartTooltip.formatString(this._o.legendFormat, targets[index]);
+										if (text.length > C1.maxL) {
+											C1.maxL = text.length;
+											C1.maxInd = index;
+										}
+										C1.rows.push(text);
 									}
-									text = SmartTooltip.formatString(this._o.legendFormat, targets[index]);
-									if (text.length > C1.maxL) {
-										C1.maxL = text.length;
-										C1.maxInd = index;
+									if (this._ttipLegendValue) {
+										if (typeof targets[index].legendValFormat === 'string') {
+											this._o.legendValFormat = targets[index].legendValFormat;
+										}
+										text = SmartTooltip.formatString(this._o.legendValFormat, targets[index]);
+										if (text.length > C2.maxL) {
+											C2.maxL = text.length;
+											C2.maxInd = index;
+										}
+										C2.rows.push(text);
 									}
-									C1.rows.push(text);
 								}
-								if (this._ttipLegendValue) {
-									if (typeof targets[index].legendValFormat === 'string') {
-										this._o.legendValFormat = targets[index].legendValFormat;
-									}
-									text = SmartTooltip.formatString(this._o.legendValFormat, targets[index]);
-									if (text.length > C2.maxL) {
-										C2.maxL = text.length;
-										C2.maxInd = index;
-									}
-									C2.rows.push(text);
+								// now, set legend stroke width to maximum length as C1.max + gap + C2.max
+								let xC1 = 0, xC2 = 0, maxC1Length, maxStrokeWidth = 0, strokeGap = 10;
+								if (C1.maxInd > -1) {
+									xC1 = this._ttipLegendName.getBBox().x;
+									this._ttipLegendName.textContent = C1.rows[C1.maxInd];
+									maxC1Length = this._ttipLegendName.getComputedTextLength();
 								}
-							}
-							// now, set legend stroke width to maximum length as C1.max + gap + C2.max
-							let xC1 = 0, xC2 = 0, maxC1Length, maxStrokeWidth = 0, strokeGap = 10;
-							if (C1.maxInd > -1) {
-								xC1 = this._ttipLegendName.getBBox().x;
-								this._ttipLegendName.textContent = C1.rows[C1.maxInd];
-								maxC1Length = this._ttipLegendName.getComputedTextLength();
-							}
-							if (C2.maxInd > -1) {
-								this._ttipLegendValue.textContent = C2.rows[C2.maxInd];
-								xC2 = xC1 + maxC1Length + gap;
-								this._ttipLegendValue.setAttributeNS(null, 'x', xC2);
+								if (C2.maxInd > -1) {
+									this._ttipLegendValue.textContent = C2.rows[C2.maxInd];
+									xC2 = xC1 + maxC1Length + gap;
+									this._ttipLegendValue.setAttributeNS(null, 'x', xC2);
 
-								maxStrokeWidth = this._sttipLegendTextStroke.getBoundingClientRect().width;
-							}
+									maxStrokeWidth = this._sttipLegendTextStroke.getBoundingClientRect().width;
+								}
 
-							for (let index = 0; index < targets.length; index++) {
-								let target = targets[index];
-								this._ttipLegendColor ? (this._ttipLegendColor.style['fill'] = target.color) : {};
-								this._ttipLegendName ?  (this._ttipLegendName.textContent = C1.rows[index]) : {};
-								this._ttipLegendValue ?  (this._ttipLegendValue.textContent = C2.rows[index]) : {};
-								if (this._ttipLegendRect) {
-									this._ttipLegendRect.dataset['linkto'] = target.link || '';
-									this._ttipLegendRect.dataset['uuid'] = target.uuid || '';
-									this._ttipLegendRect.dataset['parent'] = target.parent || '';
-									this._ttipLegendRect.setAttributeNS(null, 'width', maxStrokeWidth + strokeGap);
+								for (let index = 0; index < targets.length; index++) {
+									let target = targets[index];
+									this._ttipLegendColor ? (this._ttipLegendColor.style['fill'] = target.color) : {};
+									this._ttipLegendName ?  (this._ttipLegendName.textContent = C1.rows[index]) : {};
+									this._ttipLegendValue ?  (this._ttipLegendValue.textContent = C2.rows[index]) : {};
+									if (this._ttipLegendRect) {
+										this._ttipLegendRect.dataset['linkto'] = target.link || '';
+										this._ttipLegendRect.dataset['uuid'] = target.uuid || '';
+										this._ttipLegendRect.dataset['parent'] = target.parent || '';
+										this._ttipLegendRect.setAttributeNS(null, 'width', maxStrokeWidth + strokeGap);
+									}
+									const ls = this._ttipLegendStroke.cloneNode(true);
+									ls.setAttributeNS(null, 'id', `legend-stroke-${index+1}`);
+									ls.classList.add('clone-ls');
+									if (target.current) {
+										ls.classList.add('sttip-current');
+									} else {
+										ls.classList.remove('sttip-current');
+									}
+									target.link ? ls.classList.add('sttip-linked') : ls.classList.remove('sttip-linked');
+									ls.setAttributeNS(null, 'transform', `translate(0, ${y})`);
+									this._ttipLegendGroup.appendChild(ls);
+									y = (index + 1) * 34;	// mistical number is a storke height from template
 								}
-								const ls = this._ttipLegendStroke.cloneNode(true);
-								ls.setAttributeNS(null, 'id', `legend-stroke-${index+1}`);
-								ls.classList.add('clone-ls');
-								if (target.current) {
-									ls.classList.add('sttip-current');
-								} else {
-									ls.classList.remove('sttip-current');
-								}
-								target.link ? ls.classList.add('sttip-linked') : ls.classList.remove('sttip-linked');
-								ls.setAttributeNS(null, 'transform', `translate(0, ${y})`);
-								this._ttipLegendGroup.appendChild(ls);
-								y = (index + 1) * 34;	// mistical number is a storke height from template
+								// hide template
+								this._ttipLegendStroke.style['display'] = 'none';
 							}
-							// hide template
-							this._ttipLegendStroke.style['display'] = 'none';
+							this._drawDiagramm(targets);
 						}
-						this._drawDiagramm(targets);
-					}
-				} else {
-					// hide legend group and diagram in case of no targets
-					this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = 'none') : {};
-					this._ttipDiagram ? (this._ttipDiagram.style['display'] = 'none') : {};
-					this._ttipDiagramGroup ? (this._ttipDiagramGroup.style['display'] = 'none') : {};
-					if (this._ttipLegendGroup) {
+					} else {
+						// hide legend group and diagram in case of no targets
+						this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = 'none') : {};
+						this._ttipDiagram ? (this._ttipDiagram.style['display'] = 'none') : {};
+						this._ttipDiagramGroup ? (this._ttipDiagramGroup.style['display'] = 'none') : {};
 						this._ttipTitleGroup ? (this._ttipTitleGroup.setAttributeNS(null, 'transform', `translate(-${titleGroupX - legendGroupX}, 0)`)) : {};
 					}
 				}
 
 				if (typeof data.title === 'object') {
-					let maxWidth = this._ttipValue ? Number(this._ttipValue.dataset['maxw']) : 0;
+					let maxWidth; 
+					if (this._ttipValue) {
+						maxWidth = Number(this._ttipValue.dataset['maxw']);
+					} else {
+						maxWidth = Number(this._ttipFrame.getAttribute('width'));
+					}
+					maxWidth = Math.max(maxWidth, Math.max(this._o.descrTextWrap, this._o.titleTextWrap));
+
 					// title - legend or name
 					if (this._ttipTitle) {
 						if (typeof data.title.titleFormat === 'string') {
 							this._o.titleFormat = data.title.titleFormat;
 						}
-						// clear title text
-						while (this._ttipTitle.hasChildNodes()) {
-							this._ttipTitle.removeChild(this._ttipTitle.firstChild);
-						}
-
 						sText = SmartTooltip.formatString(this._o.titleFormat, data.title);
-						if (this._o.template === 'simple') {
-							const anchor = this._ttipTitle.style.getPropertyValue('text-anchor');
-							if (anchor == 'middle') {
-								const left = Number(this._ttipTitle.getAttribute('x'));
-								const width = Number(this._ttipFrame.getAttribute('width'));
-								let dx = left + width / 2;
-								SmartTooltip.addElement('tspan', { x: dx, dy: 0, text: sText }, this._ttipTitle);
-								console.log(`left = ${left} width = ${width} tspanX = ${dx}`);
+						// before inserting text, lets check the wrap option
+						if (this._o.titleTextWrap) {
+							SmartTooltip.wrapText(sText, this._ttipTitle, this._o.titleTextWrap, this._o.titleTextAlign);
+							// after wrapping text lets move down description (if it exists)!
+							if (this._ttipDescription) {
+								const gap = Number(this._ttipDescription.attributes.y.value) - Number(this._ttipTitle.attributes.y.value);
+								const height = this._ttipTitle.getBoundingClientRect().height;
+								let offset = height - gap;
+								this._ttipDescription.attributes.y.value = Number(this._ttipDescription.attributes.y.value) + offset;
 							}
 						} else {
 							this._ttipTitle.textContent = sText;
@@ -1604,7 +1667,12 @@ class SmartTooltip {
 							this._o.descrFormat = data.title.descrFormat;
 						}
 						sText = SmartTooltip.formatString(this._o.descrFormat, data.title);
-						this._ttipDescription.textContent = sText;
+						// before inserting text, lets check the wrap option
+						if (this._o.descrTextWrap) {
+							SmartTooltip.wrapText(sText, this._ttipDescription, this._o.descrTextWrap, this._o.descrTextAlign);
+						} else { // no wrap enabled, so just out the text
+							this._ttipDescription.textContent = sText;
+						}
 					}
 					let descrRect = 0; 		// resize scale group for this size
 					let scaleFactor = 1;	// will be calculated if real rectangle width, after title and description rendering,
@@ -1767,10 +1835,11 @@ class SmartTooltipElement extends HTMLElement {
 			'legend-format',		// ---
 			'legend-val-format',	// ---
 
-			'title-text-wrap',		// sets the line height (line-height attribute) for wrapped text. in case of 0 wrap disabled. the defaul is 0
+			'title-text-wrap',		// sets the line width (line-width attribute) for wrapped text. in case of 0 wrap disabled. the defaul is 0
 			'title-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
-			'descr-text-wrap',		// sets the line height (line-height attribute) for wrapped text. in case of 0 wrap disabled. the defaul is 1.5em
+			'descr-text-wrap',		// sets the line width (line-width attribute) for wrapped text. in case of 0 wrap disabled. the defaul is 1.5em
 			'descr-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
+			
 
 			'sort-by',				// sort parameter for multiple data. May contains one of the data parameters name: 'asis', 'name', 'value', 'color', 'state'. the default is 'value'
 			'sort-dir',				// sorting direction parameter. the default value is '1', wich means from low to high. Possible values: -1, 0, 1.
@@ -1827,10 +1896,10 @@ class SmartTooltipElement extends HTMLElement {
 			descrFormat:			'$DESCR$',
 			legendFormat:			'$LEGEND$',
 			legendValFormat:		'$VALUE$',
-			titleTextWrap:			'0',
-			titleTextAlign:			'left',
-			descrTextWrap:			'1.5em',
-			descrTextAlign:			'left',
+			titleTextWrap:			0,
+			titleTextAlign:			'center',
+			descrTextWrap:			0,
+			descrTextAlign:			'justify',
 			isRun:					0,
 			sortBy:					'value',
 			sortDir:				1,
