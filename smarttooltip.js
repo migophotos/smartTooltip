@@ -269,10 +269,10 @@ class SmartTooltip {
 								--smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
 								--smartTip-font-stretch: condensed;
 								--smartTip-font-color: #666;
-								--smartTip-scale-font-size: 12px;
-								--smartTip-legend-font-size: 22px;
-								--smartTip-title-font-size: 30px;
-								--smartTip-descr-font-size: 28px;
+								--smartTip-scale-font-size: 18px;
+								--smartTip-legend-font-size: 18px;
+								--smartTip-title-font-size: 20px;
+								--smartTip-descr-font-size: 18px;
 
 								--smartTip-run-color: #0f0;
 								--smartTip-stop-color: #f00;
@@ -317,7 +317,7 @@ class SmartTooltip {
 								font-size: var(--smartTip-title-font-size, 30px);
 							}
 							.sttip-description {
-								font-size: var(--smartTip-descr-font-size, 28px);
+								font-size: var(--smartTip-descr-font-size, 22px);
 							}
 							.sttip-legend-value, .sttip-legend-name {
 								font-size: var(--smartTip-legend-font-size, 18px);
@@ -473,7 +473,7 @@ class SmartTooltip {
 								<circle id="diagram" class="sttip-diagram" cx="72.5" cy="72.5" r="65" style="fill:#fff;"/>
 								<g id="diagram-group">
 								</g>
-								<g id="legend-group" data-x="6.5" >
+								<g id="legend-group" data-x="10" >
 									<circle id="run-indicator" class="sttip-run-indicator sttip-stop" cx="16.5" cy="157.5" r="5"/>
 									<g id="legend-stroke">
 										<rect id="legend-rect" class="sttip-legend-rect" x="22" y="172" width="396" height="34"/>
@@ -486,20 +486,22 @@ class SmartTooltip {
 								</g>
 								<g id="title-group" data-x="147" >
 									<g id="scale-group">
-										<rect id="tooltip-value" class="sttip-value-gauge sttip-animated" data-maxw="265" data-maxh="20" x="147" y="83" width="20" height="20"/>
+										<rect id="tooltip-value" class="sttip-value-gauge sttip-animated" data-maxw="265" data-maxh="20" x="147" y="73" width="20" height="20"/>
+										<g transform="translate(0, -8)">
 										<path id="scale-line" class="sttip-scale-line" d="M147,105.5l265,0"/>
 										<path id="scale-0" class="sttip-scale-line" d="M148,111.827l0,-7.327"/>
 										<path id="scale-25" class="sttip-scale-line" d="M213.25,109.827l0,-5.327"/>
 										<path id="scale-50" class="sttip-scale-line" d="M279.5,111.827l0,-7.327"/>
 										<path id="scale-75" class="sttip-scale-line" d="M345.75,109.827l0,-5.327"/>
 										<path id="scale-100" class="sttip-scale-line" d="M411,111.827l0,-7.327"/>
-										<text id="value-0" class="sttip-text sttip-scale-text" x="145.155px" y="122.5px">0</text>
-										<text id="value-50" class="sttip-text sttip-scale-text" text-anchor="middle" x="280" y="122.5px">50%</text>
-										<text id="value-100" class="sttip-text sttip-scale-text" text-anchor="middle" x="412" y="122.5px">100%</text>
+										<text id="value-0" class="sttip-text sttip-scale-text" x="145.155px" y="128px">0</text>
+										<text id="value-50" class="sttip-text sttip-scale-text" text-anchor="middle" x="280" y="128px">50%</text>
+										<text id="value-100" class="sttip-text sttip-scale-text" text-anchor="middle" x="412" y="128px">100%</text>
+										</g>
 									</g>
 									<g id="descr-group">
-										<text id="tooltip-title" class="sttip-text sttip-title" x="147" y="47"></text>
-										<text id="tooltip-description" class="sttip-text sttip-description" x="147" y="75"></text>
+										<text id="tooltip-title" class="sttip-text sttip-title" x="147" y="40"></text>
+										<text id="tooltip-description" class="sttip-text sttip-description" x="147" y="60"></text>
 									</g>
 								</g>
 							</g>
@@ -684,7 +686,7 @@ class SmartTooltip {
 										<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
 									</g>
 								</g>
-								<g id="title-group" data-x="4" >
+								<g id="title-group" data-x="10" >
 									<g id="descr-group">
 										<text id="tooltip-title" class="sttip-text sttip-title" x="10" y="40"></text>
 										<text id="tooltip-description" class="sttip-text sttip-description" x="10" y="60"></text>
@@ -780,7 +782,7 @@ class SmartTooltip {
 	static wrapText(text, textElem, widthMax, align) {
 		function layout(text, align, maxWidth, elem) {
 			const result = {
-				dx: Number(elem.parentElement.getAttribute('x')),
+				dx: parseInt(elem.parentElement.getAttribute('x')),
 				x: 0,
 				wspace: 0,
 				anchor: 'start'
@@ -1377,8 +1379,9 @@ class SmartTooltip {
 						x = ownerRect.right + 16;
 						y = ownerRect.top;
 					} else {
-						x += 10;
-						y += 30;
+						// offset the tooltip window by 6 pixels to right and down from mouse pointer  
+						x += 6;
+						y += 6;
 					}
 					// caclulate an absolute location
 					const scroll = SmartTooltip.getScroll();
@@ -1500,27 +1503,15 @@ class SmartTooltip {
 			}
 
 			if (this._ttipRef && this._ttipGroup) {
-				const legendGroupX = this._ttipLegendGroup? (this._ttipLegendGroup.dataset['x']) : 0;
-				const titleGroupX  = this._ttipTitleGroup ? (this._ttipTitleGroup.dataset['x']) : 0;
-				let ttipBoundGroupBR, format, sText;
+				let ttipBoundGroupBR, sText;
 
-				if (this._ttipLegendGroup) {
-					// delete all 'legend-stroke' clones from 'legend-group'
-					const lsa = this._ttipLegendGroup ? this._ttipLegendGroup.getElementsByClassName('clone-ls') : null;
-					while (lsa.length) {
-						lsa[0].remove();
-					}
-				}
-				if (this._ttipTitleGroup) {
-					this._ttipGroup.setAttribute('transform', 'scale(1, 1)');
-				}
-
+				// move buttons group (helpMe and closeMe) to the 0,0 position for next right positioning
 				if (this._ttipFrameBGroup) {
 					this._ttipFrameBGroup.setAttribute('transform', 'translate(0, 0)');
 				}
 
 				this._ttipRef.style['display'] = '';
-
+				// apply optional parameters to this._o (options)
 				if (typeof data.options === 'object') {
 					this._applyCustomOptions(data.options);
 
@@ -1532,6 +1523,120 @@ class SmartTooltip {
 						}
 					}
 				}
+				// calculate the maximum width of tooltip window
+				let startX = 0, maxWidth, textWidth, prevElemRef = null;
+				if (this._ttipTitleGroup) { 
+					// in case of 'pie' template, the dataset parameter 'x' defines the start X position of title, description and value elements
+					startX = parseInt(this._ttipTitleGroup.dataset['x']);
+				}
+				maxWidth = parseInt(this._ttipFrame.getAttribute('width'));
+				if (startX) {
+					maxWidth = maxWidth - startX;
+				}
+
+				// render title section of data
+				if (typeof data.title === 'object') {
+					// title and description are automaticaly wraps its text
+					// the max width for wrapping is calculated as max width of tooltip window (from template)
+					// or correspondent lower optional parameter 'titleTextWrap' and 'descrTextWrap'
+					// title - legend or name
+					if (this._ttipTitle) {
+						if (typeof data.title.titleFormat === 'string') {
+							this._o.titleFormat = data.title.titleFormat;
+						}
+						sText = SmartTooltip.formatString(this._o.titleFormat, data.title);
+						// before inserting text, lets check the wrap width optional parameter
+						if (this._o.titleTextWrap) {
+							textWidth = Math.min(maxWidth, this._o.titleTextWrap)
+						}
+						SmartTooltip.wrapText(sText, this._ttipTitle, textWidth || maxWidth, this._o.titleTextAlign);
+						prevElemRef = this._ttipTitle;
+					}
+
+					// render description - formatted value
+					if (this._ttipDescription) {
+							// before drawing this part, lets check the position of previous element and move down!
+							if (prevElemRef) {
+								const gap = Number(this._ttipDescription.attributes.y.value) - Number(prevElemRef.attributes.y.value);
+								const height = prevElemRef.getBoundingClientRect().height;
+								let offset = height - gap;
+								this._ttipDescription.attributes.y.value = Number(this._ttipDescription.attributes.y.value) + offset;
+								prevElemRef = this._ttipDescription;
+							}
+							if (typeof data.title.descrFormat === 'string') {
+							this._o.descrFormat = data.title.descrFormat;
+						}
+						sText = SmartTooltip.formatString(this._o.descrFormat, data.title);
+						// before inserting text, lets check the wrap width optional parameter
+						if (this._o.descrTextWrap) {
+							textWidth = Math.min(maxWidth, this._o.descrTextWrap)
+						}
+						SmartTooltip.wrapText(sText, this._ttipDescription, textWidth || maxWidth, this._o.descrTextAlign);
+					}
+					
+					// render value as colored rectangle with width proportional to value
+					if (this._ttipValue) {
+						// before drawing lets do the similar trick with own position
+						if (prevElemRef) {
+							const gap = Number(this._ttipValue.attributes.y.value) - Number(prevElemRef.attributes.y.value);
+							const height = prevElemRef.getBoundingClientRect().height;
+							let offset = height - gap;
+							if (this._ttipScaleGroup) {
+								this._ttipScaleGroup.setAttributeNS(null, 'transform', `translate(0, ${offset})`);
+							} else {
+								this._ttipValue.attributes.y.value = Number(this._ttipValue.attributes.y.value) + offset;
+							}
+							prevElemRef = this._ttipValue;
+						}
+						// render value indicator and its scale
+						if (typeof data.title.value !== 'undefined') {
+							this._ttipScaleGroup ? (this._ttipScaleGroup.style['display'] = 'block') : {};
+							this._ttipValue.style['fill'] = data.title.color || '#666';
+							// value indicator (rect in 'pie' template must to have dataset parameter 'maxw' that defines the length of scale)!
+							let valueWidth = parseInt(this._ttipValue.dataset['maxw']);
+							let onepct = valueWidth/100;
+							// next if-else block use the next logic:
+							// if you want to show an absolute value, you must! to specify the maximum value
+							// in case the maximum is not specified, there are two cases:
+							// 1. in case of value greather than 100, this is an absolute value and I will show it just as a maximum value
+							// 2. in another case it is a percent from 100%, so I will show it as percents and append the character '%' after value '100' on the scale  
+							if(typeof data.title.valueMax !== 'undefined' && data.title.valueMax !== null) {
+								onepct = valueWidth / data.title.valueMax;
+								if (this._ttipValue50 && this._ttipValue100) {
+									this._ttipValue50.textContent = (data.title.valueMax / 2).toFixed(0);
+									this._ttipValue100.textContent = data.title.valueMax;
+								}
+							} else if (data.title.value > 100) {
+								onepct = valueWidth / data.title.value;
+								if (this._ttipValue50 && this._ttipValue100) {
+									this._ttipValue50.textContent = (data.title.value / 2).toFixed(0);
+									this._ttipValue100.textContent = data.title.value;
+								}
+							} else {
+								if (this._ttipValue50 && this._ttipValue100) {
+									this._ttipValue50.textContent = '50';
+									this._ttipValue100.textContent = '100%';
+								}
+							}
+							// set the width of rectangle in proportional to value 
+							this._ttipValue.setAttribute('width', data.title.value * onepct || 0);
+							// append or remove the appropriated class name and dataset attribute 'linkto' with specified link url 
+							if (data.title.link) {
+								this._ttipValue.classList.add('sttip-linked');
+								this._ttipValue.dataset['linkto'] = data.title.link;
+							} else {
+								this._ttipValue.classList.remove('sttip-linked');
+								this._ttipValue.dataset['linkto'] = '';
+							}
+							// store 'uuid' in dataset attribute for next reference (for sorting and selecting)
+							data.title.uuid ? this._ttipValue.dataset['uuid'] = data.title.uuid : '';
+						} else if (this._ttipScaleGroup) { // in case of value was not specified, hide all scale group!
+							this._ttipScaleGroup ? (this._ttipScaleGroup.style['display'] = 'none') : {};
+						}
+					}
+				}
+
+				// render 'targets' as legend table and pie diagram 
 				if (this._ttipLegendGroup) {
 					if (typeof data.targets === 'object' && data.targets.length) {
 						// create the temporary array for working with it (sorting,...)
@@ -1624,114 +1729,18 @@ class SmartTooltip {
 							this._drawDiagramm(targets);
 						}
 					} else {
-						// hide legend group and diagram in case of no targets
+						// hide legend group and diagram in case of no targets and move the title group to the legend group position
 						this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = 'none') : {};
 						this._ttipDiagram ? (this._ttipDiagram.style['display'] = 'none') : {};
 						this._ttipDiagramGroup ? (this._ttipDiagramGroup.style['display'] = 'none') : {};
+						
+						const legendGroupX = this._ttipLegendGroup? (parseInt(this._ttipLegendGroup.dataset['x'])) : 0;
+						const titleGroupX  = this._ttipTitleGroup ? (parseInt(this._ttipTitleGroup.dataset['x'])) : 0;
 						this._ttipTitleGroup ? (this._ttipTitleGroup.setAttributeNS(null, 'transform', `translate(-${titleGroupX - legendGroupX}, 0)`)) : {};
 					}
 				}
 
-				if (typeof data.title === 'object') {
-					let maxWidth; 
-					if (this._ttipValue) {
-						maxWidth = Number(this._ttipValue.dataset['maxw']);
-					} else {
-						maxWidth = Number(this._ttipFrame.getAttribute('width'));
-					}
-					maxWidth = Math.max(maxWidth, Math.max(this._o.descrTextWrap, this._o.titleTextWrap));
-
-					// title - legend or name
-					if (this._ttipTitle) {
-						if (typeof data.title.titleFormat === 'string') {
-							this._o.titleFormat = data.title.titleFormat;
-						}
-						sText = SmartTooltip.formatString(this._o.titleFormat, data.title);
-						// before inserting text, lets check the wrap option
-						if (this._o.titleTextWrap) {
-							SmartTooltip.wrapText(sText, this._ttipTitle, this._o.titleTextWrap, this._o.titleTextAlign);
-							// after wrapping text lets move down description (if it exists)!
-							if (this._ttipDescription) {
-								const gap = Number(this._ttipDescription.attributes.y.value) - Number(this._ttipTitle.attributes.y.value);
-								const height = this._ttipTitle.getBoundingClientRect().height;
-								let offset = height - gap;
-								this._ttipDescription.attributes.y.value = Number(this._ttipDescription.attributes.y.value) + offset;
-							}
-						} else {
-							this._ttipTitle.textContent = sText;
-						}
-					}
-					// description - formatted value
-					if (this._ttipDescription) {
-						if (typeof data.title.descrFormat === 'string') {
-							this._o.descrFormat = data.title.descrFormat;
-						}
-						sText = SmartTooltip.formatString(this._o.descrFormat, data.title);
-						// before inserting text, lets check the wrap option
-						if (this._o.descrTextWrap) {
-							SmartTooltip.wrapText(sText, this._ttipDescription, this._o.descrTextWrap, this._o.descrTextAlign);
-						} else { // no wrap enabled, so just out the text
-							this._ttipDescription.textContent = sText;
-						}
-					}
-					let descrRect = 0; 		// resize scale group for this size
-					let scaleFactor = 1;	// will be calculated if real rectangle width, after title and description rendering,
-											// greater than stored in parameter 'data-maxw' in template definition
-
-					if (this._ttipDescrGroup) {
-						descrRect = this._ttipDescrGroup.getBoundingClientRect();
-						if (maxWidth && maxWidth < descrRect.width) {
-							scaleFactor = descrRect.width / maxWidth;
-						}
-					}
-					// value color and width
-					if (this._ttipValue) {
-						if (typeof data.title.value !== 'undefined') {
-							this._ttipScaleGroup ? (this._ttipScaleGroup.style['display'] = 'block') : {};
-							this._ttipValue.style['fill'] = data.title.color || '#666';
-							let onepct = maxWidth/100;
-							if(typeof data.title.valueMax !== 'undefined' && data.title.valueMax !== null) {
-								onepct = maxWidth / data.title.valueMax;
-								if (this._ttipValue50 && this._ttipValue100) {
-									this._ttipValue50.textContent = (data.title.valueMax / 2).toFixed(0);
-									this._ttipValue100.textContent = data.title.valueMax;
-								}
-							} else if (data.title.value > 100) {
-								onepct = maxWidth / data.title.value;
-								if (this._ttipValue50 && this._ttipValue100) {
-									this._ttipValue50.textContent = (data.title.value / 2).toFixed(0);
-									this._ttipValue100.textContent = data.title.value;
-								}
-							} else {
-								onepct = maxWidth/100;
-								if (this._ttipValue50 && this._ttipValue100) {
-									this._ttipValue50.textContent = '50';
-									this._ttipValue100.textContent = '100%';
-								}
-							}
-							this._ttipValue.setAttribute('width', data.title.value * onepct || 0);
-							if (data.title.link) {
-								this._ttipValue.classList.add('sttip-linked');
-								this._ttipValue.dataset['linkto'] = data.title.link;
-							} else {
-								this._ttipValue.classList.remove('sttip-linked');
-								this._ttipValue.dataset['linkto'] = '';
-							}
-							data.title.uuid ? this._ttipValue.dataset['uuid'] = data.title.uuid : '';
-							if (this._ttipScaleGroup) {
-								if (scaleFactor > 1) {
-									let tmp = this._ttipTitleGroup.dataset['x'];
-									let translateX = -tmp * (scaleFactor-1);
-									this._ttipScaleGroup.setAttributeNS(null, 'transform', `translate(${translateX}, 0) scale(${scaleFactor}, 1)`);
-								} else {
-									this._ttipScaleGroup.removeAttributeNS(null, 'transform');
-								}
-							}
-						} else if (this._ttipScaleGroup) {
-							this._ttipScaleGroup ? (this._ttipScaleGroup.style['display'] = 'none') : {};
-						}
-					}
-				}
+				// tooltip window positioning
 				if (typeof data.x === 'number' && typeof data.y === 'number') {
 					let forId = 0;
 					if (this._shownFor != data.id) {
@@ -1750,7 +1759,6 @@ class SmartTooltip {
 					}
 					if (left && top) { // move here!
 						const scroll = SmartTooltip.getScroll();
-						// console.log(`saved Y = ${top}, scroll by Y = ${scroll.Y}`);
 						// append current scroll positions to saved coordinates (was stored without its on 'endDrag)
 						left += scroll.X;
 						top += scroll.Y;
@@ -1768,23 +1776,26 @@ class SmartTooltip {
 				}
 
 				// resize the frame rectange of toolip window
-				// hide button 'closeMe' in 'float' mode and show in 'pinned' and 'custom'
+				// hide button 'closeMe' in 'float' mode and show it in 'pinned' and 'custom' modes
 				if (this._ttipCloseMe) {
 					this._ttipCloseMe.parentNode.removeAttribute('display');
 					if (!this._pinned && !this._fixed) {
 						this._ttipCloseMe.parentNode.setAttribute('display', 'none');
 					}
 				}
+				// calculate the bounding size of rendered tooltip window and resize the main frame rectangle
+				// 10 pixels added to the bounding width and height are the gaps! 
 				ttipBoundGroupBR = this._ttipBoundGroup.getBoundingClientRect();
-				this._ttipFrame.setAttributeNS(null, 'width', ttipBoundGroupBR.width + 12);
-				this._ttipFrame.setAttributeNS(null, 'height', ttipBoundGroupBR.height + 12);
+				this._ttipFrame.setAttributeNS(null, 'width', ttipBoundGroupBR.width + 10);
+				this._ttipFrame.setAttributeNS(null, 'height', ttipBoundGroupBR.height + 10);
+
 				if (this._ttipFrameBGroup) { // move buttons 'helpMe' and 'closeMe' to the right side of frame
 					ttipBoundGroupBR = this._ttipFrame.getBoundingClientRect();
 					const btnRect = this._ttipFrameBGroup.getBoundingClientRect();
 					const btnX = ttipBoundGroupBR.width - (btnRect.width + 4); /* the gap */
 					this._ttipFrameBGroup.setAttribute('transform', `translate(${btnX}, 4)`);
 				}
-
+				// zoom tooltip window to optional parameter 'frameScale'
 				this._ttipGroup.setAttribute('transform', `scale(${this._o.frameScale})`);
 				// get real (after scaling) size of #toolip-group and resize the root SVG
 				ttipBoundGroupBR = this._ttipGroup.getBoundingClientRect();

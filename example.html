@@ -112,14 +112,14 @@
                     options: {
                         tRect: evt.target.getBoundingClientRect(),
                         template: 'pie',
-                        startFrom: 'float'
-                        , cssVars: {
-                            // "--smartTip-frame-fill": "#000",
-                            // "--smartTip-font-color": "#fff",
-                            // "--smartTip-legend-fill":"#000",
+                        startFrom: 'float',
+                        cssVars: {
+                            "--smartTip-frame-fill": "#000",
+                            "--smartTip-font-color": "#fff",
+                            "--smartTip-legend-fill":"#000",
                             "--smartTip-border-radius": "10"
                         }
-                        , frameScale: 0.9
+                        // , frameScale: 1
                     },
                     title: {
                         uuid: `uuid-${evt.target.id}`,
@@ -152,7 +152,11 @@
                     y: evt.clientY,
                     options: {
                         // tRect: evt.target.getBoundingClientRect(),
-                        frameScale: 0.5,
+                        frameScale: 1,
+                        // titleTextWrap: 200,
+                        // titleTextAlign: 'left',
+                        // descrTextAlign: 'left',
+
                         showMode: 'pinned',
                         isRun: 1,
                         cssVars: {
@@ -160,8 +164,8 @@
                         } },
                     title: {
                         uuid: `uuid-${evt.target.id}`,
-                        name: `Number of words on a green background - ${greenEls.length}`,
-                        descr: 'The pie shows the number of letters in each word',
+                        descr: `Number of words on a green background is equals to ${greenEls.length}`,
+                        name: '-- Count Of Letters --',
                         color: 'red',
                         link: `https://www.google.com/search?q=${evt.target.textContent}`,
                         value: greenEls.length,
