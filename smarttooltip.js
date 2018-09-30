@@ -356,6 +356,7 @@ class SmartTooltip {
 							}
 							.sttip-value-gauge {
 								fill: #ff9191;
+								stroke: var(--smartTip-font-color, black);
 							}
 							.sttip-run {
 								fill: var(--run-color);
@@ -407,9 +408,9 @@ class SmartTooltip {
 							}
 
 							#pinMe {
-								fill: gray;
-								stroke: black;
-								stroke-width: 0.5;
+								fill: var(--smartTip-frame-fill, gray);
+								stroke: var(--smartTip-font-color, black);
+								stroke-width: 1.5;
 								transition: all 500ms ease-in-out;
 							}
 							#pinMe:hover {
@@ -417,12 +418,16 @@ class SmartTooltip {
 								fill: lightgray;
 							}
 							#frmBtns rect {
-								fill: none;
-								stroke: black;
+								fill: var(--smartTip-frame-fill, none);
+								stroke: var(--smartTip-font-color, black);
 								stroke-width: 0.5;
 								pointer-events: bounding-box;
 								cursor: pointer;
 							}
+							#frmBtns path, text {
+								stroke: var(--smartTip-font-color, black);
+							}
+
 							#frmBtns rect:hover {
 								fill: lightgray;
 							}
@@ -625,9 +630,9 @@ class SmartTooltip {
 								transition:all 1s;
 							}
 							#pinMe {
-								fill: gray;
-								stroke: black;
-								stroke-width: 0.5;
+								fill: var(--smartTip-frame-fill, gray);
+								stroke: var(--smartTip-font-color, black);
+								stroke-width: 1.5;
 								transition: all 500ms ease-in-out;
 							}
 							#pinMe:hover {
@@ -635,12 +640,16 @@ class SmartTooltip {
 								fill: lightgray;
 							}
 							#frmBtns rect {
-								fill: none;
-								stroke: black;
+								fill: var(--smartTip-frame-fill, none);
+								stroke: var(--smartTip-font-color, black);
 								stroke-width: 0.5;
 								pointer-events: bounding-box;
 								cursor: pointer;
 							}
+							#frmBtns path, text {
+								stroke: var(--smartTip-font-color, black);
+							}
+							
 							#frmBtns rect:hover {
 								fill: lightgray;
 							}
