@@ -138,6 +138,64 @@
  * SmartTooltip.hideTooltip();
  */
 
+class TemplateDefs {
+	constructor() {
+		this._templates = new Map()		// stores id to {name: name, template: template} pair
+		this._options = new Map();		// stores id to opt pair
+		this._similars = new Map();		// in case of template name already defined, store in this map the reference on id, that contains it in form: id -> id
+										// the function get(id) will returns this 'right' definition  
+	}
+	register(id, name) {
+		const sdef = this.getByName(name);
+		if (sdef) {
+			this._similars.set(id, sdef.id);
+		} else {
+			this._templates.set(id, {name: name, template: 'loading...'});
+			this._options.set(id, {});
+		}
+	}
+
+	set(id, name, template, opt) {
+		const sdef = this.getByName(name);
+		if (sdef && id != sdef.id) {
+			this._options.set(id, opt);
+			this._similars.set(id, sdef.id);
+		} else {
+			this._options.set(id, opt);
+			this._templates.set(id, {name: name, template: template});
+		}	
+	}
+	has(id) {
+		return (this._templates.has(id) || this._similars.has(id));
+	}
+	get(id) {
+		let sid = this._similars.get(id);
+		let ttdef = {};
+		if (sid) {
+			const sdef = this._templates.get(sid);
+			ttdef.name = sdef.name;				// similar template name
+			ttdef.template = sdef.template;		// similar template definition
+		} else {
+			if (!this._templates.has(id)) {
+				return null;
+			}
+			const def = this._templates.get(id);
+			ttdef.name = def.name;				// own template name
+			ttdef.template = def.template;		// own template definition
+		}
+		ttdef.opt = this._options.get(id);		// own options
+		return ttdef;
+	}
+
+	getByName(name) {
+		for (let [id, ttdef] of this._templates) {
+			if (ttdef.name === name) {
+				return {id: id, def: ttdef};
+			}
+		}
+		return null;
+	}
+}
 
 class SmartTooltip {
 	// get href link paramter to new or old site
@@ -210,7 +268,7 @@ class SmartTooltip {
 
 
 	// getDefaultTooltip
-	static getinternalTemplate(templateName = '') {
+	static getInternalTemplate(templateName = '') {
 		const internalTemplates = new Map([
 			['pie', {
 				name: 'pie',
@@ -456,7 +514,7 @@ class SmartTooltip {
 
 						</style>
 						<g id="tooltip-group">
-							<rect id="tooltip-frame" class="sttip-frame sttip-shadowed" x="0" y="0" fill-opacity="0.8" width="432" height="0"/>
+							<rect id="tooltip-frame" class="sttip-frame" x="0" y="0" fill-opacity="0.8" width="432" height="0"/>
 							<g id="bound-group">
 								<g id="frmBtns" transform="translate(0, 4)">
 									<g transform="translate(0, 0)">
@@ -676,7 +734,7 @@ class SmartTooltip {
 							}
 						</style>
 						<g id="tooltip-group">
-							<rect id="tooltip-frame" class="sttip-frame sttip-shadowed" x="0" y="0" fill-opacity="0.8" width="432" height="0"/>
+							<rect id="tooltip-frame" class="sttip-frame" x="0" y="0" fill-opacity="0.8" width="432" height="0"/>
 							<g id="bound-group">
 								<g id="pinmeGr" transform="translate(4,4)">
 									<g id="pinMe">
@@ -982,12 +1040,13 @@ class SmartTooltip {
 
 	constructor() {
 		if (!window.SmartTooltip) {
-			this._initialized = false;
+			this._initialized = 0;	// _initEvents will change in on true after initializing all needed parts
 			this._pinned = false;
 			this._instance = '';	// contains current tooltip template string
 			// this map will contains pairs: widget id (as key) : object with template file name (as name) and loaded external tooltip template string (as template)
 			// the function 'show(...)' will load the corresponding template into the body of the tooltip and fill it with the data received from outside
-			this._definitions = new Map();
+			this._definitions = new TemplateDefs();
+			this._ownOptions = {}; // options from host custom element will stored here (function setOptions fills it on attributes changes of custom element SmartTooltipElement)
 
 			let div = window.document.createElement('div');
 			div.setAttribute('id', 'SmartTooltip');
@@ -996,10 +1055,6 @@ class SmartTooltip {
 			this._root = div.attachShadow({mode: 'open'});
 			this._ttipRef = div;
 			this._ttipGroup = null;
-
-			const deftt = SmartTooltip.getinternalTemplate();	// default template is 'pie'
-			this._definitions.set('0', {name: deftt.name, template: deftt.template, opt: deftt.opt});
-
 		}
 	}
 
@@ -1131,13 +1186,14 @@ class SmartTooltip {
 	// initialize smarttooltip event listeners, used for pin tooltip
 	_initEvents() {
 		if (!this._initialized) {
-			this._initialized = true;
+			this._initialized = 0;
             this._startDrag = this._startDrag.bind(this);
             this._drag = this._drag.bind(this);
             this._endDrag = this._endDrag.bind(this);
 
 			this._interval = null;
 			if (this._ttipGroup) {
+				this._initialized++;
 				this._ttipGroup.addEventListener('contextmenu', function(evt) {
 					evt.preventDefault();
 				});
@@ -1179,6 +1235,8 @@ class SmartTooltip {
 				});
 			}
 			if (this._ttipPinMe) {
+				this._initialized++;
+
 				this._ttipPinMe.addEventListener('click', function (evt) {
 					const ref = window.SmartTooltip;
 					ref._pinned = !window.SmartTooltip._pinned;
@@ -1201,6 +1259,8 @@ class SmartTooltip {
 				});
 			}
 			if (this._ttipHelpMe) { // show 'help' panel
+				this._initialized++;
+
 				this._ttipHelpMe.addEventListener('click', function(evt) {
 
 					window.SmartTooltip._ttipRef.style['display'] = 'none';
@@ -1208,11 +1268,15 @@ class SmartTooltip {
 				})
 			}
 			if (this._ttipCloseMe) { // 'close' toolip window
+				this._initialized++;
+
 				this._ttipCloseMe.addEventListener('click', function(evt) {
 					window.SmartTooltip._ttipRef.style['display'] = 'none';
 					evt.preventDefault();
 				})
 			}
+
+			this._initialized = (this._initialized > 0);
 		}
 	}
 	_checkMouseMoving(delay = null) {
@@ -1288,6 +1352,9 @@ class SmartTooltip {
 			if (typeof options.frameScale === 'number') {
 				this._o.frameScale = options.frameScale;
 			}
+			if (typeof options.isShadow === 'number') {
+				this._o.isShadow = options.isShadow;
+			}
 			if (typeof options.tRect === 'object') {
 				this._o.position = options.tRect;
 			}
@@ -1314,21 +1381,29 @@ class SmartTooltip {
 		}
 	}
 
+	/**
+	 * Load tooltip template specified by 'tmplFileName' definition for element specified by its id
+	 * @param {*} id Uniq element's id, or an array or elements. In this case, the next parameter 
+	 * @param {*} tmplFileName May contains the full file name with '.svg' extention, or predefined name of internal template. 
+	 * 							Currently only two internal templates are implemented: 'simple' and 'pie'
+	 */
 	init(id, tmplFileName = null) {
 		this._ttipGroup = null;
-		if (tmplFileName) {
+		if (id && tmplFileName) {
+			this._definitions.register(id, tmplFileName);
+
 			if (!tmplFileName.match('.svg')) {
-				let ttdef = SmartTooltip.getinternalTemplate(tmplFileName);
-				if (!ttdef) { // not found, so load one known
-					ttdef = SmartTooltip.getinternalTemplate('pie');
+				let ttdef = SmartTooltip.getInternalTemplate(tmplFileName);
+				if (!ttdef) { // not found, so load default this._ownOptions.template
+					ttdef = SmartTooltip.getInternalTemplate((this._ownOptions.template || 'pie'));
 				}
-				this._definitions.set(id, {name: ttdef.name, template: ttdef.template, opt: ttdef.opt});
+				this._definitions.set(id, ttdef.name, ttdef.template, ttdef.opt);
 				return;
 			}
 			// in case tmplFileName ends with '.svg', try to load it from server
 			SmartTooltip.httpGet(tmplFileName)
 				.then((response) => {
-					this._definitions.set(id, {name: tmplFileName, template: response, opt: {}});
+					this._definitions.set(id, tmplFileName, response, {});
 				})
 				.catch((error) => {
 					console.error(error); // Error: Not Found
@@ -1345,16 +1420,22 @@ class SmartTooltip {
 	setOptions(options, id = null) {
 		let optRef = null,
 			ttdef;
-		id = (!id || id == '') ? '0' : id;
-
-		ttdef = this._definitions.get(id);
-		if (ttdef) {
-			optRef = ttdef.opt;
-		}
-		if (optRef) {
+		if (!id || id == '') {
 			if(typeof options === 'object') {
 				for (let key in options) {
-					optRef[key] = options[key];
+					this._ownOptions[key] = options[key];
+				}
+			}
+		} else { // change settings for known element
+			ttdef = this._definitions.get(id);
+			if (ttdef) {
+				optRef = ttdef.opt;
+			}
+			if (optRef) {
+				if(typeof options === 'object') {
+					for (let key in options) {
+						optRef[key] = options[key];
+					}
 				}
 			}
 		}
@@ -1419,69 +1500,68 @@ class SmartTooltip {
 			if (this._definitions.has(data.id)) {
 				ttipdef = this._definitions.get(data.id);
 			} else {
-				ttipdef = this._definitions.get('0');	// by default use default :)
+				let templName;
+				// lets register new element with specified internal or default template name this._ownOptions.template
 				if (typeof data.options === 'object' && typeof data.options.template === 'string') {
-					const template = data.options.template;
-					if (template.match('.svg')) {
-						console.log(`Template ${template} must to be loaded before call showTooltip(..)!`);
+					templName = data.options.template;
+					if (templName.match('.svg')) {
+						console.log(`Template ${templName} must to be loaded before call showTooltip(..)!`);
 						return;
 					}
-					const ttdef = SmartTooltip.getinternalTemplate(template);
-					if (ttdef) {
-						ttipdef = ttdef;
-					}
+				} else {
+					templName = this._ownOptions.template || 'pie';
 				}
+				//this._definitions.register(data.id, templName);
+				ttipdef = SmartTooltip.getInternalTemplate(templName);
+				this._definitions.set(data.id, templName, ttipdef.template, ttipdef.opt);
 			}
 			if (!ttipdef) {
 				this._ttipGroup = null;
 				console.error('Tooltip definition not found');
 				return;
 			}
-			// don't rebuild tooltip in case of same instance name
-			if (this._instance !== ttipdef.name) {
-				this._instance = ''; // rebuild template each time!! // ttipdef.name;
-
-				if (window.SmartTooltip._interval) {
-					clearTimeout(window.SmartTooltip._interval);
-				}
-
-				this._initialized = false;
-				this._root.innerHTML = ttipdef.template;
-				this._svg = this._root.firstElementChild;
-
-				this._ttipGroup 	   = this._root.getElementById('tooltip-group');
-				this._ttipPinMe		   = this._root.getElementById('pinMe');
-				this._ttipFrameBGroup  = this._root.getElementById('frmBtns');
-					this._ttipHelpMe   = this._root.getElementById('helpMe');
-					this._ttipCloseMe  = this._root.getElementById('closeMe');
-
-				this._ttipFrame        = this._root.getElementById('tooltip-frame');
-				this._ttipLegendGroup  = this._root.getElementById('legend-group');
-				this._ttipLegendFrame  = this._root.getElementById('legend-frame');
-				this._ttipLegendStroke = this._root.getElementById('legend-stroke');
-				this._sttipLegendTextStroke = this._root.getElementById('legend-text-stroke');
-				this._ttipLegendRect   = this._root.getElementById('legend-rect');
-				this._ttipLegendColor  = this._root.getElementById('legend-color');
-				this._ttipLegendName   = this._root.getElementById('legend-name');
-				this._ttipLegendValue  = this._root.getElementById('legend-value');
-				this._ttipRunIndicator = this._root.getElementById('run-indicator');
-				this._ttipDiagram      = this._root.getElementById('diagram');
-				this._ttipDiagramGroup = this._root.getElementById('diagram-group');
-				this._ttipValue        = this._root.getElementById('tooltip-value');
-				this._ttipDescrGroup   = this._root.getElementById('descr-group');
-				this._ttipTitle        = this._root.getElementById('tooltip-title');
-				this._ttipDescription  = this._root.getElementById('tooltip-description');
-				this._ttipTitleGroup   = this._root.getElementById('title-group');
-				this._ttipScaleGroup   = this._root.getElementById('scale-group');
-				this._ttipBoundGroup   = this._root.getElementById('bound-group');
-				this._ttipValue50      = this._root.getElementById('value-50');
-				this._ttipValue100     = this._root.getElementById('value-100');
-
-				this._ttipRef.style['display'] = 'none';
-				this._initEvents();
+			// Rebuild tooltip each time!
+			// clear possible timeout
+			if (window.SmartTooltip._interval) {
+				clearTimeout(window.SmartTooltip._interval);
 			}
+			// reload
+			this._initialized = false;
+			this._root.innerHTML = ttipdef.template;
+			this._svg = this._root.firstElementChild;
+
+			this._ttipGroup 	   = this._root.getElementById('tooltip-group');
+			this._ttipPinMe		   = this._root.getElementById('pinMe');
+			this._ttipFrameBGroup  = this._root.getElementById('frmBtns');
+				this._ttipHelpMe   = this._root.getElementById('helpMe');
+				this._ttipCloseMe  = this._root.getElementById('closeMe');
+
+			this._ttipFrame        = this._root.getElementById('tooltip-frame');
+			this._ttipLegendGroup  = this._root.getElementById('legend-group');
+			this._ttipLegendFrame  = this._root.getElementById('legend-frame');
+			this._ttipLegendStroke = this._root.getElementById('legend-stroke');
+			this._sttipLegendTextStroke = this._root.getElementById('legend-text-stroke');
+			this._ttipLegendRect   = this._root.getElementById('legend-rect');
+			this._ttipLegendColor  = this._root.getElementById('legend-color');
+			this._ttipLegendName   = this._root.getElementById('legend-name');
+			this._ttipLegendValue  = this._root.getElementById('legend-value');
+			this._ttipRunIndicator = this._root.getElementById('run-indicator');
+			this._ttipDiagram      = this._root.getElementById('diagram');
+			this._ttipDiagramGroup = this._root.getElementById('diagram-group');
+			this._ttipValue        = this._root.getElementById('tooltip-value');
+			this._ttipDescrGroup   = this._root.getElementById('descr-group');
+			this._ttipTitle        = this._root.getElementById('tooltip-title');
+			this._ttipDescription  = this._root.getElementById('tooltip-description');
+			this._ttipTitleGroup   = this._root.getElementById('title-group');
+			this._ttipScaleGroup   = this._root.getElementById('scale-group');
+			this._ttipBoundGroup   = this._root.getElementById('bound-group');
+			this._ttipValue50      = this._root.getElementById('value-50');
+			this._ttipValue100     = this._root.getElementById('value-100');
+			// init events
+			this._initEvents();
+
 			// merge default options with custom
-			this._o = Object.assign({}, SmartTooltipElement.defOptions(), ttipdef.opt);
+			this._o = Object.assign({}, SmartTooltipElement.defOptions(), this._ownOptions, ttipdef.opt);
 
 			if (this._ttipPinMe) {
 				// if pinMe button was hided by previous element, then show it!
@@ -1798,6 +1878,10 @@ class SmartTooltip {
 				this._ttipFrame.setAttributeNS(null, 'width', ttipBoundGroupBR.width + 10);
 				this._ttipFrame.setAttributeNS(null, 'height', ttipBoundGroupBR.height + 10);
 
+				// add if enabled shadow effect
+				if (this._o.isShadow)
+				 this._ttipFrame.classList.add('sttip-shadowed');
+
 				if (this._ttipFrameBGroup) { // move buttons 'helpMe' and 'closeMe' to the right side of frame
 					ttipBoundGroupBR = this._ttipFrame.getBoundingClientRect();
 					const btnRect = this._ttipFrameBGroup.getBoundingClientRect();
@@ -1866,7 +1950,7 @@ class SmartTooltipElement extends HTMLElement {
 
 			'template',				// default value for this property is 'pie', wich means the using of internal SmartTooltip pie template definition.
 									// The custom template may be specified as full url name, for example 'templates/vert_bars.svg'. The case of specified name without
-									// extension means an internal name of template. Currently only 'pie' is implemented.
+									// extension means an internal name of template. Currently only 'pie' and 'simple' are implemented. May be changed by host custom element.
 			'data-section',			// maybe targets or anything else? Simple host element may use the data-specific attribute, for example: 'data-tooltip',
 									// but more complecs element, for example SmartGauge widget will returns it's data in array, with name 'targets' for example.
 									// By default this value has 'data-tooltip' for custom HTML element and 'targets' for SVG-based element.

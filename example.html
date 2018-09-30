@@ -30,6 +30,16 @@
             cursor: pointer;
             background-color: rgb(19, 147, 233);
         }
+        .sttip {
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .sttip-options {
+            --smartTip-frame-fill: "#000";
+            --smartTip-font-color: "#fff";
+            --smartTip-legend-fill:"#000";
+            --smartTip-border-radius: "10";
+        }
     </style>
 
 </head>
@@ -49,14 +59,21 @@
 
         <p>Try clicking on the "pinMe" button and move the mouse pointer to the word "Diam" written in red ...
         Look at how the behavior of the tooltip window changed - now it does not crawl, but jumps! And It remembers its condition even after the page is reloaded.</p>
-
         <p>In quis <label id="l6" class="label-green">enim</label> <label ><b id="l7" class="sttip-link">accumsan</b></label>, <label id="l8" class="label-green">sollicitudin</label> sem id, gravida ipsum. Fusce <label id="l9" class="label-green">suscipit</label> <label ><b id="l10" class="sttip-link">accumsan</b></label> massa.
         Morbi vitae elementum lacus. Cras imperdiet urna vitae luctus laoreet. Vivamus venenatis
         porttitor tincidunt. Donec volutpat <label id="l12" class="label-green">rutrum</label> faucibus. Nullam et <label ><b id="l14" class="sttip-link">accumsan</b></label> ante, vitae egestas
         arcu. Vivamus blandit arcu eget augue bibendum, sed imperdiet orci auctor. Mauris aliquet
         hendrerit suscipit. Aenean <label id="l15" class="label-green">ut</label> pulvinar diam, nec sagittis diam. Duis at gravida lacus,
         nec convallis erat. Etiam sit amet <label id="l16" class="label-green">quam</label>. Nulla facilisi.</p>
-
+        <div class="autotoolip">
+            <label class="sttip sttip-options" data-sttip="Tooltip for One">One</label> <br>
+            <label class="sttip sttip-options" data-sttip="Tooltip for Two">Two</label> <br>
+            <label class="sttip sttip-options" data-sttip="Tooltip for Three">Three</label> <br>
+            <label class="sttip sttip-options" data-sttip="Tooltip for Four">Four</label> <br>
+            <label class="sttip sttip-options" data-sttip="Tooltip for Five">Five</label> <br>
+            <label class="sttip sttip-options" data-sttip="Tooltip for Six">Six</label> <br>
+            <label class="sttip sttip-options" data-sttip="Tooltip for Seven">Seven</label> <br>
+        </div>
         <p>Now point the <label id="m1" class="label-blue">mouse</label> at the word "Integer", located near the <label id="m2" class="label-blue">word</label> "accumsan".
         It is <label id="m3" class="label-blue">possible</label> that a pop-up tooltip window will close it. This is because <label id="m4" class="label-blue">the</label>
         window is trying to fit on the screen and ... well, <label id="m5" class="label-blue">in</label> general - I'll fix it <label id="m6" class="label-blue">someday</label>. What can be done now? <br>There is one secret:
@@ -65,6 +82,12 @@
         tips when you hover over the hot pies. You can move the window anyplace else at any time, it does not care. It will remember the new coordinates until you press
         the "<label id="m0" class="label-blue">pinMe</label>" button again.</p>
     </div>
+    <script>
+        (function() {
+            SmartTooltip.initTooltip();
+
+        })();
+    </script>
     <script>
         var val2color = function(val) {
             var color;
@@ -112,7 +135,7 @@
                     options: {
                         tRect: evt.target.getBoundingClientRect(),
                         template: 'pie',
-                        startFrom: 'float',
+                        //startFrom: 'float',
                         cssVars: {
                             "--smartTip-frame-fill": "#000",
                             "--smartTip-font-color": "#fff",
@@ -156,7 +179,7 @@
                         // titleTextWrap: 200,
                         // titleTextAlign: 'left',
                         // descrTextAlign: 'left',
-
+                        template: 'pie',
                         showMode: 'pinned',
                         isRun: 1,
                         cssVars: {
@@ -204,6 +227,7 @@
                         //frameScale: 0.6,
                         startFrom: "float",
                         //showMode: 'pinned',
+                        isShadow: 1,
                         template: 'simple',
                         titleTextWrap: 360,
                         titleTextAlign: 'center',
