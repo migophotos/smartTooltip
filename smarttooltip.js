@@ -64,8 +64,8 @@
 				"--smartTip-font-color": "#9dc2de",
 				"--smartTip-scale-font-size": "12px",
 				"--smartTip-legend-font-size": "22px",
-				"--smartTip-title-font-size": "30px",
-				"--smartTip-descr-font-size": "28px",
+				"--smartTip-title-font-size": "20px",
+				"--smartTip-descr-font-size": "18px",
 
 				"--smartTip-run-color": "#0f0",
 				"--smartTip-stop-color": "#f00",
@@ -143,7 +143,7 @@ class TemplateDefs {
 		this._templates = new Map()		// stores id to {name: name, template: template} pair
 		this._options = new Map();		// stores id to opt pair
 		this._similars = new Map();		// in case of template name already defined, store in this map the reference on id, that contains it in form: id -> id
-										// the function get(id) will returns this 'right' definition  
+										// the function get(id) will returns this 'right' definition
 	}
 	register(id, name) {
 		const sdef = this.getByName(name);
@@ -163,7 +163,7 @@ class TemplateDefs {
 		} else {
 			this._options.set(id, opt);
 			this._templates.set(id, {name: name, template: template});
-		}	
+		}
 	}
 	has(id) {
 		return (this._templates.has(id) || this._similars.has(id));
@@ -324,7 +324,7 @@ class SmartTooltip {
 								--smartTip-mouse-delay: 250;
 								--smartTip-mouse-noactive: 2000;
 
-								--smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+								--smartTip-font-family: 'Arial', 'DIN Condensed', 'Noteworthy', sans-serif;
 								--smartTip-font-stretch: condensed;
 								--smartTip-font-color: #666;
 								--smartTip-scale-font-size: 18px;
@@ -372,10 +372,10 @@ class SmartTooltip {
 								font-size:var(--smartTip-scale-font-size, 12px);
 							}
 							.sttip-title {
-								font-size: var(--smartTip-title-font-size, 30px);
+								font-size: var(--smartTip-title-font-size, 20px);
 							}
 							.sttip-description {
-								font-size: var(--smartTip-descr-font-size, 22px);
+								font-size: var(--smartTip-descr-font-size, 18px);
 							}
 							.sttip-legend-value, .sttip-legend-name {
 								font-size: var(--smartTip-legend-font-size, 18px);
@@ -482,7 +482,10 @@ class SmartTooltip {
 								pointer-events: bounding-box;
 								cursor: pointer;
 							}
-							#frmBtns path, text {
+							#frmBtns path {
+								stroke: var(--smartTip-font-color, black);
+							}
+							#frmBtns text {
 								stroke: var(--smartTip-font-color, black);
 							}
 
@@ -662,10 +665,10 @@ class SmartTooltip {
 								fill: var(--smartTip-font-color);
 							}
 							.sttip-title {
-								font-size: var(--smartTip-title-font-size, 30px);
+								font-size: var(--smartTip-title-font-size, 24px);
 							}
 							.sttip-description {
-								font-size: var(--smartTip-descr-font-size, 28px);
+								font-size: var(--smartTip-descr-font-size, 18px);
 							}
 							.sttip-frame {
 								fill:var(--smartTip-frame-fill);
@@ -704,10 +707,13 @@ class SmartTooltip {
 								pointer-events: bounding-box;
 								cursor: pointer;
 							}
-							#frmBtns path, text {
+							#frmBtns path {
 								stroke: var(--smartTip-font-color, black);
 							}
-							
+							#frmBtns text {
+								stroke: var(--smartTip-font-color, black);
+							}
+
 							#frmBtns rect:hover {
 								fill: lightgray;
 							}
@@ -734,7 +740,7 @@ class SmartTooltip {
 							}
 						</style>
 						<g id="tooltip-group">
-							<rect id="tooltip-frame" class="sttip-frame" x="0" y="0" fill-opacity="0.8" width="432" height="0"/>
+							<rect id="tooltip-frame" class="sttip-frame" x="0" y="0" fill-opacity="0.8" width="360" height="0"/>
 							<g id="bound-group">
 								<g id="pinmeGr" transform="translate(4,4)">
 									<g id="pinMe">
@@ -861,6 +867,7 @@ class SmartTooltip {
 				elem.setAttributeNS(null, 'word-spacing', result.wspace);
 			} else if (align === 'center') {
 				result.anchor = 'middle';
+				//const lineWidth = elem.getComputedTextLength();
 				result.x = maxWidth / 2;
 			} else if (align === 'right') {
 				result.anchor = 'end';
@@ -1383,31 +1390,83 @@ class SmartTooltip {
 
 	/**
 	 * Load tooltip template specified by 'tmplFileName' definition for element specified by its id
-	 * @param {*} id Uniq element's id, or an array or elements. In this case, the next parameter 
-	 * @param {*} tmplFileName May contains the full file name with '.svg' extention, or predefined name of internal template. 
+	 * @param {*} id Uniq element's id, or an array or elements. In this case, the next parameter
+	 * @param {*} tmplFileName May contains the full file name with '.svg' extention, or predefined name of internal template.
 	 * 							Currently only two internal templates are implemented: 'simple' and 'pie'
 	 */
-	init(id, tmplFileName = null) {
-		this._ttipGroup = null;
-		if (id && tmplFileName) {
-			this._definitions.register(id, tmplFileName);
+	init(id, tmplFileName = null, className) {
+		function loadTemplate(id, templateName, ref) {
+			if (id && tmplFileName && ref) {
+				ref._definitions.register(id, tmplFileName);
 
-			if (!tmplFileName.match('.svg')) {
-				let ttdef = SmartTooltip.getInternalTemplate(tmplFileName);
-				if (!ttdef) { // not found, so load default this._ownOptions.template
-					ttdef = SmartTooltip.getInternalTemplate((this._ownOptions.template || 'pie'));
+				if (!tmplFileName.match('.svg')) {
+					let ttdef = SmartTooltip.getInternalTemplate(tmplFileName);
+					if (!ttdef) { // not found, so load default this._ownOptions.template
+						ttdef = SmartTooltip.getInternalTemplate((ref._ownOptions.template || 'pie'));
+					}
+					ref._definitions.set(id, ttdef.name, ttdef.template, ttdef.opt);
+					return;
 				}
-				this._definitions.set(id, ttdef.name, ttdef.template, ttdef.opt);
-				return;
+				// in case tmplFileName ends with '.svg', try to load it from server
+				SmartTooltip.httpGet(tmplFileName)
+					.then((response) => {
+						ref._definitions.set(id, tmplFileName, response, {});
+					})
+					.catch((error) => {
+						console.error(error); // Error: Not Found
+					});
 			}
-			// in case tmplFileName ends with '.svg', try to load it from server
-			SmartTooltip.httpGet(tmplFileName)
-				.then((response) => {
-					this._definitions.set(id, tmplFileName, response, {});
-				})
-				.catch((error) => {
-					console.error(error); // Error: Not Found
+		}
+
+		this._ttipGroup = null;
+
+		if (typeof id === 'object' && typeof id.length === 'number' && id.length) {
+			for (let i = 0; i < id.length; i++) {
+				loadTemplate(id[1], tmplFileName, this);
+			}
+			// add event listeners for each specified element
+			id.forEach(eid => {
+				const element = document.getElementById(eid);
+				element.addEventListener('mouseover', function(evt) {
+					const elem = document.getElementById(evt.target.id);
+					const compStyle = getComputedStyle(elem);
+
+					const data = {
+						id: evt.target.id,
+						x:  evt.clientX,
+						y: evt.clientY,
+						options: {
+							// todo: implement smart algorithm this stupid code!
+							template: compStyle.getPropertyValue('--smartTip-template').trimLeft() || 'simple',
+							startFrom: compStyle.getPropertyValue('--smartTip-start-from').trimLeft() || "float",
+							isShadow: compStyle.getPropertyValue('--smartTip-is-shadow').trimLeft() || 1,
+							titleTextWrap: compStyle.getPropertyValue('--smartTip-title-text-wrap').trimLeft() || 360,
+							titleTextAlign: compStyle.getPropertyValue('--smartTip-title-text-align').trimLeft() || 'center',
+							cssVars: {
+								"--smartTip-frame-fill": compStyle.getPropertyValue('--smartTip-frame-fill').trimLeft() || 'white',
+								"--smartTip-font-color": compStyle.getPropertyValue('--smartTip-font-color').trimLeft() || 'black',
+								"--smartTip-border-color": compStyle.getPropertyValue('--smartTip-border-color').trimLeft() || 'white',
+								"--smartTip-border-radius": compStyle.getPropertyValue('--smartTip-border-radius').trimLeft() || '5'
+								}
+							},
+						title: {
+							uuid: evt.target.dataset['sttipUuid'],
+							name: evt.target.dataset['sttipName'],
+							link: evt.target.dataset['sttipLinkto']
+						}
+					};
+					SmartTooltip.showTooltip(data, evt);
 				});
+				element.addEventListener('mousemove', function(evt) {
+					SmartTooltip.moveTooltip(evt);
+				});
+				element.addEventListener('mouseout', function(evt) {
+					SmartTooltip.hideTooltip(evt);
+				});
+			});
+
+		} else if (typeof id === 'string' && typeof tmplFileName === 'string') {
+			loadTemplate(id[1], tmplFileName, this);
 		}
 	}
 
@@ -1469,7 +1528,7 @@ class SmartTooltip {
 						x = ownerRect.right + 16;
 						y = ownerRect.top;
 					} else {
-						// offset the tooltip window by 6 pixels to right and down from mouse pointer  
+						// offset the tooltip window by 6 pixels to right and down from mouse pointer
 						x += 6;
 						y += 6;
 					}
@@ -1563,10 +1622,24 @@ class SmartTooltip {
 			// merge default options with custom
 			this._o = Object.assign({}, SmartTooltipElement.defOptions(), this._ownOptions, ttipdef.opt);
 
-			if (this._ttipPinMe) {
-				// if pinMe button was hided by previous element, then show it!
-				this._ttipPinMe.removeAttribute('display');
-			}
+			// if (this._ttipPinMe) {
+			// 	// if pinMe button was hided by previous element, then show it!
+			// 	this._ttipPinMe.removeAttribute('display');
+			// }
+
+			// if (typeof data.options === 'object') {
+			// 	// apply custom options
+			// 	this.setOptions(data.options, data.id);
+
+			// 	this._svg.removeAttribute('style');
+			// 	if (typeof data.options.cssVars === 'object') {
+			// 		const css = data.options.cssVars;
+			// 		for (let key in css) {
+			// 			this._svg.style.setProperty(key, css[key]);
+			// 		}
+			// 	}
+			// 	SmartTooltipElement.convertNumericProps(this._o);
+			// }
 
 			// set pinned and fixed mode by 'startFrom' parameter
 			this._pinned = this._fixed = false;
@@ -1612,9 +1685,11 @@ class SmartTooltip {
 						}
 					}
 				}
+
+
 				// calculate the maximum width of tooltip window
 				let startX = 0, maxWidth, textWidth, prevElemRef = null;
-				if (this._ttipTitleGroup) { 
+				if (this._ttipTitleGroup) {
 					// in case of 'pie' template, the dataset parameter 'x' defines the start X position of title, description and value elements
 					startX = parseInt(this._ttipTitleGroup.dataset['x']);
 				}
@@ -1662,7 +1737,7 @@ class SmartTooltip {
 						}
 						SmartTooltip.wrapText(sText, this._ttipDescription, textWidth || maxWidth, this._o.descrTextAlign);
 					}
-					
+
 					// render value as colored rectangle with width proportional to value
 					if (this._ttipValue) {
 						// before drawing lets do the similar trick with own position
@@ -1688,7 +1763,7 @@ class SmartTooltip {
 							// if you want to show an absolute value, you must! to specify the maximum value
 							// in case the maximum is not specified, there are two cases:
 							// 1. in case of value greather than 100, this is an absolute value and I will show it just as a maximum value
-							// 2. in another case it is a percent from 100%, so I will show it as percents and append the character '%' after value '100' on the scale  
+							// 2. in another case it is a percent from 100%, so I will show it as percents and append the character '%' after value '100' on the scale
 							if(typeof data.title.valueMax !== 'undefined' && data.title.valueMax !== null) {
 								onepct = valueWidth / data.title.valueMax;
 								if (this._ttipValue50 && this._ttipValue100) {
@@ -1707,9 +1782,9 @@ class SmartTooltip {
 									this._ttipValue100.textContent = '100%';
 								}
 							}
-							// set the width of rectangle in proportional to value 
+							// set the width of rectangle in proportional to value
 							this._ttipValue.setAttribute('width', data.title.value * onepct || 0);
-							// append or remove the appropriated class name and dataset attribute 'linkto' with specified link url 
+							// append or remove the appropriated class name and dataset attribute 'linkto' with specified link url
 							if (data.title.link) {
 								this._ttipValue.classList.add('sttip-linked');
 								this._ttipValue.dataset['linkto'] = data.title.link;
@@ -1725,7 +1800,7 @@ class SmartTooltip {
 					}
 				}
 
-				// render 'targets' as legend table and pie diagram 
+				// render 'targets' as legend table and pie diagram
 				if (this._ttipLegendGroup) {
 					if (typeof data.targets === 'object' && data.targets.length) {
 						// create the temporary array for working with it (sorting,...)
@@ -1822,7 +1897,7 @@ class SmartTooltip {
 						this._ttipLegendGroup ? (this._ttipLegendGroup.style['display'] = 'none') : {};
 						this._ttipDiagram ? (this._ttipDiagram.style['display'] = 'none') : {};
 						this._ttipDiagramGroup ? (this._ttipDiagramGroup.style['display'] = 'none') : {};
-						
+
 						const legendGroupX = this._ttipLegendGroup? (parseInt(this._ttipLegendGroup.dataset['x'])) : 0;
 						const titleGroupX  = this._ttipTitleGroup ? (parseInt(this._ttipTitleGroup.dataset['x'])) : 0;
 						this._ttipTitleGroup ? (this._ttipTitleGroup.setAttributeNS(null, 'transform', `translate(-${titleGroupX - legendGroupX}, 0)`)) : {};
@@ -1873,7 +1948,7 @@ class SmartTooltip {
 					}
 				}
 				// calculate the bounding size of rendered tooltip window and resize the main frame rectangle
-				// 10 pixels added to the bounding width and height are the gaps! 
+				// 10 pixels added to the bounding width and height are the gaps!
 				ttipBoundGroupBR = this._ttipBoundGroup.getBoundingClientRect();
 				this._ttipFrame.setAttributeNS(null, 'width', ttipBoundGroupBR.width + 10);
 				this._ttipFrame.setAttributeNS(null, 'height', ttipBoundGroupBR.height + 10);
@@ -1943,7 +2018,7 @@ class SmartTooltipElement extends HTMLElement {
 			'title-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
 			'descr-text-wrap',		// sets the line width (line-width attribute) for wrapped text. in case of 0 wrap disabled. the defaul is 1.5em
 			'descr-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
-			
+
 
 			'sort-by',				// sort parameter for multiple data. May contains one of the data parameters name: 'asis', 'name', 'value', 'color', 'state'. the default is 'value'
 			'sort-dir',				// sorting direction parameter. the default value is '1', wich means from low to high. Possible values: -1, 0, 1.
@@ -2050,7 +2125,7 @@ class SmartTooltipElement extends HTMLElement {
 
 		const numericProps =  [
 			'isRun',
-			'zoom',
+			'frameScale',
 			'sortDir',
 			'delayIn',
 			'delayOut',

@@ -30,22 +30,40 @@
             cursor: pointer;
             background-color: rgb(19, 147, 233);
         }
-        .sttip {
+
+        .autotoolip > label {
             font-weight: bold;
             cursor: pointer;
         }
-        .sttip-options {
-            --smartTip-frame-fill: "#000";
-            --smartTip-font-color: "#fff";
-            --smartTip-legend-fill:"#000";
-            --smartTip-border-radius: "10";
+        .sttip-options-1 {
+            --smartTip-frame-fill: pink;
+            --smartTip-font-color: magenta;
+            --smartTip-border-color: magenta;
+            --smartTip-border-radius: 10;
+            --smartTip-template: simple;
+            --smartTip-start-from: float;
+			--smartTip-is-shadow: 1;
+			--smartTip-title-text-wrap: 360;
+			--smartTip-title-text-align: justify;
+
+        }
+        .sttip-options-02 {
+            --smartTip-frame-fill: rgb(255, 220, 192);
+            --smartTip-font-color: rgb(253, 127, 24);
+            --smartTip-border-color: rgb(230, 134, 55);
+            --smartTip-border-radius: 5;
+            --smartTip-template: simple;
+            --smartTip-start-from: float;
+			--smartTip-is-shadow: 0;
+			--smartTip-title-text-wrap: 360;
+			--smartTip-title-text-align: justify;
         }
     </style>
 
 </head>
 
 <body>
-    <smart-tooltip is-shadow="0" start-from="pinned" template="pie">Sorry, yout browser does not support custom elements.</smart-tooltip>
+    <smart-tooltip is-shadow="0" start-from="float" template="pie">Sorry, yout browser does not support custom elements.</smart-tooltip>
     <div class="container">
         <h2>How to effectively use SmartTooltip<br>(I highly recommend that you read this paragraph, and practice in managing this smart widget)!</h2>
 
@@ -66,13 +84,15 @@
         hendrerit suscipit. Aenean <label id="l15" class="label-green">ut</label> pulvinar diam, nec sagittis diam. Duis at gravida lacus,
         nec convallis erat. Etiam sit amet <label id="l16" class="label-green">quam</label>. Nulla facilisi.</p>
         <div class="autotoolip">
-            <label class="sttip sttip-options" data-sttip="Tooltip for One">One</label> <br>
-            <label class="sttip sttip-options" data-sttip="Tooltip for Two">Two</label> <br>
-            <label class="sttip sttip-options" data-sttip="Tooltip for Three">Three</label> <br>
-            <label class="sttip sttip-options" data-sttip="Tooltip for Four">Four</label> <br>
-            <label class="sttip sttip-options" data-sttip="Tooltip for Five">Five</label> <br>
-            <label class="sttip sttip-options" data-sttip="Tooltip for Six">Six</label> <br>
-            <label class="sttip sttip-options" data-sttip="Tooltip for Seven">Seven</label> <br>
+
+            Init by <label id="op-ex1-01" class="ex sttip-options-1" data-sttip-linkto="https://www.google.com/search?q=index" data-sttip-uuid="uuid-op-ex1-01" data-sttip-name="Initialized by index for id='op-ex1-01'">Index</label>,
+                 by <label id="op-ex1-02" class="ex sttip-options-2" data-sttip-linkto="https://www.google.com/search?q=classname" data-sttip-uuid="uuid-op-ex1-02" data-sttip-name="Initialized by class name">Class Name</label> and
+                    <label id="op-ex1-03" class="ex sttip-options-3" data-sttip-auto="1" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-uuid="uuid-op-ex1-03" data-sttip-name="Automaticaly initailization">Automatically</label> initializated<br>
+            Init by <label id="op-ex2-01" class="ex sttip-options-1" data-sttip-linkto="https://www.google.com/search?q=index" data-sttip-uuid="uuid-op-ex2-01" data-sttip-name="Initialized by index for id='op-ex2-01'">Index</label>,
+                 by <label id="op-ex2-02" class="ex sttip-options-2" data-sttip-linkto="https://www.google.com/search?q=classname" data-sttip-uuid="uuid-op-ex2-02" data-sttip-name="Initialized be class name">Class Name</label> and
+                    <label id="op-ex2-03" class="ex sttip-options-3" data-sttip-auto="1" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-uuid="uuid-op-ex2-03" data-sttip-name="Automaticaly initailization">Automatically</label> initializated<br>
+
+
         </div>
         <p>Now point the <label id="m1" class="label-blue">mouse</label> at the word "Integer", located near the <label id="m2" class="label-blue">word</label> "accumsan".
         It is <label id="m3" class="label-blue">possible</label> that a pop-up tooltip window will close it. This is because <label id="m4" class="label-blue">the</label>
@@ -84,8 +104,9 @@
     </div>
     <script>
         (function() {
-            SmartTooltip.initTooltip();
-
+            // todo: implement and call function SmartTooltipElem.initCtrls instead of next calls
+            SmartTooltip.initTooltip(['op-ex1-01', 'op-ex2-01'], 'simple');
+            SmartTooltip.initTooltip('','', 'sttip-options-2');
         })();
     </script>
     <script>
