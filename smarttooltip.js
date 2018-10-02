@@ -251,12 +251,13 @@ class SmartTooltip {
 				case 'VALUE':	{ frmStr += data.value || ''; break; }
 				case 'UNITS':	{ frmStr += data.units || ''; break; }
 				case 'COLOR':	{ frmStr += data.color || ''; break; }
-				case 'NAME':	{ frmStr += data.name  || data.legend || ''; break; }
 				case 'LEGEND':  { frmStr += data.legend || data.name || ''; break; }
 				case 'LINK':	{ frmStr += data.link || ''; break; }
 				case 'TOOLTIP': { frmStr += data.tooltip || ''; break; }
 				case 'STATE':	{ frmStr += data.state || ''; break; }
 				case 'DESCR':	{ frmStr += data.descr || ''; break; }
+				case 'NAME':	{ frmStr += data.name || ''; break; }
+				case 'TITLE':	{ frmStr += data.tooltip || data.text || data.name || ''; break; }
 				default:
 					frmStr += tokens[i];
 					break;
@@ -1034,6 +1035,7 @@ class SmartTooltip {
 		if (!window.SmartTooltip) {
 			this._initialized = 0;	// _initEvents will change in on true after initializing all needed parts
 			this._pinned = false;
+			this._fixed = false;
 			this._instance = '';	// contains current tooltip template string
 			// this map will contains pairs: widget id (as key) : object with template file name (as name) and loaded external tooltip template string (as template)
 			// the function 'show(...)' will load the corresponding template into the body of the tooltip and fill it with the data received from outside
@@ -1277,7 +1279,7 @@ class SmartTooltip {
 		}
 		let noMouseActive = delay || window.SmartTooltip._o.delayOn;
 		window.SmartTooltip._interval = setTimeout(function () {
-			if (window.SmartTooltip._pinned) {
+			if (window.SmartTooltip._fixed) {
 				return;
 			}
 			if (typeof window.SmartTooltip.isDrag !== 'undefined' && window.SmartTooltip.isDrag === true) {
@@ -1290,7 +1292,7 @@ class SmartTooltip {
 		}, noMouseActive); // 5000 - 5 second for showing tooltip on the screen without any mouse activity on it
 	}
 
-	_applyCustomOptions(options = null) {
+	_applyCustomOptions(options = null, forId) {
 		if (options) {
 			if (typeof options.startFrom === 'string') {
 				this._o.startFrom = options.startFrom;
@@ -1338,38 +1340,39 @@ class SmartTooltip {
 					this._fixed = false;
 				}
 			}
-			if (typeof options.sortBy === 'string') {
-				this._o.sortBy = options.sortBy;
-			}
-			if (typeof options.frameScale === 'number') {
-				this._o.frameScale = options.frameScale;
-			}
-			if (typeof options.isShadow === 'number') {
-				this._o.isShadow = options.isShadow;
-			}
-			if (typeof options.position === 'object') {
-				this._o.position = options.position;
-			}
 			if (this._ttipRunIndicator && options.isRun !== 'undefined') {
 				this._o.isRun = options.isRun;
 				// change apperiance of run indicator (if exists)
 				this._ttipRunIndicator.classList.replace((this._o.isRun ? 'sttip-stop' : 'sttip-run'), (this._o.isRun ? 'sttip-run' : 'sttip-stop'));
 			}
-			if (typeof options.template === 'string') {
-				this._o.template = options.template;
-			}
-			if (typeof options.titleTextAlign === 'string') {
-				this._o.titleTextAlign = options.titleTextAlign;
-			}
-			if (typeof options.descrTextAlign === 'string') {
-				this._o.descrTextAlign = options.descrTextAlign;
-			}
-			if (typeof options.titleTextWrap !== 'undefined') {
-				this._o.titleTextWrap = Number(options.titleTextWrap);
-			}
-			if (typeof options.descrTextWrap !== 'undefined') {
-				this._o.descrTextWrap = Number(options.descrTextWrap);
-			}
+
+			// if (typeof options.sortBy === 'string') {
+			// 	this._o.sortBy = options.sortBy;
+			// }
+			// if (typeof options.frameScale === 'number') {
+			// 	this._o.frameScale = options.frameScale;
+			// }
+			// if (typeof options.isShadow === 'number') {
+			// 	this._o.isShadow = options.isShadow;
+			// }
+			// if (typeof options.position === 'object') {
+			// 	this._o.position = options.position;
+			// }
+			// if (typeof options.template === 'string') {
+			// 	this._o.template = options.template;
+			// }
+			// if (typeof options.titleTextAlign === 'string') {
+			// 	this._o.titleTextAlign = options.titleTextAlign;
+			// }
+			// if (typeof options.descrTextAlign === 'string') {
+			// 	this._o.descrTextAlign = options.descrTextAlign;
+			// }
+			// if (typeof options.titleTextWrap !== 'undefined') {
+			// 	this._o.titleTextWrap = Number(options.titleTextWrap);
+			// }
+			// if (typeof options.descrTextWrap !== 'undefined') {
+			// 	this._o.descrTextWrap = Number(options.descrTextWrap);
+			// }
 		}
 	}
 
@@ -1632,6 +1635,11 @@ class SmartTooltip {
 			// init events
 			this._initEvents();
 
+			/// update definition options
+			if (typeof data.options === 'object') {
+				this.setOptions(data.options, data.id);
+			}
+
 			// merge default options with custom
 			this._o = Object.assign({}, CustomProperties.defOptions(), this._ownOptions, ttipdef.opt);
 
@@ -1688,7 +1696,7 @@ class SmartTooltip {
 				this._ttipRef.style['display'] = '';
 				// apply optional parameters to this._o (options)
 				if (typeof data.options === 'object') {
-					this._applyCustomOptions(data.options);
+					this._applyCustomOptions(data.options, data.id);
 
 					this._svg.removeAttribute('style');
 					if (typeof data.options.cssVars === 'object') {
@@ -1708,7 +1716,12 @@ class SmartTooltip {
 				}
 				maxWidth = parseInt(this._ttipFrame.getAttribute('width'));
 				if (startX) {
-					maxWidth = maxWidth - startX;
+					// before calculating lets check the future position of title
+					if (this._ttipLegendGroup && typeof data.targets === 'object' && data.targets.length) {
+						maxWidth = maxWidth - startX;
+					} else {
+						maxWidth = maxWidth - 20;
+					}
 				}
 
 				// render title section of data
@@ -1726,8 +1739,10 @@ class SmartTooltip {
 						if (this._o.titleTextWrap) {
 							textWidth = Math.min(maxWidth, this._o.titleTextWrap)
 						}
-						SmartTooltip.wrapText(sText, this._ttipTitle, textWidth || maxWidth, this._o.titleTextAlign);
-						prevElemRef = this._ttipTitle;
+						if (sText) {
+							SmartTooltip.wrapText(sText, this._ttipTitle, textWidth || maxWidth, this._o.titleTextAlign);
+							prevElemRef = this._ttipTitle;
+						}
 					}
 
 					// render description - formatted value
@@ -1748,7 +1763,10 @@ class SmartTooltip {
 						if (this._o.descrTextWrap) {
 							textWidth = Math.min(maxWidth, this._o.descrTextWrap)
 						}
-						SmartTooltip.wrapText(sText, this._ttipDescription, textWidth || maxWidth, this._o.descrTextAlign);
+						if (sText) {
+							SmartTooltip.wrapText(sText, this._ttipDescription, textWidth || maxWidth, this._o.descrTextAlign);
+							prevElemRef = this._ttipDescription;
+						}
 					}
 
 					// render value as colored rectangle with width proportional to value
@@ -1963,7 +1981,7 @@ class SmartTooltip {
 				// calculate the bounding size of rendered tooltip window and resize the main frame rectangle
 				// 10 pixels added to the bounding width and height are the gaps!
 				ttipBoundGroupBR = this._ttipBoundGroup.getBoundingClientRect();
-				this._ttipFrame.setAttributeNS(null, 'width', ttipBoundGroupBR.width + 10);
+				// this._ttipFrame.setAttributeNS(null, 'width', ttipBoundGroupBR.width + 10);
 				this._ttipFrame.setAttributeNS(null, 'height', ttipBoundGroupBR.height + 10);
 
 				// add if enabled shadow effect
@@ -1995,7 +2013,7 @@ class SmartTooltip {
 			return;
 		}
 		if (this._ttipRef && this._ttipGroup) {
-			if (!this._pinned) {
+			if (!this._fixed) {
 				if (evt && (evt.ctrlKey || evt.metaKey || evt.buttons == 2)) {
 					console.log("out with buttons");
 				}
@@ -2087,7 +2105,7 @@ class CustomProperties {
 
 	static defOptions() {			// see getCustomProperties() for descriptions
 		return {
-			titleFormat:			'$NAME$',
+			titleFormat:			'$TITLE$',
 			descrFormat:			'$DESCR$',
 			legendFormat:			'$LEGEND$',
 			legendValFormat:		'$VALUE$',
@@ -2271,18 +2289,7 @@ class SmartTooltipElement extends HTMLElement {
         if (classNames) {
             classNames = classNames.split(' ')
             document.addEventListener("DOMContentLoaded", function(evt) {
-                const ids = [], tmpls = [];
-                for (let i  in classNames) {
-                    const elms = document.getElementsByClassName(classNames[i]);
-                    for (let el of elms) {
-                            let id = el.getAttribute('id');
-                            if (id) {
-                                ids.push(id);
-                                tmpls.push('');
-                            }
-                    }
-                }
-                SmartTooltip.initTooltip(ids, tmpls);
+				CustomProperties.registerElementsByClassName(document, classNames);
             });
         }
 	}

@@ -43,13 +43,15 @@
             --sttip-var-font-color: rgb(253, 127, 24);
             --sttip-var-border-color: rgb(230, 134, 55);
             --sttip-var-border-radius: 5;
+            /* --sttip-title-format: Tooltip text for $NAME; */
         }
         .tmpl {
             --sttip-var-frame-fill: rgb(202, 245, 177);
             --sttip-var-font-color: rgb(46, 95, 18);
             --sttip-var-border-color: rgb(76, 163, 26);
             --sttip-var-border-radius: 2;
-            --sttip-is-shadow: 1;
+            --sttip-template: simple;
+            /* --sttip-is-shadow: 0; */
             --sttip-show-mode: float;
         }
     </style>
@@ -57,16 +59,16 @@
 </head>
 
 <body>
-    <smart-tooltip is-shadow="0" className="h3 h2 tmpl">Sorry, yout browser does not support custom elements.</smart-tooltip>
+    <smart-tooltip className="h3 h2 tmpl">Sorry, yout browser does not support custom elements.</smart-tooltip>
     <div class="container">
-        <h2 id="header-1" class="h2" data-sttip-name="SmartTooltip - больше, чем просто tooltip!">SmartTooltip - больше, чем просто tooltip!</h2>
+        <h2 id="header-1" class="h2" data-sttip-tooltip="SmartTooltip - больше, чем просто tooltip!">SmartTooltip - больше, чем просто tooltip!</h2>
         <p>SmartTooltip это продвинутый виджет, позволяющий реализовать отображение подсказок на веб странице. Умеет автоматически регистрироваться,
             на лету подстраивается под контекст, умеет отображать несколько шаблонов и имеет простой API. <br>
         На данный момент реализовано два внутренних шаблона: "pie" и "simple", показанные на рисунке. Выбор шаблона определяется опциональным параметром <b><code>options.template</code></b>.<br>
         Значением этого параметра может быть либо название предопределенного шаблона, либо полное имя файла в формате SVG, в котором реализован требуемый заказчику шаблон. Предполагается, что шаблоны будут поставляться в комплекте с виджетом.<br>
         Назначение отдельных частей шаблонов описано ниже. </p>
         <p>
-        <img src="float-template.png" width="350px" id="float" data-sttip-name="'float' template description" class="tmpl"><img src="simple-template.png" width="350px" id="simple" class="tmpl" data-sttip-name="'simple' template description">
+        <img src="float-template.png" width="350px" id="float" data-sttip-tooltip="'float' template description" class="tmpl"><img src="simple-template.png" width="350px" id="simple" class="tmpl" data-sttip-tooltip="'simple' template description">
         <div>
         <b>View mode</b> - режимы отображения. Последовательное нажатие на данный элемент управления переводит подсказку в один из следующих режимов отображения:
         <ul>
@@ -80,11 +82,11 @@
         <b>close</b> - кнопка, позволяющая принудительно закрыть окно подсказки.<br>
         </div>
         <b>tooltip-title</b> - заголовок, может содержать любой текст, включая значение параметра "<b><code>title.value</code></b>".
-         Формат определяется опциональным параметром "<b><code>title.titleFormat</code></b>".
-         По умолчанию выводится параметр "<b><code>title.legend</code></b>" или "<b><code>title.name</code></b>".<br>
+         Формат определяется опциональным параметром "<b><code>title.titleFormat</code></b>". Его значение по умалчанию - $TITLE$
+         обозначающее вывод параметра "<b><code>title.tooltip</code></b>" или "<b><code>title.text</code></b>" или "<b><code>title.name</code></b>".<br>
         <b>tooltip-description</b> - описание, может содержать любой текст, включая значение параметра "<b><code>title.value</code></b>".
-         Формат определяется опциональным параметром "<b><code>title.descrFormat</code></b>".
-          По умолчанию выводится параметр "<b><code>title.value</code></b>".<br>
+         Формат определяется опциональным параметром "<b><code>title.descrFormat</code></b>". Значение по умолчанию: $DESCR$, обозначающее вывод
+         параметра "<b><code>title.descr</code></b>".<br>
         <b>linear value inidicator</b> - линейный индикатор, отображает значение параметра "<b><code>title.value</code></b>" в виде полоски, окрашенной в цвет,
         определяемый параметром "<b><code>title.color</code></b>" или "<b><code>title.status</code></b>". <br>
         Шкала индикатора отображает проценты, если значение параметра "<b><code>title.value</code></b>" меньше, либо равно 100.
@@ -156,11 +158,13 @@
     --sttip-var-font-color: magenta;
     --sttip-title-text-wrap: 360;
     --sttip-title-text-align: justify;
+
+    --sttip-title-format: Tooltip text for $NAME;
 } .... &lt/style>
 
 в секции body
-&ltlabel id="e-01" class="ex sttip-options-1" data-sttip-linkto="url" data-sttip-uuid="uuid-e-01" data-sttip-name="Tooltip text for e-01'">Element e-01&lt/label>
-&ltlabel id="e-02" class="ex sttip-options-1" data-sttip-linkto="url" data-sttip-uuid="uuid-e-02" data-sttip-name="Tooltip text for e-02'">Element e-02&lt/label>
+&ltlabel id="e-01" class="ex sttip-options-1" data-sttip-linkto="url" data-sttip-uuid="uuid-e-01" data-sttip-name="e-01'">Element e-01&lt/label>
+&ltlabel id="e-02" class="ex sttip-options-1" data-sttip-linkto="url" data-sttip-uuid="uuid-e-02" data-sttip-name="e-02'">Element e-02&lt/label>
 </body>
 
 &ltscript>
@@ -181,6 +185,7 @@
             <li>цвет текста - пурпрный</li>
             <li>автоматический перенос текста при его длинне, большей чем 360 пикселей</li>
             <li>выравнивание текста по ширине</li>
+            <li>форматировать значение title и использовать параметр name</li>
         </ul>
         При наведении указателя мыши на эти элементы, будет отображаться окно подсказки. Данные для подсказки будут вычитываться из параметров
         "<b><code>data-sttip-linkto</code></b>", "<b><code>data-sttip-uuid</code></b>" и "<b><code>data-sttip-name</code></b>".</p>
@@ -202,9 +207,9 @@
         }
         </code></pre>
 
-        Разумеется, чтобы виджет SmartTooltip знал, что показывать в подсказке, вам придется заполнять аттрибуты dataset. Как минимум один: "<b><code>data-sttip-name</code></b>"</p>
+        Разумеется, чтобы виджет SmartTooltip знал, что показывать в подсказке, вам придется заполнять аттрибуты dataset. Как минимум один: "<b><code>data-sttip-tooltip</code></b>"</p>
 
-        <h3 id="header-4" class="h3" data-sttip-name="Инициализация из секции JavaScript кода">Инициализация из секции JavaScript кода</h3>
+        <h3 id="header-4" class="h3" data-sttip-tooltip="Инициализация из секции JavaScript кода">Инициализация из секции JavaScript кода</h3>
 
 
         Функция "<b><code>SmartTooltip.initTooltip(..)</code></b>" принимает два необязательных параметра "<b><code>id</code></b>" и "<b><code>templateFileName</code></b>".

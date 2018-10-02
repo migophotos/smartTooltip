@@ -25,31 +25,39 @@
         .label-green {
             cursor: pointer;
             background-color: rgb(19, 233, 19);
+
+            --sttip-var-frame-fill: rgb(200, 255, 192);
+            --sttip-delay-on: 10000;
+            --sttip-descr-format: Delay On = 10s.;
+			--sttip-descr-text-align: center;
+
         }
         .label-blue {
             cursor: pointer;
             background-color: rgb(19, 147, 233);
         }
-
+        
         .sttip-options-1 {
             font-weight: bold;
             cursor: pointer;
             --sttip-var-frame-fill: pink;
-            --sttip-var-font-color: magenta;
+            --sttip-var-font-color: rgb(114, 36, 114);
             --sttip-var-border-color: magenta;
-            --sttip-var-border-radius: 10;
+            --sttip-var-border-radius: 4;
+            --sttip-var-border-width: 4;
+
             --sttip-template: simple;
             --sttip-start-from: float;
 			--sttip-is-shadow: 1;
 			--sttip-title-text-wrap: 360;
-			--sttip-title-text-align: justify;
+			/* --sttip-title-text-align: justify; */
 
         }
         .sttip-options-2 {
             font-weight: bold;
             cursor: pointer;
             --sttip-var-frame-fill: rgb(255, 220, 192);
-            --sttip-var-font-color: rgb(253, 127, 24);
+            --sttip-var-font-color: rgb(172, 83, 10);
             --sttip-var-border-color: rgb(230, 134, 55);
             --sttip-var-border-radius: 5;
             --sttip-template: simple;
@@ -57,6 +65,16 @@
             --sttip-show-mode: pinned;
 			--sttip-is-shadow: 0;
 			--sttip-title-text-align: left;
+            --sttip-descr-format: Default Delay On = 2s., Default Delay Out = 250ms;
+            --sttip-descr-text-align: center;
+        }
+        .sttip {
+            cursor: pointer;
+            --sttip-var-frame-fill: rgb(255, 192, 192);
+            --sttip-delay-on: 5000;
+            --sttip-delay-out: 1000;
+            --sttip-descr-format: Delay On = 5s., Delay Out = 1s.;
+			--sttip-descr-text-align: center;
         }
     </style>
 
@@ -87,10 +105,10 @@
 
             Init by <label id="op-ex1-01" class="ex sttip-options-1" data-sttip-linkto="https://www.google.com/search?q=index" data-sttip-name="Initialized by index for id='op-ex1-01'">Index</label>,
                  by <label id="op-ex1-02" class="ex sttip-options-2" data-sttip-linkto="https://www.google.com/search?q=classname" data-sttip-name="Initialized by class name for id='op-ex1-02">Class Name</label> and
-                    <label id="op-ex1-03" class="ex sttip" data-sttip-auto="1" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-name="Was initialized automaticaly">Automatically</label> initializated<br>
+                    <label id="op-ex1-03" class="ex sttip" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-name="Was initialized automaticaly">Automatically initializated</label><br>
             Init by <label id="op-ex2-01" class="ex sttip-options-1" data-sttip-linkto="https://www.google.com/search?q=index" data-sttip-uuid="uuid-op-ex2-01" data-sttip-name="Initialized by index for id='op-ex2-01'">Index</label>,
                  by <label id="op-ex2-02" class="ex sttip-options-2" data-sttip-linkto="https://www.google.com/search?q=classname" data-sttip-uuid="uuid-op-ex2-02" data-sttip-name="Initialized by class name for id='op-ex2-02">Class Name</label> and
-                    <label id="op-ex2-03" class="ex sttip" data-sttip-auto="1" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-uuid="uuid-op-ex2-03" data-sttip-name="Was initialized automaticaly">Automatically</label> initializated<br>
+                    <label id="op-ex2-03" class="ex sttip" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-uuid="uuid-op-ex2-03" data-sttip-name="Was initialized automaticaly">Automatically initializated</label><br>
 
 
         </div>
@@ -198,11 +216,13 @@
                         frameScale: 1,
                         isShadow: 1,
                         frameScale: 0.7,
+                        delayOn: 10000,
+                        delayOut: 500,
                         // titleTextWrap: 200,
                         // titleTextAlign: 'left',
                         // descrTextAlign: 'left',
                         template: 'pie',
-                        showMode: 'pinned',
+                        // showMode: 'pinned',
                         isRun: 1,
                         cssVars: {
                             "--sttip-var-border-color": "rgb(19, 147, 233)"
