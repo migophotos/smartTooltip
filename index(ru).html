@@ -62,35 +62,36 @@
         Опциональный параметр <code>options.scale</code> определяет общий размер окна подсказки и может варьироваться от 1 до 0. По умолчанию используется значение 0.8 На практике, значения меньше 0.5 неприменимы.<br>
         Опциональные параметры, определяющие внешний вид окна подсказки, задаются объектом "options.cssVars". По умолчанию, эти параметры имеют следующие значения:<br>
         <pre><code>
-        --smartTip-mouse-delay: 250;
-        --smartTip-mouse-noactive: 2000;
+        --sttip-mouse-delay: 250;
+        --sttip-mouse-noactive: 2000;
 
-        --smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
-        --smartTip-font-stretch: condensed;
-        --smartTip-font-color: #666;
-        --smartTip-scale-font-size: 12px;
-        --smartTip-legend-font-size: 22px;
-        --smartTip-title-font-size: 30px;
-        --smartTip-descr-font-size: 28px;
+        --sttip-var-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+        --sttip-var-font-stretch: condensed;
+        --sttip-var-font-size: 12px;
+        --sttip-var-font-color: #666;
+        --sttip-var-scale-size: 12px;
+        --sttip-var-legend-size: 22px;
+        --sttip-var-title-size: 30px;
+        --sttip-var-descr-size: 28px;
 
-        --smartTip-title-text-wrap: 0;
-        --smartTip-title-text-align: left;
-        --smartTip-descr-text-wrap: 1.5em;
-        --smartTip-descr-text-align: left;
+        --sttip-title-text-wrap: 0;
+        --sttip-title-text-align: left;
+        --sttip-descr-text-wrap: 1.5em;
+        --sttip-descr-text-align: left;
 
-        --smartTip-run-color: #0f0;
-        --smartTip-stop-color: #f00;
-        --smartTip-def-color: #666;
+        --sttip-var-run-color: #0f0;
+        --sttip-var-stop-color: #f00;
+        --sttip-var-def-color: #666;
 
-        --smartTip-frame-fill: #fff;
-        --smartTip-frame-opacity: 0.95;
-        --smartTip-frame-scale: 0.8;
-        --smartTip-border-color: none;
-        --smartTip-border-width: 2;
-        --smartTip-border-radius: 2;
+        --sttip-var-frame-fill: #fff;
+        --sttip-var-frame-opacity: 0.95;
+        --sttip-frame-scale: 0.8;
+        --sttip-var-border-color: none;
+        --sttip-var-border-width: 2;
+        --sttip-var-border-radius: 2;
 
-        --smartTip-legend-fill: #fff;
-        --smartTip-legend-stroke: #666;
+        --sttip-var-legend-fill: #fff;
+        --sttip-var-legend-stroke: #666;
         </code></pre>
         Включение элемента SmartTooltip на страницу может осуществляется двумя способами: декларативно, с помощью добавления пользовательского элемента <code>smart-tooltip</code> в любом месте страницы, либо посредством вызова статической функции <code>SmartTooltip.initTooltip(..)</code> или <code>SmartTooltip.showTooltip(..)</code> из секции JavaScript кода.<br>
         Функция <code>SmartTooltip.initTooltip(..)</code> принимает два необязательных параметра <code>id</code> <code>templateFileName</code>. При отсутствии параметров происходит загрузка встроенного шаблона окна подсказки, а при наличии параметров - асинхронная загрузка указанного шаблона (в SVG формате) и привязка его к элементу страницы, определяемого по указанному <code>id</code>.<br>Важное дополнение: внешние шаблоны имеют предопределенную структуру и поставляются в комплекте с элементом SmartTooltip.<br><br>
@@ -134,34 +135,35 @@
             // passing into it a similar object, needed in the adjustment, variables.
             // SmartTooltip.changeLookAndFill(cssVars={});
             cssVars: {
-                "--smartTip-mouse-delay": 250;
-                "--smartTip-mouse-noactive": 2000;
-                "--smartTip-font-family": "'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif";
-                "--smartTip-font-stretch": "condensed",
-                "--smartTip-font-color": "#9dc2de",
-                "--smartTip-scale-font-size": "12px",
-                "--smartTip-legend-font-size": "22px",
-                "--smartTip-title-font-size": "30px",
-                "--smartTip-descr-font-size": "28px",
+                "--sttip-mouse-delay": 250;
+                "--sttip-mouse-noactive": 2000;
+                "--sttip-var-font-family": "'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif";
+                "--sttip-var-font-stretch": "condensed",
+                "--sttip-var-font-color": "#9dc2de",
+                "--sttip-var-font-size": "12px",
+                "--sttip-var-scale-size": "12px",
+                "--sttip-var-legend-size": "22px",
+                "--sttip-var-title-size": "30px",
+                "--sttip-var-descr-size": "28px",
 
-                --smartTip-title-text-wrap: 0;
-                --smartTip-title-text-align: left;
-                --smartTip-descr-text-wrap: 1.5em;
-                --smartTip-descr-text-align: left;
+                --sttip-title-text-wrap: 0;
+                --sttip-title-text-align: left;
+                --sttip-descr-text-wrap: 1.5em;
+                --sttip-descr-text-align: left;
 
-                "--smartTip-run-color": "#0f0",
-                "--smartTip-stop-color": "#f00",
-                "--smartTip-def-color": "#666",
+                "--sttip-var-run-color": "#0f0",
+                "--sttip-var-stop-color": "#f00",
+                "--sttip-var-def-color": "#666",
 
-                "--smartTip-frame-fill": "#fff",
-                "--smartTip-frame-opacity": "0.95",
-                "--smartTip-frame-scale": "0.8",
-                "--smartTip-border-color": "none",
-                "--smartTip-border-width": "2",
-                "--smartTip-border-radius": "2",
+                "--sttip-var-frame-fill": "#fff",
+                "--sttip-var-frame-opacity": "0.95",
+                "--sttip-frame-scale": "0.8",
+                "--sttip-var-border-color": "none",
+                "--sttip-var-border-width": "2",
+                "--sttip-var-border-radius": "2",
 
-                "--smartTip-legend-fill": "#fff",
-                "--smartTip-legend-stroke": "#666"
+                "--sttip-var-legend-fill": "#fff",
+                "--sttip-var-legend-stroke": "#666"
             }
         },
         title: {

@@ -36,27 +36,28 @@
             cursor: pointer;
         }
         .sttip-options-1 {
-            --smartTip-frame-fill: pink;
-            --smartTip-font-color: magenta;
-            --smartTip-border-color: magenta;
-            --smartTip-border-radius: 10;
-            --smartTip-template: simple;
-            --smartTip-start-from: float;
-			--smartTip-is-shadow: 1;
-			--smartTip-title-text-wrap: 360;
-			--smartTip-title-text-align: justify;
+            --sttip-var-frame-fill: pink;
+            --sttip-var-font-color: magenta;
+            --sttip-var-border-color: magenta;
+            --sttip-var-border-radius: 10;
+            --sttip-template: simple;
+            --sttip-start-from: float;
+			--sttip-is-shadow: 1;
+			--sttip-title-text-wrap: 360;
+			--sttip-title-text-align: justify;
 
         }
-        .sttip-options-02 {
-            --smartTip-frame-fill: rgb(255, 220, 192);
-            --smartTip-font-color: rgb(253, 127, 24);
-            --smartTip-border-color: rgb(230, 134, 55);
-            --smartTip-border-radius: 5;
-            --smartTip-template: simple;
-            --smartTip-start-from: float;
-			--smartTip-is-shadow: 0;
-			--smartTip-title-text-wrap: 360;
-			--smartTip-title-text-align: justify;
+        .sttip-options-2 {
+            --sttip-var-frame-fill: rgb(255, 220, 192);
+            --sttip-var-font-color: rgb(253, 127, 24);
+            --sttip-var-border-color: rgb(230, 134, 55);
+            --sttip-var-border-radius: 5;
+            --sttip-template: simple;
+            /* --sttip-start-from: float; */
+            --sttip-show-mode: pinned;
+			--sttip-is-shadow: 0;
+			/* --sttip-title-text-wrap: 360; */
+			--sttip-title-text-align: left;
         }
     </style>
 
@@ -86,10 +87,10 @@
         <div class="autotoolip">
 
             Init by <label id="op-ex1-01" class="ex sttip-options-1" data-sttip-linkto="https://www.google.com/search?q=index" data-sttip-uuid="uuid-op-ex1-01" data-sttip-name="Initialized by index for id='op-ex1-01'">Index</label>,
-                 by <label id="op-ex1-02" class="ex sttip-options-2" data-sttip-linkto="https://www.google.com/search?q=classname" data-sttip-uuid="uuid-op-ex1-02" data-sttip-name="Initialized by class name">Class Name</label> and
+                 by <label id="op-ex1-02" class="ex sttip-options-2" data-sttip-linkto="https://www.google.com/search?q=classname" data-sttip-uuid="uuid-op-ex1-02" data-sttip-name="Initialized by class name for id='op-ex1-02">Class Name</label> and
                     <label id="op-ex1-03" class="ex sttip-options-3" data-sttip-auto="1" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-uuid="uuid-op-ex1-03" data-sttip-name="Automaticaly initailization">Automatically</label> initializated<br>
             Init by <label id="op-ex2-01" class="ex sttip-options-1" data-sttip-linkto="https://www.google.com/search?q=index" data-sttip-uuid="uuid-op-ex2-01" data-sttip-name="Initialized by index for id='op-ex2-01'">Index</label>,
-                 by <label id="op-ex2-02" class="ex sttip-options-2" data-sttip-linkto="https://www.google.com/search?q=classname" data-sttip-uuid="uuid-op-ex2-02" data-sttip-name="Initialized be class name">Class Name</label> and
+                 by <label id="op-ex2-02" class="ex sttip-options-2" data-sttip-linkto="https://www.google.com/search?q=classname" data-sttip-uuid="uuid-op-ex2-02" data-sttip-name="Initialized by class name for id='op-ex2-02">Class Name</label> and
                     <label id="op-ex2-03" class="ex sttip-options-3" data-sttip-auto="1" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-uuid="uuid-op-ex2-03" data-sttip-name="Automaticaly initailization">Automatically</label> initializated<br>
 
 
@@ -105,8 +106,11 @@
     <script>
         (function() {
             // todo: implement and call function SmartTooltipElem.initCtrls instead of next calls
-            SmartTooltip.initTooltip(['op-ex1-01', 'op-ex2-01'], 'simple');
-            SmartTooltip.initTooltip('','', 'sttip-options-2');
+            // SmartTooltip.initTooltip(['op-ex1-01', 'op-ex2-01'], 'simple');
+            // SmartTooltip.initTooltip('','', 'sttip-options-2');
+
+            CustomProperties.registerElementsByIds(document, ['op-ex1-01', 'op-ex2-01']);
+            CustomProperties.registerElementsByClassName(document, ['sttip-options-2']);
         })();
     </script>
     <script>
@@ -158,10 +162,10 @@
                         template: 'pie',
                         //startFrom: 'float',
                         cssVars: {
-                            "--smartTip-frame-fill": "#000",
-                            "--smartTip-font-color": "#fff",
-                            "--smartTip-legend-fill":"#000",
-                            "--smartTip-border-radius": "10"
+                            "--sttip-var-frame-fill": "#000",
+                            "--sttip-var-font-color": "#fff",
+                            "--sttip-var-legend-fill":"#000",
+                            "--sttip-var-border-radius": "10"
                         }
                         // , frameScale: 1
                     },
@@ -169,7 +173,7 @@
                         uuid: `uuid-${evt.target.id}`,
                         name: `${evt.target.textContent}`,
                         value: val,
-                        valueMax: valueMax,
+                        max: valueMax,
                         color: cr,
                         link: `https://www.google.com/search?q=${evt.target.textContent}`,
 
@@ -204,7 +208,7 @@
                         showMode: 'pinned',
                         isRun: 1,
                         cssVars: {
-                            "--smartTip-mouse-noactive": 5000
+                            "--sttip-mouse-noactive": 5000
                         } },
                     title: {
                         uuid: `uuid-${evt.target.id}`,
@@ -255,10 +259,10 @@
                         descrTextWrap: 360,
                         descrTextAlign: 'justify',
                         cssVars: {
-                            "--smartTip-frame-fill": "rgb(200, 255, 255)"
-                            // "--smartTip-legend-fill":"#000",
-                            , "--smartTip-font-color": "rgb(19, 147, 233)"
-                            , "--smartTip-border-color": "rgb(19, 147, 233)"
+                            "--sttip-var-frame-fill": "rgb(200, 255, 255)"
+                            // "--sttip-var-legend-fill":"#000",
+                            , "--sttip-var-font-color": "rgb(19, 147, 233)"
+                            , "--sttip-var-border-color": "rgb(19, 147, 233)"
                         }
                     },
                     title: {

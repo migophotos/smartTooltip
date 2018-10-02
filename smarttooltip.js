@@ -59,27 +59,26 @@
 			// passing into it a similar object, needed in the adjustment, variables.
 			// SmartTooltip.changeLookAndFill(cssVars={});
 			cssVars: {
-				"--smartTip-font-family": "'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif";
-				"--smartTip-font-stretch": c"ondensed",
-				"--smartTip-font-color": "#9dc2de",
-				"--smartTip-scale-font-size": "12px",
-				"--smartTip-legend-font-size": "22px",
-				"--smartTip-title-font-size": "20px",
-				"--smartTip-descr-font-size": "18px",
+				"--sttip-var-font-family": "'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif";
+				"--sttip-var-font-stretch": c"ondensed",
+				"--sttip-var-font-color": "#9dc2de",
+				"--sttip-var-scale-size": "12px",
+				"--sttip-var-legend-size": "18px",
+				"--sttip-var-title-size": "22px",
+				"--sttip-var-descr-size": "18px",
 
-				"--smartTip-run-color": "#0f0",
-				"--smartTip-stop-color": "#f00",
-				"--smartTip-def-color": "#666",
+				"--sttip-var-run-color": "#0f0",
+				"--sttip-var-stop-color": "#f00",
+				"--sttip-var-def-color": "#666",
 
-				"--smartTip-frame-fill": "#fff",
-				"--smartTip-frame-opacity": "0.95",
-				"--smartTip-frame-scale": "0.8",
-				"--smartTip-border-color": "none",
-				"--smartTip-border-width": "2",
-				"--smartTip-border-radius": "2",
+				"--sttip-var-frame-fill": "#fff",
+				"--sttip-var-frame-opacity": "0.95",
+				"--sttip-var-border-color": "none",
+				"--sttip-var-border-width": "2",
+				"--sttip-var-border-radius": "2",
 
-				"--smartTip-legend-fill": "#fff",
-				"--smartTip-legend-stroke": "#666"
+				"--sttip-var-legend-fill": "#fff",
+				"--sttip-var-legend-stroke": "#666"
 			}
 		},
 		title: {
@@ -89,8 +88,8 @@
 			descr:	'Description'
 			value:  'By default this value will be shown in description line (under title). But by using descrFormat and/or titleFormat
 					 you can change that behavior. By default, it is assumed that the value of this parameter is specified in percents.
-					 In case you want to display the actual value, add the 'valueMax' parameter to correctly calculate the length of the indicator.',
-			valueMax: null,
+					 In case you want to display the actual value, add the 'max' parameter to correct calculation the length of the indicator.',
+			max: null,
 			color:  'state color',
 			link:   'external URL',
 			[titleFormat]: 'title formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ....
@@ -321,64 +320,60 @@ class SmartTooltip {
 								overflow: visible;
 								vector-effect: non-scaling-stroke;
 
-								--smartTip-mouse-delay: 250;
-								--smartTip-mouse-noactive: 2000;
+								--sttip-var-font-family: 'Arial', 'DIN Condensed', 'Noteworthy', sans-serif;
+								--sttip-var-font-stretch: condensed;
+								--sttip-var-font-color: #666;
+								--sttip-var-scale-size: 12px;
+								--sttip-var-legend-size: 18px;
+								--sttip-var-title-size: 22px;
+								--sttip-var-descr-size: 18px;
 
-								--smartTip-font-family: 'Arial', 'DIN Condensed', 'Noteworthy', sans-serif;
-								--smartTip-font-stretch: condensed;
-								--smartTip-font-color: #666;
-								--smartTip-scale-font-size: 18px;
-								--smartTip-legend-font-size: 18px;
-								--smartTip-title-font-size: 20px;
-								--smartTip-descr-font-size: 18px;
+								--sttip-var-run-color: #0f0;
+								--sttip-var-stop-color: #f00;
+								--sttip-var-def-color: #666;
 
-								--smartTip-run-color: #0f0;
-								--smartTip-stop-color: #f00;
-								--smartTip-def-color: #666;
+								--sttip-var-frame-fill: #fff;
+								--sttip-var-frame-opacity: 0.95;
+								--sttip-var-border-color: none;
+								--sttip-var-border-width: 2;
+								--sttip-var-border-radius: 2;
 
-								--smartTip-frame-fill: #fff;
-								--smartTip-frame-opacity: 0.95;
-								--smartTip-frame-scale: 0.8;
-								--smartTip-border-color: none;
-								--smartTip-border-width: 2;
-								--smartTip-border-radius: 2;
-
-								--smartTip-legend-fill: #fff;
-								--smartTip-legend-stroke: #666;
+								--sttip-var-legend-fill: #fff;
+								--sttip-var-legend-stroke: #666;
 
 
 								--legend-frm-border-width: 2;
-								--legend-frm-border-radius: var(--smartTip-border-radius, 2);
-								--legend-frm-border-color: var(--smartTip-legend-stroke, #666);
-								--legend-frm-fill: var(--smartTip-legend-fill, #ffc6c6);
+								--legend-frm-border-radius: var(--sttip-var-border-radius, 2);
+								--legend-frm-border-color: var(--sttip-var-legend-stroke, #666);
+								--legend-frm-fill: var(--sttip-var-legend-fill, #ffc6c6);
 
 								--no-color:	none;
-								--run-color: var(--smartwdg-run-color, green);
-								--stop-color: var(--smartwdg-stop-color, red);
+								--run-color: var(--sttip-var-run-color, green);
+								--stop-color: var(--sttip-var-stop-color, red);
 							}
 							.sttip-scale-line {
 								fill: none;
-								stroke: var(--smartTip-font-color);
+								stroke: var(--sttip-var-font-color);
 								stroke-width: 2;
 								stroke-linecap: butt;
 							}
 							text.sttip-text {
-								font-family: var(--smartTip-font-family);
-								font-stretch: var(--smartTip-font-stretch);
+								font-family: var(--sttip-var-font-family);
+								font-stretch: var(--sttip-var-font-stretch);
 								pointer-events: none;
-								fill: var(--smartTip-font-color);
+								fill: var(--sttip-var-font-color);
 							}
 							.sttip-scale-text {
-								font-size:var(--smartTip-scale-font-size, 12px);
+								font-size:var(--sttip-var-scale-size, 12px);
 							}
 							.sttip-title {
-								font-size: var(--smartTip-title-font-size, 20px);
+								font-size: var(--sttip-var-title-size, 22px);
 							}
 							.sttip-description {
-								font-size: var(--smartTip-descr-font-size, 18px);
+								font-size: var(--sttip-var-descr-size, 18px);
 							}
 							.sttip-legend-value, .sttip-legend-name {
-								font-size: var(--smartTip-legend-font-size, 18px);
+								font-size: var(--sttip-var-legend-size, 18px);
 							}
 							.sttip-legend-rect {
 								fill:var(--legend-frm-fill);
@@ -390,12 +385,12 @@ class SmartTooltip {
 								ry: var(--legend-frm-border-radius);
 							}
 							.sttip-frame {
-								fill:var(--smartTip-frame-fill);
-								fill-opacity: var(--smartTip-frame-opacity, 1);
-								stroke: var(--smartTip-border-color);
-								stroke-width: var(--smartTip-border-width);
-								rx: var(--smartTip-border-radius);
-								ry: var(--smartTip-border-radius);
+								fill:var(--sttip-var-frame-fill);
+								fill-opacity: var(--sttip-var-frame-opacity, 1);
+								stroke: var(--sttip-var-border-color);
+								stroke-width: var(--sttip-var-border-width);
+								rx: var(--sttip-var-border-radius);
+								ry: var(--sttip-var-border-radius);
 							}
 
 							#SmartTooltip.hidden {
@@ -414,7 +409,7 @@ class SmartTooltip {
 							}
 							.sttip-value-gauge {
 								fill: #ff9191;
-								stroke: var(--smartTip-font-color, black);
+								stroke: var(--sttip-var-font-color, black);
 							}
 							.sttip-run {
 								fill: var(--run-color);
@@ -466,8 +461,8 @@ class SmartTooltip {
 							}
 
 							#pinMe {
-								fill: var(--smartTip-frame-fill, gray);
-								stroke: var(--smartTip-font-color, black);
+								fill: var(--sttip-var-frame-fill, gray);
+								stroke: var(--sttip-var-font-color, black);
 								stroke-width: 1.5;
 								transition: all 500ms ease-in-out;
 							}
@@ -476,17 +471,17 @@ class SmartTooltip {
 								fill: lightgray;
 							}
 							#frmBtns rect {
-								fill: var(--smartTip-frame-fill, none);
-								stroke: var(--smartTip-font-color, black);
+								fill: var(--sttip-var-frame-fill, none);
+								stroke: var(--sttip-var-font-color, black);
 								stroke-width: 0.5;
 								pointer-events: bounding-box;
 								cursor: pointer;
 							}
 							#frmBtns path {
-								stroke: var(--smartTip-font-color, black);
+								stroke: var(--sttip-var-font-color, black);
 							}
 							#frmBtns text {
-								stroke: var(--smartTip-font-color, black);
+								stroke: var(--sttip-var-font-color, black);
 							}
 
 							#frmBtns rect:hover {
@@ -501,7 +496,7 @@ class SmartTooltip {
 							}
 							#pinMe.sttip-custom #tippex {
 								display: block;
-								stroke: var(--smartTip-frame-fill, white);
+								stroke: var(--sttip-var-frame-fill, white);
 								stroke-width: 1.5;
 							}
 							#pinMe.sttip-pinned {
@@ -625,58 +620,48 @@ class SmartTooltip {
 								overflow: visible;
 								vector-effect: non-scaling-stroke;
 
-								--smartTip-mouse-delay: 250;
-								--smartTip-mouse-noactive: 2000;
+								--sttip-var-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+								--sttip-var-font-stretch: condensed;
+								--sttip-var-font-color: #666;
+								--sttip-var-scale-size: 12px;
+								--sttip-var-legend-size: 18px;
+								--sttip-var-title-size: 22px;
+								--sttip-var-descr-size: 18px;
 
-								--smartTip-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
-								--smartTip-font-stretch: condensed;
-								--smartTip-font-color: #666;
-								--smartTip-title-font-size: 24px;
-								--smartTip-descr-font-size: 18px;
+								--sttip-var-run-color: #0f0;
+								--sttip-var-stop-color: #f00;
+								--sttip-var-def-color: #666;
 
-								--smartTip-run-color: #0f0;
-								--smartTip-stop-color: #f00;
-								--smartTip-def-color: #666;
+								--sttip-var-frame-fill: #fff;
+								--sttip-var-frame-opacity: 0.95;
+								--sttip-var-border-color: none;
+								--sttip-var-border-width: 2;
+								--sttip-var-border-radius: 2;
 
-								--smartTip-frame-fill: #fff;
-								--smartTip-frame-opacity: 0.95;
-								--smartTip-frame-scale: 0.8;
-								--smartTip-border-color: none;
-								--smartTip-border-width: 2;
-								--smartTip-border-radius: 2;
-
-								--smartTip-legend-fill: #fff;
-								--smartTip-legend-stroke: #666;
-
-
-								--legend-frm-border-width: 2;
-								--legend-frm-border-radius: var(--smartTip-border-radius, 2);
-								--legend-frm-border-color: var(--smartTip-legend-stroke, #666);
-								--legend-frm-fill: var(--smartTip-legend-fill, #ffc6c6);
 
 								--no-color:	none;
-								--run-color: var(--smartwdg-run-color, green);
-								--stop-color: var(--smartwdg-stop-color, red);
+								--run-color: var(--sttip-var-run-color, green);
+								--stop-color: var(--sttip-var-stop-color, red);
 							}
 							text.sttip-text {
-								font-family: var(--smartTip-font-family);
-								font-stretch: var(--smartTip-font-stretch);
+								font-family: var(--sttip-var-font-family);
+								font-stretch: var(--sttip-var-font-stretch);
 								pointer-events: none;
-								fill: var(--smartTip-font-color);
+								fill: var(--sttip-var-font-color);
 							}
 							.sttip-title {
-								font-size: var(--smartTip-title-font-size, 24px);
+								font-size: var(--sttip-var-title-size, 22px);
 							}
 							.sttip-description {
-								font-size: var(--smartTip-descr-font-size, 18px);
+								font-size: var(--sttip-var-descr-size, 18px);
 							}
 							.sttip-frame {
-								fill:var(--smartTip-frame-fill);
-								fill-opacity: var(--smartTip-frame-opacity, 1);
-								stroke: var(--smartTip-border-color);
-								stroke-width: var(--smartTip-border-width);
-								rx: var(--smartTip-border-radius);
-								ry: var(--smartTip-border-radius);
+								fill:var(--sttip-var-frame-fill);
+								fill-opacity: var(--sttip-var-frame-opacity, 1);
+								stroke: var(--sttip-var-border-color);
+								stroke-width: var(--sttip-var-border-width);
+								rx: var(--sttip-var-border-radius);
+								ry: var(--sttip-var-border-radius);
 							}
 							#SmartTooltip.hidden {
 								transition: all 500ms ease-in-out;
@@ -691,8 +676,8 @@ class SmartTooltip {
 								transition:all 1s;
 							}
 							#pinMe {
-								fill: var(--smartTip-frame-fill, gray);
-								stroke: var(--smartTip-font-color, black);
+								fill: var(--sttip-var-frame-fill, gray);
+								stroke: var(--sttip-var-font-color, black);
 								stroke-width: 1.5;
 								transition: all 500ms ease-in-out;
 							}
@@ -701,17 +686,17 @@ class SmartTooltip {
 								fill: lightgray;
 							}
 							#frmBtns rect {
-								fill: var(--smartTip-frame-fill, none);
-								stroke: var(--smartTip-font-color, black);
+								fill: var(--sttip-var-frame-fill, none);
+								stroke: var(--sttip-var-font-color, black);
 								stroke-width: 0.5;
 								pointer-events: bounding-box;
 								cursor: pointer;
 							}
 							#frmBtns path {
-								stroke: var(--smartTip-font-color, black);
+								stroke: var(--sttip-var-font-color, black);
 							}
 							#frmBtns text {
-								stroke: var(--smartTip-font-color, black);
+								stroke: var(--sttip-var-font-color, black);
 							}
 
 							#frmBtns rect:hover {
@@ -725,7 +710,7 @@ class SmartTooltip {
 							}
 							#pinMe.sttip-custom #tippex {
 								display: block;
-								stroke: var(--smartTip-frame-fill, white);
+								stroke: var(--sttip-var-frame-fill, white);
 								stroke-width: 1.5;
 							}
 							#pinMe.sttip-pinned {
@@ -1290,7 +1275,7 @@ class SmartTooltip {
 		if (window.SmartTooltip._interval) {
 			clearTimeout(window.SmartTooltip._interval);
 		}
-		let noMouseActive = delay || Number(getComputedStyle(window.SmartTooltip._svg).getPropertyValue('--smartTip-mouse-noactive'));
+		let noMouseActive = delay || window.SmartTooltip._o.delayOn;
 		window.SmartTooltip._interval = setTimeout(function () {
 			if (window.SmartTooltip._pinned) {
 				return;
@@ -1394,8 +1379,8 @@ class SmartTooltip {
 	 * @param {*} tmplFileName May contains the full file name with '.svg' extention, or predefined name of internal template.
 	 * 							Currently only two internal templates are implemented: 'simple' and 'pie'
 	 */
-	init(id, tmplFileName = null, className) {
-		function loadTemplate(id, templateName, ref) {
+	init(id, tmplFileName = null) {
+		function loadTemplate(id, tmplFileName, ref) {
 			if (id && tmplFileName && ref) {
 				ref._definitions.register(id, tmplFileName);
 
@@ -1421,39 +1406,67 @@ class SmartTooltip {
 		this._ttipGroup = null;
 
 		if (typeof id === 'object' && typeof id.length === 'number' && id.length) {
+			let tmpl = '';
 			for (let i = 0; i < id.length; i++) {
-				loadTemplate(id[1], tmplFileName, this);
+				if (tmplFileName && typeof tmplFileName === 'string') {
+					tmpl = tmplFileName;
+				} else if (typeof tmplFileName === 'object' && typeof tmplFileName.length === 'number' && typeof tmplFileName[i] !== 'undefined') {
+					tmpl = tmplFileName[i];
+				} else {
+					tmpl = '';
+				}
+				loadTemplate(id[1], tmpl, this);
 			}
 			// add event listeners for each specified element
 			id.forEach(eid => {
 				const element = document.getElementById(eid);
 				element.addEventListener('mouseover', function(evt) {
+					const options = {
+						tRect: evt.target.getBoundingClientRect(),
+						cssVars: {}
+					};
+					
 					const elem = document.getElementById(evt.target.id);
 					const compStyle = getComputedStyle(elem);
 
+					const customProp = CustomProperties.getCustomProperties();
+					for (let n = 0; n < customProp.length; n++) {
+						if (customProp[n].startsWith('var-')) {
+							let cssKey = `${CustomProperties.getPrefix()}${customProp[n]}`;
+							let cssVal = compStyle.getPropertyValue(cssKey);
+							if (cssVal) {
+								cssVal = cssVal.trimLeft();
+								options.cssVars[`${cssKey}`] = cssVal;
+							}
+						} else {
+							const prop = `${CustomProperties.getPrefix()}${customProp[n]}`;
+							const propKey = CustomProperties.customProp2Param(`${customProp[n]}`);
+							let propVal = compStyle.getPropertyValue(prop);
+							if (propVal) {
+								propVal = propVal.trimLeft();
+								options[propKey] = propVal;
+							}
+						}
+					}
+					CustomProperties.convertNumericProps(options);
+					// read dataset title parameters:
+					// uuid, name, value, max, color, link, descr
+					function lowerFirst(match, offset, string) { return match.toLowerCase(); }
+					const title = {};
+
+					for (let key in evt.target.dataset) {
+						if (key.startsWith('sttip')) {
+							const sttipKey = key.replace('sttip', '');
+							const param = sttipKey.replace(/[A-Z]/, lowerFirst);
+							title[param] = evt.target.dataset[key];
+						}
+					}
 					const data = {
 						id: evt.target.id,
 						x:  evt.clientX,
 						y: evt.clientY,
-						options: {
-							// todo: implement smart algorithm this stupid code!
-							template: compStyle.getPropertyValue('--smartTip-template').trimLeft() || 'simple',
-							startFrom: compStyle.getPropertyValue('--smartTip-start-from').trimLeft() || "float",
-							isShadow: compStyle.getPropertyValue('--smartTip-is-shadow').trimLeft() || 1,
-							titleTextWrap: compStyle.getPropertyValue('--smartTip-title-text-wrap').trimLeft() || 360,
-							titleTextAlign: compStyle.getPropertyValue('--smartTip-title-text-align').trimLeft() || 'center',
-							cssVars: {
-								"--smartTip-frame-fill": compStyle.getPropertyValue('--smartTip-frame-fill').trimLeft() || 'white',
-								"--smartTip-font-color": compStyle.getPropertyValue('--smartTip-font-color').trimLeft() || 'black',
-								"--smartTip-border-color": compStyle.getPropertyValue('--smartTip-border-color').trimLeft() || 'white',
-								"--smartTip-border-radius": compStyle.getPropertyValue('--smartTip-border-radius').trimLeft() || '5'
-								}
-							},
-						title: {
-							uuid: evt.target.dataset['sttipUuid'],
-							name: evt.target.dataset['sttipName'],
-							link: evt.target.dataset['sttipLinkto']
-						}
+						title: title,
+						options: options
 					};
 					SmartTooltip.showTooltip(data, evt);
 				});
@@ -1620,7 +1633,7 @@ class SmartTooltip {
 			this._initEvents();
 
 			// merge default options with custom
-			this._o = Object.assign({}, SmartTooltipElement.defOptions(), this._ownOptions, ttipdef.opt);
+			this._o = Object.assign({}, CustomProperties.defOptions(), this._ownOptions, ttipdef.opt);
 
 			// if (this._ttipPinMe) {
 			// 	// if pinMe button was hided by previous element, then show it!
@@ -1638,7 +1651,7 @@ class SmartTooltip {
 			// 			this._svg.style.setProperty(key, css[key]);
 			// 		}
 			// 	}
-			// 	SmartTooltipElement.convertNumericProps(this._o);
+			// 	CustomProperties.convertNumericProps(this._o);
 			// }
 
 			// set pinned and fixed mode by 'startFrom' parameter
@@ -1764,11 +1777,11 @@ class SmartTooltip {
 							// in case the maximum is not specified, there are two cases:
 							// 1. in case of value greather than 100, this is an absolute value and I will show it just as a maximum value
 							// 2. in another case it is a percent from 100%, so I will show it as percents and append the character '%' after value '100' on the scale
-							if(typeof data.title.valueMax !== 'undefined' && data.title.valueMax !== null) {
-								onepct = valueWidth / data.title.valueMax;
+							if(typeof data.title.max !== 'undefined' && data.title.max !== null) {
+								onepct = valueWidth / data.title.max;
 								if (this._ttipValue50 && this._ttipValue100) {
-									this._ttipValue50.textContent = (data.title.valueMax / 2).toFixed(0);
-									this._ttipValue100.textContent = data.title.valueMax;
+									this._ttipValue50.textContent = (data.title.max / 2).toFixed(0);
+									this._ttipValue100.textContent = data.title.max;
 								}
 							} else if (data.title.value > 100) {
 								onepct = valueWidth / data.title.value;
@@ -1987,14 +2000,17 @@ class SmartTooltip {
 					console.log("out with buttons");
 				}
 				// instead of hiding, lets delay for some small interval
-				const delay = Number(getComputedStyle(this._svg).getPropertyValue('--smartTip-mouse-delay')) || 250;
+				const delay = this._o.delayOut;
 				window.SmartTooltip._checkMouseMoving(delay);
 			}
 		}
 	}
 };
 
-class SmartTooltipElement extends HTMLElement {
+class CustomProperties {
+	constructor() {
+
+	};
 	/**
 	 * Returns the prefix for custom properties
 	 */
@@ -2005,7 +2021,7 @@ class SmartTooltipElement extends HTMLElement {
 	 * Returns an array of custom properties. Each of the custom property has corresponding declarative attribute in form first-second == prefix-first-second
 	 * and option parameter with name "firstSecond".
 	 * for example: '--sttip-title-format' property equals to attribute 'title-format' and options.titleFormat parameter, but
-	 * '--sttip-zoom' property equals to 'zoom' attribute and options.zoom parameter.
+	 * '--sttip-template' property equals to 'template' attribute and options.template parameter.
 	 */
 	static getCustomProperties() {
 		return [
@@ -2044,28 +2060,28 @@ class SmartTooltipElement extends HTMLElement {
 			'delay-on',				// the time delay interval when tooltip window will disappear from screen after non-activity of mouse pointer. The default value is 2000 (ms)
 			'transition-in',		// opacity transition in process of showing tooltip window. The default value is 0 means immidiatly showing.
 			'transition-out',		// opacity transition in process of disappearing of tooltip window. The defaul value is immidiatly hiding.
-
-			'font-family',
-			'font-stretch',
-			'font-size',
-			'font-color',			// are font definition parameters. Will be derived from host elemet in case if not specified.
-			'scale-size',			// the size of scales text font, The default is 12px, specified in internal template. If not specified in external template, then
-									// the 'font-size' will be used
-			'legend-size',			// legend font size. Internal template specifies it as 22px.
-			'title-size',			// title font size. Internal template specifies it as 30px.
-			'descr-size',			// description font size. Internal template value is 28px.
-
 			'is-run',				// runtime status indicator. The default value is 0 - 'stopped' in opposite to 1 - 'runned'.
-			'run-color',			// fill color for 'runned' state of runtime status indicator. The default value is '#0f0'.
-			'stop-color',			// fill color for 'stopped' state of runtime status indicator. The default value is '#f00'.
-
-			'frame-fill',			// the fill color of tooltip window background. Internal template defines it as '#fff'.
-			'border-color',			// the border color of tooltip window. Internal template defines it as 'none'.
-			'frame-opacity',		// opacity value of tooltip window background. Internal template defines it as 0.95.
 			'frame-scale',			// template scale parameter. The default is 0.8
-			'border-width',			// the border width of tooltip window. Internal template defines it as 2px.
-			'border-radius',		// the radius of tooltip window. Internal template defines it as 2px.
-			'is-shadow'				// enables shadows around of tooltip window. The default value is 1.
+			'is-shadow',			// enables shadows around of tooltip window. The default value is 1.
+
+			'var-font-family',
+			'var-font-size',
+			'var-font-stretch',
+			'var-font-color',		// are font definition parameters. Will be derived from host elemet in case if not specified.
+			'var-scale-size',		// the size of scales text font, The default is 12px, specified in internal template. If not specified in external template, then the 'font-size' will be used
+			'var-legend-size',		// legend font size. Internal template specifies it as 22px.
+			'var-title-size',		// title font size. Internal template specifies it as 30px.
+			'var-descr-size',		// description font size. Internal template value is 28px.
+			'var-run-color',		// fill color for 'runned' state of runtime status indicator. The default value is '#0f0'.
+			'var-stop-color',		// fill color for 'stopped' state of runtime status indicator. The default value is '#f00'.
+			'var-def-color',		// default color. currently not in use.
+			'var-legend-fill',
+			'var-legend-stroke',
+			'var-frame-fill',		// the fill color of tooltip window background. Internal template defines it as '#fff'.
+			'var-border-color',		// the border color of tooltip window. Internal template defines it as 'none'.
+			'var-frame-opacity',	// opacity value of tooltip window background. Internal template defines it as 0.95.
+			'var-border-width',		// the border width of tooltip window. Internal template defines it as 2px.
+			'var-border-radius'		// the radius of tooltip window. Internal template defines it as 2px.
 		];
 	}
 
@@ -2094,15 +2110,19 @@ class SmartTooltipElement extends HTMLElement {
 			transitionIn:			0,
 			transitionOut:			0,
 			fontFamily:				'Arial Narrow, DIN Condensed, Noteworthy, sans-serif',
+			fontSize:				'12px',
 			fontStretch:			'condensed',
 			fontSize:				'22px',
 			fontColor:				'#666',
 			scaleSize:				'12px',
-			legendSize:				'22px',
-			titleSize:				'30px',
-			descrSize:				'28px',
+			legendSize:				'18px',
+			titleSize:				'22px',
+			descrSize:				'18px',
 			runColor:				'#0f0',
 			stopColor:				'#f00',
+			defColor:				'#666',
+			legendFill:				'#fff',
+			legensStroke:			'#666',
 			frameFill:				'#fff',
 			borderColor:			'none',
 			frameOpacity:			0.95,
@@ -2133,8 +2153,11 @@ class SmartTooltipElement extends HTMLElement {
 			'transitionIn',
 			'transitionOut',
 			'fillOpacity',
+			'frameOpacity',
 			'borderWidth',
 			'borderRadius',
+			'titleTextWrap',
+			'descrTextWrap',
 			'isShadow'
 		];
 		let count = 0;
@@ -2146,8 +2169,10 @@ class SmartTooltipElement extends HTMLElement {
 					break;
 				}
 			} else {
-				optObj[np] = Number(optObj[np]);
-				count++;
+				if (optObj.hasOwnProperty(np)) {
+					optObj[np] = Number(optObj[np]);
+					count++;
+				}
 			}
 		}
 		return (count > 0);
@@ -2166,19 +2191,63 @@ class SmartTooltipElement extends HTMLElement {
 	}
 
 	static getParams() {
-		const props = SmartTooltipElement.getCustomProperties();		// get an array of custom properties
+		const props = CustomProperties.getCustomProperties();		// get an array of custom properties
 		const paramsArray = [];
 		for (let prop of props) {
-			paramsArray.push(SmartTooltipElement.customProp2Param(prop));
+			paramsArray.push(CustomProperties.customProp2Param(prop));
 		}
 		return paramsArray;
 	}
 
+	static registerElementsByIds(doc, ids = []) {
+		const curDocument = doc || document;
+		if (ids.length) {
+			const tmpls = [];
+			for (let n = 0; n < ids.length; n++) {
+				const el = curDocument.getElementById(ids[n]);
+				if (el) {
+					let tmpl = getComputedStyle(el).getPropertyValue('--sttip-template');
+					if (tmpl) {
+						tmpl = tmpl.trimLeft();
+					} else {
+						tmpl = el.dataset['template'] || '';
+					}
+					tmpls.push(tmpl);
+				}
+			}
+			if (tmpls.length == ids.length) {
+				SmartTooltip.initTooltip(ids, tmpls);
+			}
+		}
+	}
+	static registerElementsByClassName(doc, cls = []) {
+		const curDocument = doc || document;
+		const ids = [], tmpls = [];
+		for (let n = 0; n < cls.length; n++) {
+			const elms = curDocument.getElementsByClassName(cls[n]);
+			for (let el of elms) {
+				let tmpl = getComputedStyle(el).getPropertyValue('--sttip-template');
+				if (tmpl) {
+					tmpl = tmpl.trimLeft();
+				} else {
+					tmpl = el.dataset['template'] || '';
+				}
+				let id = el.getAttribute('id');
+				if (id) {
+					ids.push(id);
+					tmpls.push(tmpl);
+				}
+			}
+		}
+		SmartTooltip.initTooltip(ids, tmpls);
+	}
+}
 
+class SmartTooltipElement extends HTMLElement {
 	constructor() {
 		super();
-		// this._o = { ...SmartTooltipElement.defOptions() };
-		this._o = Object.assign({}, SmartTooltipElement.defOptions());
+		// this._o = { ...CustomProperties.defOptions() };
+		this._o = Object.assign({}, CustomProperties.defOptions());
 
 		// check browser for ShadowDOM v1 specification
 		const supportsShadowDOMV1 = !!HTMLElement.prototype.attachShadow;
@@ -2197,7 +2266,7 @@ class SmartTooltipElement extends HTMLElement {
 
 	connectedCallback() {
 		// initialize all internal here
-		SmartTooltipElement.convertNumericProps(this._o);
+		CustomProperties.convertNumericProps(this._o);
 	}
 	disconnectedCallback() {
 		// uninitialize all internals here
@@ -2207,15 +2276,15 @@ class SmartTooltipElement extends HTMLElement {
 	 * Attributes changing processing. Sinchronize all changed attributes with JS vars
 	 */
 	static get observedAttributes() {
-		return 	SmartTooltipElement.getCustomProperties();
+		return 	CustomProperties.getCustomProperties();
 	}
 	attributeChangedCallback(name, oldValue, newValue) {
 		const sttip = window.SmartTooltip;
 		// update own property
-		const paramName = SmartTooltipElement.customProp2Param(name)
+		const paramName = CustomProperties.customProp2Param(name)
 		this._o[paramName] = newValue;
 		// validate it (if in list of known numeric)
-		SmartTooltipElement.convertNumericProps(this._o, paramName);
+		CustomProperties.convertNumericProps(this._o, paramName);
 		// all specific work will done in SmartTooltip
 		const opt = {};
 		opt[paramName] = this._o[paramName];
