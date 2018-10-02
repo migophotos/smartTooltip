@@ -30,54 +30,92 @@
             cursor: pointer;
             background-color: rgb(19, 147, 233);
         }
+        .h2 {
+            display: table;
+            --sttip-var-frame-fill: rgb(204, 227, 253);
+            --sttip-var-font-color: rgb(24, 131, 253);
+            --sttip-var-border-color: rgb(24, 131, 253);
+            --sttip-var-border-radius: 5;
+        }
+        .h3 {
+            display: table;
+            --sttip-var-frame-fill: rgb(255, 220, 192);
+            --sttip-var-font-color: rgb(253, 127, 24);
+            --sttip-var-border-color: rgb(230, 134, 55);
+            --sttip-var-border-radius: 5;
+        }
+        .tmpl {
+            --sttip-var-frame-fill: rgb(202, 245, 177);
+            --sttip-var-font-color: rgb(46, 95, 18);
+            --sttip-var-border-color: rgb(76, 163, 26);
+            --sttip-var-border-radius: 2;
+            --sttip-is-shadow: 1;
+            --sttip-show-mode: float;
+        }
     </style>
 
 </head>
 
 <body>
-    <smart-tooltip is-shadow="0">Sorry, yout browser does not support custom elements.</smart-tooltip>
+    <smart-tooltip is-shadow="0" className="h3 h2 tmpl">Sorry, yout browser does not support custom elements.</smart-tooltip>
     <div class="container">
-        <h3>SmartTooltip - больше, чем просто tooltip!</h3>
-        <p>Окно элемента разделено на несколько функциональных регионов, назначение которых показано на рисунке.<br>
-        <img src="tooltip-descr.png" width="350px">
-        <div><b>View mode</b> - режимы отображения. Последовательное нажатие на данный элемент управления переводит подсказку в один из следующих режимов отображения:
-            <ul>
-                <li>плавающий</li> - Окно подсказки появляется и следует за курсором, передвигающимся над элементом.
-                Автоматически прячется через заданный промежуток времени. Кнопка "close" не отображается.
-                <li>приколотый</li> - Окно подсказки появляется справа от элемента и не прячется до принудительного закрытия кнопкой "close".
-                <li>фиксированный</li> - Окно подсказки появляется в заданной пользователем позиции на экране. Не прячется до принудительного закрытия кнопкой "close".
-            </ul>
-            Выбранный режим сохраняется в локальном хранилище браузера и восстанавливается при перезагрузке страницы.<br><br>
-            <b>help</b> - кнопка, открывающая панель помощи и настроек<br>
-            <b>close</b> - кнопка, позволяющая принудительно закрыть окно подсказки.<br>
+        <h2 id="header-1" class="h2" data-sttip-name="SmartTooltip - больше, чем просто tooltip!">SmartTooltip - больше, чем просто tooltip!</h2>
+        <p>SmartTooltip это продвинутый виджет, позволяющий реализовать отображение подсказок на веб странице. Умеет автоматически регистрироваться,
+            на лету подстраивается под контекст, умеет отображать несколько шаблонов и имеет простой API. <br>
+        На данный момент реализовано два внутренних шаблона: "pie" и "simple", показанные на рисунке. Выбор шаблона определяется опциональным параметром <b><code>options.template</code></b>.<br>
+        Значением этого параметра может быть либо название предопределенного шаблона, либо полное имя файла в формате SVG, в котором реализован требуемый заказчику шаблон. Предполагается, что шаблоны будут поставляться в комплекте с виджетом.<br>
+        Назначение отдельных частей шаблонов описано ниже. </p>
+        <p>
+        <img src="float-template.png" width="350px" id="float" data-sttip-name="'float' template description" class="tmpl"><img src="simple-template.png" width="350px" id="simple" class="tmpl" data-sttip-name="'simple' template description">
+        <div>
+        <b>View mode</b> - режимы отображения. Последовательное нажатие на данный элемент управления переводит подсказку в один из следующих режимов отображения:
+        <ul>
+        <li>плавающий</li> - Окно подсказки появляется и следует за курсором, передвигающимся над элементом.
+        Автоматически прячется через заданный промежуток времени. Кнопка "close" не отображается.
+        <li>приколотый</li> - Окно подсказки появляется справа от элемента и не прячется до принудительного закрытия кнопкой "close".
+        <li>фиксированный</li> - Окно подсказки появляется в заданной пользователем позиции на экране. Не прячется до принудительного закрытия кнопкой "close".
+        </ul>
+        Выбранный режим сохраняется в локальном хранилище браузера и восстанавливается при перезагрузке страницы.<br><br>
+        <b>help</b> - кнопка, открывающая панель помощи и настроек<br>
+        <b>close</b> - кнопка, позволяющая принудительно закрыть окно подсказки.<br>
         </div>
-        <b>tooltip-title</b> - заголовок, может содержать любой текст, включая значение параметра <code>title.value</code>. Формат определяется опциональным параметром <code>title.titleFormat</code>. По умолчанию выводится параметр <code>title.legend</code> или <code>title.name</code>.<br>
-        <b>tooltip-description</b> - описание, может содержать любой текст, включая значение параметра <code>title.value</code>. Формат определяется опциональным параметром <code>title.descrFormat</code>. По умолчанию выводится параметр <code>title.value</code>.<br>
-        <b>linear value inidicator</b> - линейный индикатор, отображает значение параметра <code>title.value</code> в виде полоски, окрашенной в цвет, определяемый параметром <code>title.color</code> или <code>title.status</code>. <br>
-        Шкала индикатора отображает проценты, если значение параметра <code>title.value</code> меньше, либо равно 100. Любое значение больше 100 интерпретируется как абсолютное число и масштабируется на шкале, при наличии параметра <code>title.maxValue</code>.
-        При отстутствии этого параметра, значение считается максимумом и отображается соответствующим образом на шкале.<br>Важное дополнение: при отсутствии параметра <code>title.value</code> линейный индикатор не отображается. Ширина индикатора изменяется соответственно ширине <code>tooltip-title</code> или <code>tooltip-description</code>.<br>
-        <b>multitarget pie diagram</b> - графический элемент отображающий значения массива "targets" в виде сегментов круговой диаграммы. Угловая величина сегментов зависит от количества элементов массива "targets" и от конкретного значения параметра <code>target.value</code>. Цвет сегмента определяется параметром <code>target.color</code>. При наличии параметра <code>target.link</code> тип курсора, проходящего над соответствующим сегментом, меняется на указатель и клик левой кнопкой мыши приведет к переходу на указанный ресурс. Сегменты диаграммы сортируются в зависимости от параметра <code>options.sortby</code>, который может принимать значения, описывающие параметр, по которому осуществляется сортировка, такие как: 'asis', 'name', 'value', 'color', 'state'. Значение 'asis' отключает сортировку.<br>Важное дополнение: при отсутствии массива "targets" диаграмма не показыватеся и область заголовка смещается к левому краю окна подсказки.<br>
-        <b>runtime indicator</b> - независимый элемент, отображающий дополнительный статус элемента. Цвет индикатора определяется параметром <code>options.isRun</code> и может быть красным при значении 0 или зеленым, при значении 1.<br>
-        <b>legend</b> - представляет собой список строк. Каждая строка списка отображает один из элементов массива "targets". Цвет квадрата слева, определяется параметром <code>target.color</code>. Текст по центру - параметром <code>target.legend</code> (по умолчанию), либо опциональной форматирующей строкой <code>target.legendFormat</code>. Текст справа - параметром <code>target.value</code> (по умолчанию), либо опциональной форматирующей строкой <code>target.legendValFormat</code>.<br><br>
-        Опциональный параметр <code>options.scale</code> определяет общий размер окна подсказки и может варьироваться от 1 до 0. По умолчанию используется значение 0.8 На практике, значения меньше 0.5 неприменимы.<br>
-        Опциональные параметры, определяющие внешний вид окна подсказки, задаются объектом "options.cssVars". По умолчанию, эти параметры имеют следующие значения:<br>
-        <pre><code>
-        --sttip-mouse-delay: 250;
-        --sttip-mouse-noactive: 2000;
+        <b>tooltip-title</b> - заголовок, может содержать любой текст, включая значение параметра "<b><code>title.value</code></b>".
+         Формат определяется опциональным параметром "<b><code>title.titleFormat</code></b>".
+         По умолчанию выводится параметр "<b><code>title.legend</code></b>" или "<b><code>title.name</code></b>".<br>
+        <b>tooltip-description</b> - описание, может содержать любой текст, включая значение параметра "<b><code>title.value</code></b>".
+         Формат определяется опциональным параметром "<b><code>title.descrFormat</code></b>".
+          По умолчанию выводится параметр "<b><code>title.value</code></b>".<br>
+        <b>linear value inidicator</b> - линейный индикатор, отображает значение параметра "<b><code>title.value</code></b>" в виде полоски, окрашенной в цвет,
+        определяемый параметром "<b><code>title.color</code></b>" или "<b><code>title.status</code></b>". <br>
+        Шкала индикатора отображает проценты, если значение параметра "<b><code>title.value</code></b>" меньше, либо равно 100.
+        Любое значение больше 100 интерпретируется как абсолютное число и масштабируется на шкале, при наличии параметра "<b><code>title.maxValue</code></b>".
+        При отстутствии этого параметра, значение считается максимумом и отображается соответствующим образом на шкале.<br>
+        Важное дополнение: при отсутствии параметра "<b><code>title.value</code></b>" линейный индикатор не отображается.<br>
 
+        <b>multitarget pie diagram</b> - графический элемент отображающий значения массива "targets" в виде сегментов круговой диаграммы.
+        Угловая величина сегментов зависит от количества элементов массива "targets" и от конкретного значения параметра "<b><code>target.value</code></b>".
+        Цвет сегмента определяется параметром "<b><code>target.color</code></b>". При наличии параметра "<b><code>target.link</code></b>" тип курсора, проходящего над соответствующим сегментом,
+        меняется на указатель и клик левой кнопкой мыши приведет к переходу на указанный ресурс. Сегменты диаграммы сортируются в зависимости от параметра "<b><code>options.sortby</code></b>",
+        который может принимать значения, описывающие параметр, по которому осуществляется сортировка, такие как: 'asis', 'name', 'value', 'color', 'state'. Значение 'asis' отключает сортировку.<br>
+        Важное дополнение: при отсутствии массива "targets" диаграмма не показыватеся и область заголовка смещается к левому краю окна подсказки.<br>
+        <b>runtime indicator</b> - независимый элемент, отображающий дополнительный статус элемента. Цвет индикатора определяется параметром "<b><code>options.isRun</code></b>" и
+        может быть красным при значении 0 или зеленым, при значении 1.<br>
+        <b>legend</b> - представляет собой список строк. Каждая строка списка отображает один из элементов массива "targets".
+        Цвет квадрата слева, определяется параметром "<b><code>target.color</code></b>".
+        Текст по центру - параметром "<b><code>target.legend</code></b>" (по умолчанию), либо опциональной форматирующей строкой "<b><code>target.legendFormat</code></b>".
+        Текст справа - параметром "<b><code>target.value</code></b>" (по умолчанию), либо опциональной форматирующей строкой "<b><code>target.legendValFormat</code></b>".<br><br>
+
+        Опциональный параметр "<b><code>options.frameScale</code></b>" определяет общий размер окна подсказки и может варьироваться от 1 до 0. По умолчанию используется значение 0.8 На практике, значения меньше 0.5 неприменимы.<br>
+        Опциональные параметры, определяющие внешний вид окна подсказки, цвет фона, рамки, размеры, задаются объектом "<b><code>options.cssVars</code></b>". По умолчанию, эти параметры имеют следующие значения:<br>
+        <pre><code>
         --sttip-var-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
         --sttip-var-font-stretch: condensed;
-        --sttip-var-font-size: 12px;
         --sttip-var-font-color: #666;
+        --sttip-var-font-size: 12px;
         --sttip-var-scale-size: 12px;
-        --sttip-var-legend-size: 22px;
-        --sttip-var-title-size: 30px;
-        --sttip-var-descr-size: 28px;
-
-        --sttip-title-text-wrap: 0;
-        --sttip-title-text-align: left;
-        --sttip-descr-text-wrap: 1.5em;
-        --sttip-descr-text-align: left;
+        --sttip-var-legend-size: 18px;
+        --sttip-var-title-size: 20px;
+        --sttip-var-descr-size: 18px;
 
         --sttip-var-run-color: #0f0;
         --sttip-var-stop-color: #f00;
@@ -85,7 +123,6 @@
 
         --sttip-var-frame-fill: #fff;
         --sttip-var-frame-opacity: 0.95;
-        --sttip-frame-scale: 0.8;
         --sttip-var-border-color: none;
         --sttip-var-border-width: 2;
         --sttip-var-border-radius: 2;
@@ -93,9 +130,89 @@
         --sttip-var-legend-fill: #fff;
         --sttip-var-legend-stroke: #666;
         </code></pre>
-        Включение элемента SmartTooltip на страницу может осуществляется двумя способами: декларативно, с помощью добавления пользовательского элемента <code>smart-tooltip</code> в любом месте страницы, либо посредством вызова статической функции <code>SmartTooltip.initTooltip(..)</code> или <code>SmartTooltip.showTooltip(..)</code> из секции JavaScript кода.<br>
-        Функция <code>SmartTooltip.initTooltip(..)</code> принимает два необязательных параметра <code>id</code> <code>templateFileName</code>. При отсутствии параметров происходит загрузка встроенного шаблона окна подсказки, а при наличии параметров - асинхронная загрузка указанного шаблона (в SVG формате) и привязка его к элементу страницы, определяемого по указанному <code>id</code>.<br>Важное дополнение: внешние шаблоны имеют предопределенную структуру и поставляются в комплекте с элементом SmartTooltip.<br><br>
-        Функция <code>SmartTooltip.showTooltip(..)</code> принимает два обязательных параметра - <code>data</code> <code>evt</code> и должна быть вызвана в теле обработчика события <code>mouseover</code>. Параметр <code>data</code> представляет собой объект следующей структуры:
+        Включение элемента SmartTooltip на страницу может осуществляться несколькими способами: декларативно, с помощью добавления пользовательского элемента "<b><code>smart-tooltip</code></b>" в любом месте страницы,
+        либо посредством вызова статической функции "<b><code>SmartTooltip.initTooltip(..)</code></b>" или "<b><code>SmartTooltip.showTooltip(..)</code></b>" из секции JavaScript кода.<br>
+        <p>
+        <h3 id="header-2" class="h3" data-sttip-name="Использование декларативного метода">Использование декларативного метода.</h3>
+        Инициализация SmartTooltip, происходит автоматически, а для регистрации элементов HTML, достаточно вызвать статическую функцию<br>
+         <b><code>CustomProperties.registerElementsByIds(document, ['id', 'id']);</code></b> передав ей текущий документ и массив id регистрируемых элементов, либо<br>
+         <b><code>CustomProperties.registerElementsByClassName(document, ['className1', 'className2']);</code></b> передав ей, в качестве второго параметра, массив имен классов.<br>
+        Все элементы страницы, имеющие указанные классы будут зарегистрированы со свойствами, описывающими внешний вид и поведение виджета SmartTooltip, указанными в их стилях. <br>
+        Для более легкого понимания, посмотрите на пример инициализации двух элементов страницы:<br>
+<pre><code>&ltscript src="smarttooltip.js">&lt/script>
+&ltstyle> ...
+.sttip-options-1 {
+    font-weight: bold;
+    cursor: pointer;
+
+    --sttip-template: simple;
+    --sttip-is-shadow: 1;
+    --sttip-start-from: float;
+
+    --sttip-var-frame-fill: pink;
+    --sttip-var-border-color: magenta;
+    --sttip-var-border-radius: 10;
+
+    --sttip-var-font-color: magenta;
+    --sttip-title-text-wrap: 360;
+    --sttip-title-text-align: justify;
+} .... &lt/style>
+
+в секции body
+&ltlabel id="e-01" class="ex sttip-options-1" data-sttip-linkto="url" data-sttip-uuid="uuid-e-01" data-sttip-name="Tooltip text for e-01'">Element e-01&lt/label>
+&ltlabel id="e-02" class="ex sttip-options-1" data-sttip-linkto="url" data-sttip-uuid="uuid-e-02" data-sttip-name="Tooltip text for e-02'">Element e-02&lt/label>
+</body>
+
+&ltscript>
+(function() {
+    CustomProperties.registerElementsByClassName(document, ['sttip-options-1']);
+})();
+&lt/script></code></pre>
+        Данного фрагмента достаточно, чтобы после загрузки страницы, элементы с именем класса "<b><code>sttip-options-1</code></b>" были ассоциированы с виджетом SmartTooltip со свойствами, описанными в стилях, а именно:
+        <ul>
+            <li>элементы будут отображены bold (стандартное свойство cursor)</li>
+            <li>вид курсора над элементами будет изменен на указатель (стандартное свойство cursor)</li>
+            <li>вид шаблона - простой (simple)</li>
+            <li>отображение тени - разрешено</li>
+            <li>режим отображения окна подсказки - float</li>
+            <li>цвет фона подсказки - розовый</li>
+            <li>цвет бордюра - пурпурный</li>
+            <li>радиус закругления - 10 пикселей</li>
+            <li>цвет текста - пурпрный</li>
+            <li>автоматический перенос текста при его длинне, большей чем 360 пикселей</li>
+            <li>выравнивание текста по ширине</li>
+        </ul>
+        При наведении указателя мыши на эти элементы, будет отображаться окно подсказки. Данные для подсказки будут вычитываться из параметров
+        "<b><code>data-sttip-linkto</code></b>", "<b><code>data-sttip-uuid</code></b>" и "<b><code>data-sttip-name</code></b>".</p>
+
+        <h3 id="header-3" class="h3" data-sttip-name="Использование custom элемента smart-tooltip">Использование пользовательского элемента &ltsmart-tooltip></h3>
+        <p></p>Если вам не требуется никакая кастомизация виджета "<b><code>SmartTooltip</code></b>, то инициализацию можно свести к минимуму, путем размещения на странице данного элемента. Просто добавьте в код страницы, следующий фрагмент:<br>
+        <pre><b><code>&ltsmart-tooltip className="sttip">Sorry, yout browser does not support custom elements.&lt/smart-tooltip></code></b></pre>
+        В случае, если браузер не поддерживает такие элементы, после открытия страницы будет видна надпись: Sorry, yout browser does not support custom elements. <br>
+        Ну а если вы пользуетесь продвинутым браузером, то больше ничего для инициализации элементов делать не нужно. Почти. Просто добавьте вашим элементам имя класса "<b><code>sttip</code></b>".<br>
+        Это имя не предустановленное, можете придумать свое если хотите, только укажите его элементу "<b><code>smart-tooltip</code></b>" в атрибуте "<b><code>className</code></b>".<br>
+        Если у вас много разных элементов, для которых нужно показывать подсказку, вы можете указать в этом атрибуте их все, разделив имена классов через пробел.<br>
+        Примечание: вы даже можете изменить вид подсказки с помощью переменных, описанных выше! Просто добавьте их в секцию стилей в определение класса. Например так:<br>
+        <pre><code>
+        .h3 {
+            --sttip-var-frame-fill: rgb(255, 220, 192);
+            --sttip-var-font-color: rgb(253, 127, 24);
+            --sttip-var-border-color: rgb(230, 134, 55);
+            --sttip-var-border-radius: 5;
+        }
+        </code></pre>
+
+        Разумеется, чтобы виджет SmartTooltip знал, что показывать в подсказке, вам придется заполнять аттрибуты dataset. Как минимум один: "<b><code>data-sttip-name</code></b>"</p>
+
+        <h3 id="header-4" class="h3" data-sttip-name="Инициализация из секции JavaScript кода">Инициализация из секции JavaScript кода</h3>
+
+
+        Функция "<b><code>SmartTooltip.initTooltip(..)</code></b>" принимает два необязательных параметра "<b><code>id</code></b>" и "<b><code>templateFileName</code></b>".
+        При отсутствии параметров происходит загрузка встроенного шаблона окна подсказки, а при наличии параметров - асинхронная загрузка указанного шаблона (в SVG формате)
+        и привязка его к элементу страницы, определяемого по указанному "<b><code>id</code></b>".<br>
+        Важное дополнение: внешние шаблоны имеют предопределенную структуру и поставляются в комплекте с элементом SmartTooltip.<br><br>
+        Функция "<b><code>SmartTooltip.showTooltip(..)</code></b>" принимает два обязательных параметра - "<b><code>data</code></b>" и "<b><code>evt</code></b>" и должна быть вызвана в теле обработчика
+        события "<b><code>mouseover</code></b>". Параметр "<b><code>data</code></b>" представляет собой объект следующей структуры:
         <pre><code>var data = {
         id: target identificator,
         x:  evt.clientX,
@@ -106,12 +223,16 @@
             // you may specify here any screen coordinates for positioning SmartTooltip window
             // only top and right parameters used for calculating currently.
             // The position of tooltip window will be moved by 16 px at right side of specified 'right' parameter.
-            tRect: { left: 0, top:0, right:0, bottom:0 },
+            // In case of this parameter not specified, the 'pinned' tooltip will be positioned near mouse cursor (=6 pixels to right and down).
+            position: '',
+
             // run indicator is a small circle near the legend. It's fill color is green, when this parameter equals true and red when false.
             isRun: true / false
 
             // SmartTooltip window will be scaled by specified factor before showing
-            scale: 0.6 - default
+            frameScale: 0.6 - default
+
+            isShadow: 1,        - enables shadows around of tooltip window. The default value is 1
 
             // Sort data by specified parameter. Can be one of the next parameters:
             // "asis" 			- don't sort, default
@@ -122,21 +243,26 @@
             // any other word 	- sort by this "word" parameter. For example: link
             // Note: This option parameter may be specified only once. After this it will be used for all tooltips on the page
             //       If you want to show different tooltips with different sort orders, please specify this parameter each time!
-            sortby: "asis",
+            sortBy: "asis",
+            sortDir: 1, - sorting direction parameter. the default value is '1', wich means from low to high. Possible values: -1, 0, 1
+            titleTextWrap:	0,  - sets the line width (line-width attribute) for wrapped text. in case of 0 the width attribute from &ltrect id="tooltip-frame"> in template is used. the defaul is 0
+            titleTextAlign:	'center', - align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'center'
+            descrTextWrap:	0,  - sets the line width (line-width attribute) for wrapped text. in case of 0 the width attribute from &ltrect id="tooltip-frame"> in template is used. the defaul is 0
+            descrTextAlign:	'justify',- align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'justify'
+            template: 'pie',    - default value for this property is 'pie', wich means the using of internal SmartTooltip pie template definition.
+                                  The custom template may be specified as full url name, for example 'templates/vert_bars.svg'. The case of specified name without
+                                  extension means an internal name of template. Currently only 'pie' and 'simple' are implemented. May be changed by host custom element also.
+            startFrom: 'float'  - this property describes one of three started showing modes: 'float', 'pinned', 'fixed'. By default it equals 'float' and this means
+                                  that user may change it as he wish. In case of optional parameter 'options.showMode', or attribute 'show-mode' specified,
+                                  user cannot change apperance of tooltip window!
+            showMode: ''        - optional parameter, describes show mode and overides 'start-from'
 
-            // here you have an ability to re-style SmartTooltip window by changing svg.sttip css variables
-            // there is no need to define all the style variables, you can specify only some of them or do not specify anything at all,
-            // if you like the look and fill of the built-in template.
-            //
-            // This section of parameters allows you to override the look&fill of SmartTooltip window for each specific element on the HTML page.
+            delayOut: 250,      - the time delay interval when tooltip window will be hided. The default is 250 (ms). This delayed interval will counted after mouse pointer will out from the element
+            delayOn: 2000,      - the time delay interval when tooltip window will disappear from screen after non-activity of mouse pointer. The default value is 2000 (ms)
 
-            // Not yet implemented!
-            // If you have a desire to globally change the look&fill of the SmartTooltip window, then you can use a special static function
-            // passing into it a similar object, needed in the adjustment, variables.
-            // SmartTooltip.changeLookAndFill(cssVars={});
+            // The next section of parameters allows you to override the look and fill of SmartTooltip window for each specific element on the HTML page
+            // There is no need to define all the style variables, you can specify only some of them or do not specify anything at all, if you like the look and fill of the built-in template.
             cssVars: {
-                "--sttip-mouse-delay": 250;
-                "--sttip-mouse-noactive": 2000;
                 "--sttip-var-font-family": "'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif";
                 "--sttip-var-font-stretch": "condensed",
                 "--sttip-var-font-color": "#9dc2de",
@@ -145,23 +271,14 @@
                 "--sttip-var-legend-size": "22px",
                 "--sttip-var-title-size": "30px",
                 "--sttip-var-descr-size": "28px",
-
-                --sttip-title-text-wrap: 0;
-                --sttip-title-text-align: left;
-                --sttip-descr-text-wrap: 1.5em;
-                --sttip-descr-text-align: left;
-
                 "--sttip-var-run-color": "#0f0",
                 "--sttip-var-stop-color": "#f00",
                 "--sttip-var-def-color": "#666",
-
                 "--sttip-var-frame-fill": "#fff",
                 "--sttip-var-frame-opacity": "0.95",
-                "--sttip-frame-scale": "0.8",
                 "--sttip-var-border-color": "none",
                 "--sttip-var-border-width": "2",
                 "--sttip-var-border-radius": "2",
-
                 "--sttip-var-legend-fill": "#fff",
                 "--sttip-var-legend-stroke": "#666"
             }
@@ -174,7 +291,7 @@
             value:  `By default this value will be shown in description line (under title). But by using descrFormat and/or titleFormat
                     you can change that behavior. By default, it is assumed that the value of this parameter is specified in percents.
                     In case you want to display the actual value, add the "valueMax" parameter to correctly calculate the length of the indicator.`,
-            valueMax: null,
+            max:    null,
             value:  'This text will be shown as description',
             color:  'state color',
             link:   'external URL',
@@ -196,6 +313,7 @@
             },
             {}, ...
         ]};</code></pre>
+        <br>
         Первый вызов функции <code>SmartTooltip.showTooltip(..)</code> инициализирует, если необходимо элемент SmartTooltip, встроенным шаблоном.<br><br>
         Статические функции <code>SmartTooltip.moveTooltip(evt)</code> и <code>SmartTooltip.hideTooltip(evt)</code> вызываются из тела обработчика событий <code>mousemove</code> <code>mouseout</code> соответственно.<br>
         Важное дополнение: эти функции запрещено вызывать до первого вызова, инициализирующих элемент, функций!

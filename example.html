@@ -31,11 +31,9 @@
             background-color: rgb(19, 147, 233);
         }
 
-        .autotoolip > label {
+        .sttip-options-1 {
             font-weight: bold;
             cursor: pointer;
-        }
-        .sttip-options-1 {
             --sttip-var-frame-fill: pink;
             --sttip-var-font-color: magenta;
             --sttip-var-border-color: magenta;
@@ -48,6 +46,8 @@
 
         }
         .sttip-options-2 {
+            font-weight: bold;
+            cursor: pointer;
             --sttip-var-frame-fill: rgb(255, 220, 192);
             --sttip-var-font-color: rgb(253, 127, 24);
             --sttip-var-border-color: rgb(230, 134, 55);
@@ -56,7 +56,6 @@
             /* --sttip-start-from: float; */
             --sttip-show-mode: pinned;
 			--sttip-is-shadow: 0;
-			/* --sttip-title-text-wrap: 360; */
 			--sttip-title-text-align: left;
         }
     </style>
@@ -64,7 +63,7 @@
 </head>
 
 <body>
-    <smart-tooltip is-shadow="0" start-from="float" template="pie">Sorry, yout browser does not support custom elements.</smart-tooltip>
+    <smart-tooltip className="sttip label-green">Sorry, yout browser does not support custom elements.</smart-tooltip>
     <div class="container">
         <h2>How to effectively use SmartTooltip<br>(I highly recommend that you read this paragraph, and practice in managing this smart widget)!</h2>
 
@@ -78,20 +77,20 @@
 
         <p>Try clicking on the "pinMe" button and move the mouse pointer to the word "Diam" written in red ...
         Look at how the behavior of the tooltip window changed - now it does not crawl, but jumps! And It remembers its condition even after the page is reloaded.</p>
-        <p>In quis <label id="l6" class="label-green">enim</label> <label ><b id="l7" class="sttip-link">accumsan</b></label>, <label id="l8" class="label-green">sollicitudin</label> sem id, gravida ipsum. Fusce <label id="l9" class="label-green">suscipit</label> <label ><b id="l10" class="sttip-link">accumsan</b></label> massa.
+        <p>In quis <label id="l6" class="label-green" data-sttip-name="Green Label l6">enim</label> <label ><b id="l7" class="sttip-link">accumsan</b></label>, <label id="l8" class="label-green" data-sttip-name="Green label l8">sollicitudin</label> sem id, gravida ipsum. Fusce <label id="l9" data-sttip-name="Green label l9" class="label-green">suscipit</label> <label ><b id="l10" class="sttip-link">accumsan</b></label> massa.
         Morbi vitae elementum lacus. Cras imperdiet urna vitae luctus laoreet. Vivamus venenatis
-        porttitor tincidunt. Donec volutpat <label id="l12" class="label-green">rutrum</label> faucibus. Nullam et <label ><b id="l14" class="sttip-link">accumsan</b></label> ante, vitae egestas
+        porttitor tincidunt. Donec volutpat <label id="l12" class="label-green" data-sttip-name="Green label l12">rutrum</label> faucibus. Nullam et <label ><b id="l14" class="sttip-link">accumsan</b></label> ante, vitae egestas
         arcu. Vivamus blandit arcu eget augue bibendum, sed imperdiet orci auctor. Mauris aliquet
-        hendrerit suscipit. Aenean <label id="l15" class="label-green">ut</label> pulvinar diam, nec sagittis diam. Duis at gravida lacus,
-        nec convallis erat. Etiam sit amet <label id="l16" class="label-green">quam</label>. Nulla facilisi.</p>
+        hendrerit suscipit. Aenean <label id="l15" class="label-green" data-sttip-name="Green label l15">ut</label> pulvinar diam, nec sagittis diam. Duis at gravida lacus,
+        nec convallis erat. Etiam sit amet <label id="l16" class="label-green" data-sttip-name="Green label l16">quam</label>. Nulla facilisi.</p>
         <div class="autotoolip">
 
-            Init by <label id="op-ex1-01" class="ex sttip-options-1" data-sttip-linkto="https://www.google.com/search?q=index" data-sttip-uuid="uuid-op-ex1-01" data-sttip-name="Initialized by index for id='op-ex1-01'">Index</label>,
-                 by <label id="op-ex1-02" class="ex sttip-options-2" data-sttip-linkto="https://www.google.com/search?q=classname" data-sttip-uuid="uuid-op-ex1-02" data-sttip-name="Initialized by class name for id='op-ex1-02">Class Name</label> and
-                    <label id="op-ex1-03" class="ex sttip-options-3" data-sttip-auto="1" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-uuid="uuid-op-ex1-03" data-sttip-name="Automaticaly initailization">Automatically</label> initializated<br>
+            Init by <label id="op-ex1-01" class="ex sttip-options-1" data-sttip-linkto="https://www.google.com/search?q=index" data-sttip-name="Initialized by index for id='op-ex1-01'">Index</label>,
+                 by <label id="op-ex1-02" class="ex sttip-options-2" data-sttip-linkto="https://www.google.com/search?q=classname" data-sttip-name="Initialized by class name for id='op-ex1-02">Class Name</label> and
+                    <label id="op-ex1-03" class="ex sttip" data-sttip-auto="1" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-name="Was initialized automaticaly">Automatically</label> initializated<br>
             Init by <label id="op-ex2-01" class="ex sttip-options-1" data-sttip-linkto="https://www.google.com/search?q=index" data-sttip-uuid="uuid-op-ex2-01" data-sttip-name="Initialized by index for id='op-ex2-01'">Index</label>,
                  by <label id="op-ex2-02" class="ex sttip-options-2" data-sttip-linkto="https://www.google.com/search?q=classname" data-sttip-uuid="uuid-op-ex2-02" data-sttip-name="Initialized by class name for id='op-ex2-02">Class Name</label> and
-                    <label id="op-ex2-03" class="ex sttip-options-3" data-sttip-auto="1" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-uuid="uuid-op-ex2-03" data-sttip-name="Automaticaly initailization">Automatically</label> initializated<br>
+                    <label id="op-ex2-03" class="ex sttip" data-sttip-auto="1" data-sttip-linkto="https://www.google.com/search?q=automaticaly" data-sttip-uuid="uuid-op-ex2-03" data-sttip-name="Was initialized automaticaly">Automatically</label> initializated<br>
 
 
         </div>
@@ -105,10 +104,6 @@
     </div>
     <script>
         (function() {
-            // todo: implement and call function SmartTooltipElem.initCtrls instead of next calls
-            // SmartTooltip.initTooltip(['op-ex1-01', 'op-ex2-01'], 'simple');
-            // SmartTooltip.initTooltip('','', 'sttip-options-2');
-
             CustomProperties.registerElementsByIds(document, ['op-ex1-01', 'op-ex2-01']);
             CustomProperties.registerElementsByClassName(document, ['sttip-options-2']);
         })();
@@ -158,7 +153,7 @@
                     x: evt.clientX,
                     y: evt.clientY,
                     options: {
-                        tRect: evt.target.getBoundingClientRect(),
+                        //position: evt.target.getBoundingClientRect(),
                         template: 'pie',
                         //startFrom: 'float',
                         cssVars: {
@@ -199,8 +194,10 @@
                     x: evt.clientX,
                     y: evt.clientY,
                     options: {
-                        // tRect: evt.target.getBoundingClientRect(),
+                        //position: evt.target.getBoundingClientRect(),
                         frameScale: 1,
+                        isShadow: 1,
+                        frameScale: 0.7,
                         // titleTextWrap: 200,
                         // titleTextAlign: 'left',
                         // descrTextAlign: 'left',
@@ -208,7 +205,7 @@
                         showMode: 'pinned',
                         isRun: 1,
                         cssVars: {
-                            "--sttip-mouse-noactive": 5000
+                            "--sttip-var-border-color": "rgb(19, 147, 233)"
                         } },
                     title: {
                         uuid: `uuid-${evt.target.id}`,
@@ -248,7 +245,7 @@
                     x: evt.clientX,
                     y: evt.clientY,
                     options: {
-                        //tRect: evt.target.getBoundingClientRect(),
+                        //position: evt.target.getBoundingClientRect(),
                         //frameScale: 0.6,
                         startFrom: "float",
                         //showMode: 'pinned',

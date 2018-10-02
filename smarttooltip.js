@@ -29,7 +29,7 @@
 			// you may specify here any screen coordinates for positioning SmartTooltip window
 			// only top and right parameters used for calculating currently.
 			// The position of tooltip window will be moved by 16 px at right side of specified 'right' parameter.
-			tRect: { left: 0, top:0, right:0, bottom:0 },
+			position: { left: 0, top:0, right:0, bottom:0 },
 
 			// run indicator is a small circle near the legend. It's fill color is green, when this parameter equals true and red when false.
 			isRun: true/false
@@ -1347,8 +1347,8 @@ class SmartTooltip {
 			if (typeof options.isShadow === 'number') {
 				this._o.isShadow = options.isShadow;
 			}
-			if (typeof options.tRect === 'object') {
-				this._o.position = options.tRect;
+			if (typeof options.position === 'object') {
+				this._o.position = options.position;
 			}
 			if (this._ttipRunIndicator && options.isRun !== 'undefined') {
 				this._o.isRun = options.isRun;
@@ -1422,10 +1422,10 @@ class SmartTooltip {
 				const element = document.getElementById(eid);
 				element.addEventListener('mouseover', function(evt) {
 					const options = {
-						tRect: evt.target.getBoundingClientRect(),
+						position: evt.target.getBoundingClientRect(),
 						cssVars: {}
 					};
-					
+
 					const elem = document.getElementById(evt.target.id);
 					const compStyle = getComputedStyle(elem);
 
@@ -2030,9 +2030,9 @@ class CustomProperties {
 			'legend-format',		// ---
 			'legend-val-format',	// ---
 
-			'title-text-wrap',		// sets the line width (line-width attribute) for wrapped text. in case of 0 wrap disabled. the defaul is 0
+			'title-text-wrap',		// sets the line width (line-width attribute) for wrapped text. in case of 0 the width attribute from <rect id="tooltip-frame"> in template is used. the defaul is 0
 			'title-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
-			'descr-text-wrap',		// sets the line width (line-width attribute) for wrapped text. in case of 0 wrap disabled. the defaul is 1.5em
+			'descr-text-wrap',		// sets the line width (line-width attribute) for wrapped text. in case of 0 the width attribute from <rect id="tooltip-frame"> in template is used. the defaul is 0
 			'descr-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
 
 
@@ -2044,10 +2044,10 @@ class CustomProperties {
 									// extension means an internal name of template. Currently only 'pie' and 'simple' are implemented. May be changed by host custom element.
 			'data-section',			// maybe targets or anything else? Simple host element may use the data-specific attribute, for example: 'data-tooltip',
 									// but more complecs element, for example SmartGauge widget will returns it's data in array, with name 'targets' for example.
-									// By default this value has 'data-tooltip' for custom HTML element and 'targets' for SVG-based element.
-			'output-mode',			// 'what to show?' parameter. Possible values are: 'all-targets' and 'curTarget'. The default is 'all-targets'
-			'start-from',			// this property describes one of three started showing modes: 'float', 'pinned', 'fixed'. By default it equals 'pinned' and this means
-									// that user may change it as he wish. In case of optional parameter 'options.showMode' or attribute 'show-mode' specified,
+									// By default this value has 'data-tooltip' for custom HTML element and 'targets' for SVG-based element. Not yet implemented.
+			'output-mode',			// 'what to show?' parameter. Possible values are: 'all-targets' and 'curTarget'. The default is 'all-targets'. Not Yet implemented.
+			'start-from',			// this property describes one of three started showing modes: 'float', 'pinned', 'fixed'. By default it equals 'float' and this means
+									// that user may change it as he wish. In case of optional parameter 'options.showMode', or attribute 'show-mode' specified,
 									// user cannot change apperance of tooltip window!
 			'show-mode',			// optional parameter describes show mode and overides 'start-from'
 			'position',				// the value describes location of tooltip window in 'pinned' show-mode. Default value is 'rt' which means right-top conner of element.
@@ -2056,7 +2056,7 @@ class CustomProperties {
 
 			'delay-in',				// the time delay interval before tooltip window will be shown on the screen. The default is 0 (ms)
 			'delay-out',  			// the time delay interval when tooltip window will be hided. The default is 250 (ms). This delayed interval will counted after mouse pointer
-									// will out ftom element.
+									// will out from the element.
 			'delay-on',				// the time delay interval when tooltip window will disappear from screen after non-activity of mouse pointer. The default value is 2000 (ms)
 			'transition-in',		// opacity transition in process of showing tooltip window. The default value is 0 means immidiatly showing.
 			'transition-out',		// opacity transition in process of disappearing of tooltip window. The defaul value is immidiatly hiding.
@@ -2101,9 +2101,9 @@ class CustomProperties {
 			template:				'pie',
 			dataSection:			'data-tooltip',
 			outputMode:				'all-targets',
-			startFrom:				'pinned',
+			startFrom:				'float',
 			showMode:				'',
-			position:				'rt',
+			position:				'',
 			delayIn:				0,
 			delayOut:				250,
 			delayOn:				2000,
@@ -2267,6 +2267,24 @@ class SmartTooltipElement extends HTMLElement {
 	connectedCallback() {
 		// initialize all internal here
 		CustomProperties.convertNumericProps(this._o);
+        let classNames = this.getAttribute("className");
+        if (classNames) {
+            classNames = classNames.split(' ')
+            document.addEventListener("DOMContentLoaded", function(evt) {
+                const ids = [], tmpls = [];
+                for (let i  in classNames) {
+                    const elms = document.getElementsByClassName(classNames[i]);
+                    for (let el of elms) {
+                            let id = el.getAttribute('id');
+                            if (id) {
+                                ids.push(id);
+                                tmpls.push('');
+                            }
+                    }
+                }
+                SmartTooltip.initTooltip(ids, tmpls);
+            });
+        }
 	}
 	disconnectedCallback() {
 		// uninitialize all internals here
