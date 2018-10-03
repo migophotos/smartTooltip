@@ -15,104 +15,6 @@
  * on the server and call the static initialization function,
  * passing the element ID and the full name of the template to it.
  *
- * An Internal template implementation shows the array of data as flat pie diagramm with legend.
- *
- *
- * The data in function showTemplate has the next structure:
- * const data = {
- * 		id: target identificator,
-		x: evt.clientX,
-		y: evt.clientY,
-		options: {
-			// the client rectangle coordinates of correspondent element.
-			// this coordinates will used for place 'the pinned' tooltip near this element
-			// you may specify here any screen coordinates for positioning SmartTooltip window
-			// only top and right parameters used for calculating currently.
-			// The position of tooltip window will be moved by 16 px at right side of specified 'right' parameter.
-			position: { left: 0, top:0, right:0, bottom:0 },
-
-			// run indicator is a small circle near the legend. It's fill color is green, when this parameter equals true and red when false.
-			isRun: true/false
-
-			// SmartTooltip window will be scaled by specified factor before showing
-			scale: 0.8 - default
-
-			// Sort data by specified parameter. Can be one of the next parameters:
-			// 'asis' 			- don't sort, default
-			// states/state 	- sort by state or colors (in case of state is not exists),
-			// values/value 	- sort by value,
-			// colors/color 	- sort by color,
-			// names/name 		- sort by legend or name,
-			// any other word 	- sort by this 'word' parameter. For example: link
-			// Note: This option parameter may be specified only once. After this it will be used for all tooltips on the page
-			//       If you want to show different tooltips with different sort orders, please specify this parameter each time!
-			sortBy: 'asis',
-
-			// here you have an ability to re-style SmartTooltip window by changing svg.sttip css variables
-			// there is no need to define all the style variables, you can specify only some of them or do not specify anything at all,
-			// if you like the look and fill of the built-in template.
-			//
-			// This section of parameters allows you to override the look&fill of SmartTooltip window for each specific element on the HTML page.
-
-			// Not yet implemented!
-			// If you have a desire to globally change the look&fill of the SmartTooltip window, then you can use a special static function
-			// passing into it a similar object, needed in the adjustment, variables.
-			// SmartTooltip.changeLookAndFill(cssVars={});
-			cssVars: {
-				"--sttip-var-font-family": "'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif";
-				"--sttip-var-font-stretch": c"ondensed",
-				"--sttip-var-font-color": "#9dc2de",
-				"--sttip-var-scale-size": "12px",
-				"--sttip-var-legend-size": "18px",
-				"--sttip-var-title-size": "22px",
-				"--sttip-var-descr-size": "18px",
-
-				"--sttip-var-run-color": "#0f0",
-				"--sttip-var-stop-color": "#f00",
-				"--sttip-var-def-color": "#666",
-
-				"--sttip-var-frame-fill": "#fff",
-				"--sttip-var-frame-opacity": "0.95",
-				"--sttip-var-border-color": "none",
-				"--sttip-var-border-width": "2",
-				"--sttip-var-border-radius": "2",
-
-				"--sttip-var-legend-fill": "#fff",
-				"--sttip-var-legend-stroke": "#666"
-			}
-		},
-		title: {
-			uuid:	'unique id'
-			legend: 'Title legend',
-			name:   'Title legend may be defined here also',
-			descr:	'Description'
-			value:  'By default this value will be shown in description line (under title). But by using descrFormat and/or titleFormat
-					 you can change that behavior. By default, it is assumed that the value of this parameter is specified in percents.
-					 In case you want to display the actual value, add the 'max' parameter to correct calculation the length of the indicator.',
-			max: null,
-			color:  'state color',
-			link:   'external URL',
-			[titleFormat]: 'title formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ....
-			[descrFormat]: same as titleFormat string but for second string of text in title section
-		},
-		targets: [
-			{
-				uuid:	'unuque id'
-				legend: 'Title legend',
-				name:   'Title legend may be defined here also',
-				descr:	'Description'
-				value:  'This text will be shown as description',
-				color:  'state color',
-				link:   'external URL',
-				parent: 'parent UUID'
-				[legendFormat]: 'first column of legend stroke formating string with internal variables, such as $VALUE$, $NAME$, $DESCR$, ....
-				[legendValFormat]: same as legendFormat string but for second column
-			},
-			{}, ...
-		]
-	}
- *
- *
  * Example of use:
  *
  * 1. Conventional use:
@@ -625,7 +527,181 @@ class TemplateDefs {
 							</g>
 						</g>
 					</svg>`
+            }],
+			['iframe', {
+				name: 'iframe',
+				opt: {},
+				template:
+					`<svg class="sttip" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+						<defs>
+							<filter id="drop-shadow">
+								<feGaussianBlur in="SourceAlpha" stdDeviation="2.2"/>
+								<feOffset dx="2" dy="2" result="offsetblur"/>
+								<feFlood flood-color="rgba(0,0,0,0.5)"/>
+								<feComposite in2="offsetblur" operator="in"/>
+								<feMerge>
+									<feMergeNode/>
+									<feMergeNode in="SourceGraphic"/>
+								</feMerge>
+							</filter>
+							<pattern id="sttip-pattern-stripe45"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+							</pattern>
+							<pattern id="sttip-pattern-stripe-45"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(-45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+							</pattern>
+							<pattern id="sttip-pattern-stripe-45-black"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(-45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="black"></rect>
+							</pattern>
+							<mask id="sttip-mask-stripe">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+							</mask>
+							<mask id="sttip-mask-stripe-black">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+							</mask>
+							<mask id="sttip-mask-cross">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe-45)" />
+							</mask>
+						</defs>
+						<style>
+							svg.sttip {
+								overflow: visible;
+								vector-effect: non-scaling-stroke;
+
+								--sttip-var-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+								--sttip-var-font-stretch: condensed;
+								--sttip-var-font-color: #666;
+								--sttip-var-scale-size: 12px;
+								--sttip-var-legend-size: 18px;
+								--sttip-var-title-size: 22px;
+								--sttip-var-descr-size: 18px;
+
+								--sttip-var-run-color: #0f0;
+								--sttip-var-stop-color: #f00;
+								--sttip-var-def-color: #666;
+
+								--sttip-var-frame-fill: #fff;
+								--sttip-var-frame-opacity: 0.95;
+								--sttip-var-border-color: none;
+								--sttip-var-border-width: 2;
+								--sttip-var-border-radius: 2;
+
+
+								--no-color:	none;
+								--run-color: var(--sttip-var-run-color, green);
+								--stop-color: var(--sttip-var-stop-color, red);
+							}
+							.sttip-frame {
+								fill:var(--sttip-var-frame-fill);
+								fill-opacity: var(--sttip-var-frame-opacity, 1);
+								stroke: var(--sttip-var-border-color);
+								stroke-width: var(--sttip-var-border-width);
+								rx: var(--sttip-var-border-radius);
+								ry: var(--sttip-var-border-radius);
+							}
+							#SmartTooltip.hidden {
+								transition: all 500ms ease-in-out;
+							}
+							.sttip-shadowed {
+								filter: url(#drop-shadow);
+							}
+							.sttip-animated {
+								transition:all 1s;
+							}
+							#pinMe {
+								fill: var(--sttip-var-frame-fill, gray);
+								stroke: var(--sttip-var-font-color, black);
+								stroke-width: 1.5;
+								transition: all 500ms ease-in-out;
+							}
+							#pinMe:hover {
+								cursor: pointer;
+								fill: lightgray;
+							}
+							#frmBtns rect {
+								fill: var(--sttip-var-frame-fill, none);
+								stroke: var(--sttip-var-font-color, black);
+								stroke-width: 0.5;
+								pointer-events: bounding-box;
+								cursor: pointer;
+							}
+							#frmBtns path {
+								stroke: var(--sttip-var-font-color, black);
+							}
+							#frmBtns text {
+								stroke: var(--sttip-var-font-color, black);
+							}
+
+							#frmBtns rect:hover {
+								fill: lightgray;
+							}
+							#pinMe.sttip-custom circle {
+								fill: red;
+							}
+							#pinMe #tippex {
+								display: none;
+							}
+							#pinMe.sttip-custom #tippex {
+								display: block;
+								stroke: var(--sttip-var-frame-fill, white);
+								stroke-width: 1.5;
+							}
+							#pinMe.sttip-pinned {
+								transform: rotate(-45deg);
+								transform-origin: 8px 8px;
+								transform-box: border-box;
+							}
+							#pinMe.sttip-custom {
+								transform: rotate(-45deg);
+								transform-origin: 12px 12px;
+								transform-box: border-box;
+							}
+						</style>
+						<g id="tooltip-group">
+							<rect id="tooltip-frame" class="sttip-frame" x="0" y="0" fill-opacity="0.8" width="380" height="0"/>
+							<g id="bound-group">
+								<g id="pinmeGr" transform="translate(4,4)">
+									<g id="pinMe">
+										<path id="pin" d="M8,8L24,7L24,9Z" pointer-events="none" />
+										<path id="tippex" d="M8,8L12,7L12,9Z" />
+										<circle id="rosh-pin" cx="24" cy="8" r="5" />
+									</g>
+								</g>
+								<g id="frmBtns" transform="translate(0, 4)">
+									<g transform="translate(0, 0)">
+										<rect id="helpMe" x="0" y="0" width="16" height="16" />
+										<text text-anchor="middle" pointer-events="none" x="8" y="13">?</text>
+									</g>
+									<g transform="translate(20, 0)">
+										<rect id="closeMe" x="0" y="0" width="16" height="16"  />
+										<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
+									</g>
+								</g>
+                                <g id="title-group" data-x="10" >
+									<g id="descr-group">
+										<text id="tooltip-title" class="sttip-text sttip-title" x="10" y="40"></text>
+										<text id="tooltip-description" class="sttip-text sttip-description" x="10" y="60"></text>
+									</g>
+                                    <rect id="fake-iframe" x="10" y="66" width="360" height="240" stroke="none" fill="gray"/>
+                                </g>
+							</g>
+						</g>
+                    </svg>
+                    <iframe id="inlineFrame" width="357" height="238" style="position:absolute; left:10px; top:30px;"
+                    src=""></iframe>
+                    `
 			}]
+
 		]);
 		if (templateName === '')
 			templateName = 'pie';
@@ -705,18 +781,23 @@ class smartStorage {
 	read(name) {
 		if (this._enabled) {
 			return localStorage.getItem(name);
-		}
-		return '';
+		} else {
+            return sessionStorage.getItem(name);
+        }
 	}
 	save(name, value) {
 		if (this._enabled) {
 			localStorage.setItem(name, value);
-		}
+		} else {
+            sessionStorage.setItem(name, value);
+        }
 	}
 	delete(name) {
 		if (this._enabled) {
 			localStorage.removeItem(name);
-		}
+		} else {
+            sessionStorage.removeItem(name);
+        }
 	}
 }
 
@@ -1411,7 +1492,7 @@ class SmartTooltip {
 				} else {
 					tmpl = '';
 				}
-				loadTemplate(id[1], tmpl, this);
+                loadTemplate(id[i], tmpl, this);
 			}
 			// add event listeners for each specified element
 			id.forEach(eid => {
@@ -1595,7 +1676,13 @@ class SmartTooltip {
 			// reload
 			this._initialized = false;
 			this._root.innerHTML = ttipdef.template;
-			this._svg = this._root.firstElementChild;
+            this._svg = this._root.firstElementChild;
+
+            if(ttipdef.name === 'iframe') {
+                this._iframe = this._root.lastElementChild;
+            } else {
+                this._iframe = null;
+            }
 
 			this._ttipGroup 	   = this._root.getElementById('tooltip-group');
 			this._ttipPinMe		   = this._root.getElementById('pinMe');
@@ -1623,7 +1710,8 @@ class SmartTooltip {
 			this._ttipScaleGroup   = this._root.getElementById('scale-group');
 			this._ttipBoundGroup   = this._root.getElementById('bound-group');
 			this._ttipValue50      = this._root.getElementById('value-50');
-			this._ttipValue100     = this._root.getElementById('value-100');
+            this._ttipValue100     = this._root.getElementById('value-100');
+            this._ttipFakeIFrame   = this._root.getElementById('fake-iframe')
 			// init events
 			this._initEvents();
 
@@ -1742,7 +1830,21 @@ class SmartTooltip {
 							SmartTooltip.wrapText(sText, this._ttipDescription, textWidth || maxWidth, this._o.descrTextAlign);
 							prevElemRef = this._ttipDescription;
 						}
-					}
+                    }
+
+                    if (this._ttipFakeIFrame) {
+						// before drawing lets do the similar trick with own position
+						if (prevElemRef) {
+							const gap = Number(this._ttipFakeIFrame.attributes.y.value) - Number(prevElemRef.attributes.y.value);
+							const height = prevElemRef.getBoundingClientRect().height;
+							let offset = height - gap;
+							this._ttipFakeIFrame.attributes.y.value = Number(this._ttipFakeIFrame.attributes.y.value) + offset;
+							prevElemRef = this._ttipFakeIFrame;
+                        }
+                        const top = this._ttipFakeIFrame.getAttribute('y');
+                        this._iframe.style.setProperty('top', `${top}px`);
+                        this._iframe.setAttribute('src', data.title.link);
+                    }
 
 					// render value as colored rectangle with width proportional to value
 					if (this._ttipValue) {
@@ -2027,8 +2129,8 @@ class CustomProperties {
 			'title-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
 			'descr-text-wrap',		// sets the line width (line-width attribute) for wrapped text. in case of 0 the width attribute from <rect id="tooltip-frame"> in template is used. the defaul is 0
 			'descr-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
-			
-			'enable-storage',		// allows to disable or enable (default) an ability to store in localStorage pinMe functionality 
+
+			'enable-storage',		// allows to disable or enable (default) an ability to store in localStorage pinMe functionality
 
 			'sort-by',				// sort parameter for multiple data. May contains one of the data parameters name: 'asis', 'name', 'value', 'color', 'state'. the default is 'value'
 			'sort-dir',				// sorting direction parameter. the default value is '1', wich means from low to high. Possible values: -1, 0, 1.

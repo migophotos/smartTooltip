@@ -54,21 +54,38 @@
             /* --sttip-is-shadow: 0; */
             --sttip-show-mode: float;
         }
+        .extframe {
+            /* display: table; */
+            font-weight: bold;
+            cursor: pointer;
+            --sttip-var-frame-fill: rgb(255, 192, 192);
+            --sttip-delay-on: 10000;
+            --sttip-delay-out: 1000;
+			--sttip-title-text-align: center;
+            --sttip-enable-storage: 0;
+            --sttip-template: iframe;
+            --sttip-frame-scale: 1;
+        }
+
     </style>
 
 </head>
 
 <body>
-    <smart-tooltip className="h3 h2 tmpl">Sorry, yout browser does not support custom elements.</smart-tooltip>
+    <smart-tooltip className="h3 h2 tmpl extframe">Sorry, yout browser does not support custom elements.</smart-tooltip>
     <div class="container">
         <h2 id="header-1" class="h2" data-sttip-tooltip="SmartTooltip - больше, чем просто tooltip!">SmartTooltip - больше, чем просто tooltip!</h2>
         <p>SmartTooltip это продвинутый виджет, позволяющий реализовать отображение подсказок на веб странице. Умеет автоматически регистрироваться,
             на лету подстраивается под контекст, умеет отображать несколько шаблонов и имеет простой API. <br>
-        На данный момент реализовано два внутренних шаблона: "pie" и "simple", показанные на рисунке. Выбор шаблона определяется опциональным параметром <b><code>options.template</code></b>.<br>
+        На данный момент реализовано три внутренних шаблона: "pie", "simple" и iframe, показанные на рисунке. Выбор шаблона определяется опциональным параметром <b><code>options.template</code></b>.<br>
         Значением этого параметра может быть либо название предопределенного шаблона, либо полное имя файла в формате SVG, в котором реализован требуемый заказчику шаблон. Предполагается, что шаблоны будут поставляться в комплекте с виджетом.<br>
+
+
+
         Назначение отдельных частей шаблонов описано ниже. </p>
         <p>
-        <img src="float-template.png" width="350px" id="float" data-sttip-tooltip="'float' template description" class="tmpl"><img src="simple-template.png" width="350px" id="simple" class="tmpl" data-sttip-tooltip="'simple' template description">
+        <img src="float-template.png" width="350px" id="float" data-sttip-tooltip="'pie' template description" class="tmpl"><img src="simple-template.png" width="350px" id="simple" class="tmpl" data-sttip-tooltip="'simple' template description">
+        <div>Шаблон <label id="extframe" class="extframe" data-sttip-tooltip="Где-то на краю земли..." data-sttip-link="https://www.openstreetmap.org/export/embed.html?bbox=-0.004017949104309083%2C55.75372%2C0.00030577182769775396%2C51.478569861898606&layer=mapnik">iframe</label> не отличается от "simple". Так-же как и "simple" он имеет поля title и description. В дополнение, он имеет встроенный HTML элемент iframe, данные в который передаются с помощью аттрибута data-sttip-link</div>
         <div>
         <b>View mode</b> - режимы отображения. Последовательное нажатие на данный элемент управления переводит подсказку в один из следующих режимов отображения:
         <ul>

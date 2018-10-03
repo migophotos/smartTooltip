@@ -36,7 +36,7 @@
             cursor: pointer;
             background-color: rgb(19, 147, 233);
         }
-        
+
         .sttip-options-1 {
             font-weight: bold;
             cursor: pointer;
@@ -72,16 +72,28 @@
             --sttip-var-frame-fill: rgb(255, 192, 192);
             --sttip-delay-on: 5000;
             --sttip-delay-out: 1000;
-            --sttip-descr-format: Delay On = 5s., Delay Out = 1s.;
+            --sttip-descr-format: Delay On = 5s., Delay Out = 1s. LocalStorage disabled;
 			--sttip-descr-text-align: center;
-            /* --sttip-enable-storage: 0; */
+            --sttip-template: simple;
+        }
+        .extframe {
+            font-weight: bold;
+            cursor: pointer;
+            --sttip-var-frame-fill: rgb(255, 192, 192);
+            --sttip-delay-on: 10000;
+            --sttip-delay-out: 1000;
+            /* --sttip-title-format: Где деньги, Зин; */
+			--sttip-title-text-align: center;
+            --sttip-enable-storage: 0;
+            --sttip-template: iframe;
+            --sttip-frame-scale: 1;
         }
     </style>
 
 </head>
 
 <body>
-    <smart-tooltip className="sttip label-green">Sorry, yout browser does not support custom elements.</smart-tooltip>
+    <smart-tooltip className="sttip label-green extframe">Sorry, yout browser does not support custom elements.</smart-tooltip>
     <div class="container">
         <h2>How to effectively use SmartTooltip<br>(I highly recommend that you read this paragraph, and practice in managing this smart widget)!</h2>
 
@@ -96,7 +108,7 @@
         <p>Try clicking on the "pinMe" button and move the mouse pointer to the word "Diam" written in red ...
         Look at how the behavior of the tooltip window changed - now it does not crawl, but jumps! And It remembers its condition even after the page is reloaded.</p>
         <p>In quis <label id="l6" class="label-green" data-sttip-name="Green Label l6">enim</label> <label ><b id="l7" class="sttip-link">accumsan</b></label>, <label id="l8" class="label-green" data-sttip-name="Green label l8">sollicitudin</label> sem id, gravida ipsum. Fusce <label id="l9" data-sttip-name="Green label l9" class="label-green">suscipit</label> <label ><b id="l10" class="sttip-link">accumsan</b></label> massa.
-        Morbi vitae elementum lacus. Cras imperdiet urna vitae luctus laoreet. Vivamus venenatis
+        Morbi vitae elementum lacus. Cras imperdiet urna <label id="extFrm" class="extframe" data-sttip-tooltip="Где-то на краю земли..." data-sttip-link="https://www.openstreetmap.org/export/embed.html?bbox=-0.004017949104309083%2C55.75372%2C0.00030577182769775396%2C51.478569861898606&layer=mapnik" >Hover Me!</label> luctus laoreet. Vivamus venenatis
         porttitor tincidunt. Donec volutpat <label id="l12" class="label-green" data-sttip-name="Green label l12">rutrum</label> faucibus. Nullam et <label ><b id="l14" class="sttip-link">accumsan</b></label> ante, vitae egestas
         arcu. Vivamus blandit arcu eget augue bibendum, sed imperdiet orci auctor. Mauris aliquet
         hendrerit suscipit. Aenean <label id="l15" class="label-green" data-sttip-name="Green label l15">ut</label> pulvinar diam, nec sagittis diam. Duis at gravida lacus,
