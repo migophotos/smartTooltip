@@ -697,11 +697,181 @@ class TemplateDefs {
 							</g>
 						</g>
                     </svg>
-                    <iframe id="inlineFrame" width="357" height="238" style="position:absolute; left:10px; top:30px;"
+                    <iframe id="inlineFrame" width="357" height="238" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" style="position:absolute; left:10px; top:30px;"
                     src=""></iframe>
                     `
-			}]
+			}],
+			['image', {
+				name: 'image',
+				opt: {},
+				template:
+					`<svg class="sttip" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+						<defs>
+							<filter id="drop-shadow">
+								<feGaussianBlur in="SourceAlpha" stdDeviation="2.2"/>
+								<feOffset dx="2" dy="2" result="offsetblur"/>
+								<feFlood flood-color="rgba(0,0,0,0.5)"/>
+								<feComposite in2="offsetblur" operator="in"/>
+								<feMerge>
+									<feMergeNode/>
+									<feMergeNode in="SourceGraphic"/>
+								</feMerge>
+							</filter>
+							<pattern id="sttip-pattern-stripe45"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+							</pattern>
+							<pattern id="sttip-pattern-stripe-45"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(-45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
+							</pattern>
+							<pattern id="sttip-pattern-stripe-45-black"
+								width="4" height="4"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(-45)">
+								<rect width="2" height="4" transform="translate(0,0)" fill="black"></rect>
+							</pattern>
+							<mask id="sttip-mask-stripe">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+							</mask>
+							<mask id="sttip-mask-stripe-black">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+							</mask>
+							<mask id="sttip-mask-cross">
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe45)" />
+								<rect x="0" y="0" width="100%" height="100%" fill="url(#sttip-pattern-stripe-45)" />
+							</mask>
+						</defs>
+						<style>
+							svg.sttip {
+								overflow: visible;
+								vector-effect: non-scaling-stroke;
 
+								--sttip-var-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
+								--sttip-var-font-stretch: condensed;
+								--sttip-var-font-color: #666;
+								--sttip-var-scale-size: 12px;
+								--sttip-var-legend-size: 18px;
+								--sttip-var-title-size: 22px;
+								--sttip-var-descr-size: 18px;
+
+								--sttip-var-run-color: #0f0;
+								--sttip-var-stop-color: #f00;
+								--sttip-var-def-color: #666;
+
+								--sttip-var-frame-fill: #fff;
+								--sttip-var-frame-opacity: 0.95;
+								--sttip-var-border-color: none;
+								--sttip-var-border-width: 2;
+								--sttip-var-border-radius: 2;
+
+
+								--no-color:	none;
+								--run-color: var(--sttip-var-run-color, green);
+								--stop-color: var(--sttip-var-stop-color, red);
+							}
+							.sttip-frame {
+								fill:var(--sttip-var-frame-fill);
+								fill-opacity: var(--sttip-var-frame-opacity, 1);
+								stroke: var(--sttip-var-border-color);
+								stroke-width: var(--sttip-var-border-width);
+								rx: var(--sttip-var-border-radius);
+								ry: var(--sttip-var-border-radius);
+							}
+							#SmartTooltip.hidden {
+								transition: all 500ms ease-in-out;
+							}
+							.sttip-shadowed {
+								filter: url(#drop-shadow);
+							}
+							.sttip-animated {
+								transition:all 1s;
+							}
+							#pinMe {
+								fill: var(--sttip-var-frame-fill, gray);
+								stroke: var(--sttip-var-font-color, black);
+								stroke-width: 1.5;
+								transition: all 500ms ease-in-out;
+							}
+							#pinMe:hover {
+								cursor: pointer;
+								fill: lightgray;
+							}
+							#frmBtns rect {
+								fill: var(--sttip-var-frame-fill, none);
+								stroke: var(--sttip-var-font-color, black);
+								stroke-width: 0.5;
+								pointer-events: bounding-box;
+								cursor: pointer;
+							}
+							#frmBtns path {
+								stroke: var(--sttip-var-font-color, black);
+							}
+							#frmBtns text {
+								stroke: var(--sttip-var-font-color, black);
+							}
+
+							#frmBtns rect:hover {
+								fill: lightgray;
+							}
+							#pinMe.sttip-custom circle {
+								fill: red;
+							}
+							#pinMe #tippex {
+								display: none;
+							}
+							#pinMe.sttip-custom #tippex {
+								display: block;
+								stroke: var(--sttip-var-frame-fill, white);
+								stroke-width: 1.5;
+							}
+							#pinMe.sttip-pinned {
+								transform: rotate(-45deg);
+								transform-origin: 8px 8px;
+								transform-box: border-box;
+							}
+							#pinMe.sttip-custom {
+								transform: rotate(-45deg);
+								transform-origin: 12px 12px;
+								transform-box: border-box;
+							}
+						</style>
+						<g id="tooltip-group">
+							<rect id="tooltip-frame" class="sttip-frame" x="0" y="0" fill-opacity="0.8" width="380" height="0"/>
+							<g id="bound-group">
+								<g id="pinmeGr" transform="translate(4,4)">
+									<g id="pinMe">
+										<path id="pin" d="M8,8L24,7L24,9Z" pointer-events="none" />
+										<path id="tippex" d="M8,8L12,7L12,9Z" />
+										<circle id="rosh-pin" cx="24" cy="8" r="5" />
+									</g>
+								</g>
+								<g id="frmBtns" transform="translate(0, 4)">
+									<g transform="translate(0, 0)">
+										<rect id="helpMe" x="0" y="0" width="16" height="16" />
+										<text text-anchor="middle" pointer-events="none" x="8" y="13">?</text>
+									</g>
+									<g transform="translate(20, 0)">
+										<rect id="closeMe" x="0" y="0" width="16" height="16"  />
+										<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
+									</g>
+								</g>
+                                <g id="title-group" data-x="10" >
+									<g id="descr-group">
+										<text id="tooltip-title" class="sttip-text sttip-title" x="10" y="40"></text>
+                                        <text id="tooltip-description" class="sttip-text sttip-description" x="10" y="60"></text>
+                                        <image id="image-link" x="10" y="64" width="360" height="240" xlink:href=""></image>
+									</g>
+                                </g>
+							</g>
+						</g>
+                    </svg>
+                    `
+			}]
 		]);
 		if (templateName === '')
 			templateName = 'pie';
@@ -1711,7 +1881,8 @@ class SmartTooltip {
 			this._ttipBoundGroup   = this._root.getElementById('bound-group');
 			this._ttipValue50      = this._root.getElementById('value-50');
             this._ttipValue100     = this._root.getElementById('value-100');
-            this._ttipFakeIFrame   = this._root.getElementById('fake-iframe')
+            this._ttipFakeIFrame   = this._root.getElementById('fake-iframe');
+            this._ttipImageLink    = this._root.getElementById('image-link');
 			// init events
 			this._initEvents();
 
@@ -1804,8 +1975,8 @@ class SmartTooltip {
 						}
 						if (sText) {
 							SmartTooltip.wrapText(sText, this._ttipTitle, textWidth || maxWidth, this._o.titleTextAlign);
-							prevElemRef = this._ttipTitle;
 						}
+                        prevElemRef = this._ttipTitle;
 					}
 
 					// render description - formatted value
@@ -1828,8 +1999,8 @@ class SmartTooltip {
 						}
 						if (sText) {
 							SmartTooltip.wrapText(sText, this._ttipDescription, textWidth || maxWidth, this._o.descrTextAlign);
-							prevElemRef = this._ttipDescription;
 						}
+                        prevElemRef = this._ttipDescription;
                     }
 
                     if (this._ttipFakeIFrame) {
@@ -1839,12 +2010,24 @@ class SmartTooltip {
 							const height = prevElemRef.getBoundingClientRect().height;
 							let offset = height - gap;
 							this._ttipFakeIFrame.attributes.y.value = Number(this._ttipFakeIFrame.attributes.y.value) + offset;
-							prevElemRef = this._ttipFakeIFrame;
                         }
                         const top = this._ttipFakeIFrame.getAttribute('y');
                         this._iframe.style.setProperty('top', `${top}px`);
                         this._iframe.setAttribute('src', data.title.link);
+                        prevElemRef = this._ttipFakeIFrame;
                     }
+                    if (this._ttipImageLink) {
+						// before drawing lets do the similar trick with own position
+						if (prevElemRef) {
+							const gap = Number(this._ttipImageLink.attributes.y.value) - Number(prevElemRef.attributes.y.value);
+							const height = prevElemRef.getBoundingClientRect().height;
+							let offset = height - gap;
+							this._ttipImageLink.attributes.y.value = Number(this._ttipImageLink.attributes.y.value) + offset;
+                        }
+                        this._ttipImageLink.setAttribute('xlink:href', data.title.link);
+                        prevElemRef = this._ttipImageLink;
+                    }
+
 
 					// render value as colored rectangle with width proportional to value
 					if (this._ttipValue) {
@@ -1858,7 +2041,6 @@ class SmartTooltip {
 							} else {
 								this._ttipValue.attributes.y.value = Number(this._ttipValue.attributes.y.value) + offset;
 							}
-							prevElemRef = this._ttipValue;
 						}
 						// render value indicator and its scale
 						if (typeof data.title.value !== 'undefined') {
@@ -1904,7 +2086,8 @@ class SmartTooltip {
 							data.title.uuid ? this._ttipValue.dataset['uuid'] = data.title.uuid : '';
 						} else if (this._ttipScaleGroup) { // in case of value was not specified, hide all scale group!
 							this._ttipScaleGroup ? (this._ttipScaleGroup.style['display'] = 'none') : {};
-						}
+                        }
+                        prevElemRef = this._ttipValue;
 					}
 				}
 
