@@ -61,7 +61,6 @@
             --sttip-var-border-color: rgb(230, 134, 55);
             --sttip-var-border-radius: 5;
             --sttip-template: simple;
-            /* --sttip-start-from: float; */
             --sttip-show-mode: pinned;
 			--sttip-is-shadow: 0;
 			--sttip-title-text-align: left;
@@ -75,6 +74,7 @@
             --sttip-delay-out: 1000;
             --sttip-descr-format: Delay On = 5s., Delay Out = 1s.;
 			--sttip-descr-text-align: center;
+            /* --sttip-enable-storage: 0; */
         }
     </style>
 
@@ -222,7 +222,7 @@
                         // titleTextAlign: 'left',
                         // descrTextAlign: 'left',
                         template: 'pie',
-                        // showMode: 'pinned',
+                        showMode: 'pinned',
                         isRun: 1,
                         cssVars: {
                             "--sttip-var-border-color": "rgb(19, 147, 233)"

@@ -138,135 +138,6 @@
  */
 
 class TemplateDefs {
-	constructor() {
-		this._templates = new Map()		// stores id to {name: name, template: template} pair
-		this._options = new Map();		// stores id to opt pair
-		this._similars = new Map();		// in case of template name already defined, store in this map the reference on id, that contains it in form: id -> id
-										// the function get(id) will returns this 'right' definition
-	}
-	register(id, name) {
-		const sdef = this.getByName(name);
-		if (sdef) {
-			this._similars.set(id, sdef.id);
-		} else {
-			this._templates.set(id, {name: name, template: 'loading...'});
-			this._options.set(id, {});
-		}
-	}
-
-	set(id, name, template, opt) {
-		const sdef = this.getByName(name);
-		if (sdef && id != sdef.id) {
-			this._options.set(id, opt);
-			this._similars.set(id, sdef.id);
-		} else {
-			this._options.set(id, opt);
-			this._templates.set(id, {name: name, template: template});
-		}
-	}
-	has(id) {
-		return (this._templates.has(id) || this._similars.has(id));
-	}
-	get(id) {
-		let sid = this._similars.get(id);
-		let ttdef = {};
-		if (sid) {
-			const sdef = this._templates.get(sid);
-			ttdef.name = sdef.name;				// similar template name
-			ttdef.template = sdef.template;		// similar template definition
-		} else {
-			if (!this._templates.has(id)) {
-				return null;
-			}
-			const def = this._templates.get(id);
-			ttdef.name = def.name;				// own template name
-			ttdef.template = def.template;		// own template definition
-		}
-		ttdef.opt = this._options.get(id);		// own options
-		return ttdef;
-	}
-
-	getByName(name) {
-		for (let [id, ttdef] of this._templates) {
-			if (ttdef.name === name) {
-				return {id: id, def: ttdef};
-			}
-		}
-		return null;
-	}
-}
-
-class SmartTooltip {
-	// get href link paramter to new or old site
-	static getLink(link) {
-		if (typeof window.SmartTooltip.isNewSite === 'undefined' || !window.SmartTooltip.isNewSite() || !link || link == '') {
-			return link;
-		}
-		return window.location.pathname + link.replace('/grapher.cgi?', '?');
-	}
-
-	static initTooltip(id, template) {
-		// create SmartTooltip only once! the 'window' is a global object, so don't store the reference on SmartTooltip inside your class!
-		// You can alwaise find it by window.SmartTooltip call
-		if (!window.SmartTooltip) {
-			window.SmartTooltip = new SmartTooltip();
-		}
-		window.SmartTooltip.init(id, template);
-	}
-	static showTooltip(data, evt = null) {
-		if (evt && (evt.ctrlKey || evt.metaKey || evt.buttons == 2)) {
-			return;
-		}
-		// create SmartTooltip only once! the 'window' is a global object, so don't store the reference on SmartTooltip inside your class!
-		// You can alwaise find it by window.SmartTooltip call
-		if (!window.SmartTooltip) {
-			window.SmartTooltip = new SmartTooltip();
-		}
-		window.SmartTooltip.show(evt, data);
-	}
-	static moveTooltip(evt = null) {
-		// call move(..) in any case, lets this function make it's own decision :)
-		if (window.SmartTooltip) {
-			window.SmartTooltip.move(evt);
-		} else {
-			throw new ReferenceError("window.SmartTooltip hasn't been initialised. call SmartTooltip.show(data), or SmartTooltip.init(id, template) before.");
-		}
-	}
-	static hideTooltip(evt = null) {
-		// call hide(..) in any case, lets this function make it's own decision :)
-		if (window.SmartTooltip) {
-			window.SmartTooltip.hide(evt);
-		} else {
-			throw new ReferenceError("window.SmartTooltip hasn't been initialised. call SmartTooltip.show(data), or SmartTooltip.init(id, template) before.");
-		}
-	}
-
-
-	static formatString(str, data) {
-		let frmStr = '';
-		const tokens = str.split('$');
-		for (let i = 0; i < tokens.length; i++) {
-			switch(tokens[i]) {
-				case 'UUID': 	{ frmStr += data.uuid || ''; break; }
-				case 'VALUE':	{ frmStr += data.value || ''; break; }
-				case 'UNITS':	{ frmStr += data.units || ''; break; }
-				case 'COLOR':	{ frmStr += data.color || ''; break; }
-				case 'LEGEND':  { frmStr += data.legend || data.name || ''; break; }
-				case 'LINK':	{ frmStr += data.link || ''; break; }
-				case 'TOOLTIP': { frmStr += data.tooltip || ''; break; }
-				case 'STATE':	{ frmStr += data.state || ''; break; }
-				case 'DESCR':	{ frmStr += data.descr || ''; break; }
-				case 'NAME':	{ frmStr += data.name || ''; break; }
-				case 'TITLE':	{ frmStr += data.tooltip || data.text || data.name || ''; break; }
-				default:
-					frmStr += tokens[i];
-					break;
-			}
-		}
-		return frmStr;
-	}
-
-
 	// getDefaultTooltip
 	static getInternalTemplate(templateName = '') {
 		const internalTemplates = new Map([
@@ -761,6 +632,166 @@ class SmartTooltip {
 		return internalTemplates.get(templateName);
 	}
 
+
+	constructor() {
+		this._templates = new Map()		// stores id to {name: name, template: template} pair
+		this._options = new Map();		// stores id to opt pair
+		this._similars = new Map();		// in case of template name already defined, store in this map the reference on id, that contains it in form: id -> id
+										// the function get(id) will returns this 'right' definition
+	}
+	register(id, name) {
+		const sdef = this.getByName(name);
+		if (sdef) {
+			this._similars.set(id, sdef.id);
+		} else {
+			this._templates.set(id, {name: name, template: 'loading...'});
+			this._options.set(id, {});
+		}
+	}
+
+	set(id, name, template, opt) {
+		const sdef = this.getByName(name);
+		if (sdef && id != sdef.id) {
+			this._options.set(id, opt);
+			this._similars.set(id, sdef.id);
+		} else {
+			this._options.set(id, opt);
+			this._templates.set(id, {name: name, template: template});
+		}
+	}
+	has(id) {
+		return (this._templates.has(id) || this._similars.has(id));
+	}
+	get(id) {
+		let sid = this._similars.get(id);
+		let ttdef = {};
+		if (sid) {
+			const sdef = this._templates.get(sid);
+			ttdef.name = sdef.name;				// similar template name
+			ttdef.template = sdef.template;		// similar template definition
+		} else {
+			if (!this._templates.has(id)) {
+				return null;
+			}
+			const def = this._templates.get(id);
+			ttdef.name = def.name;				// own template name
+			ttdef.template = def.template;		// own template definition
+		}
+		ttdef.opt = this._options.get(id);		// own options
+		return ttdef;
+	}
+
+	getByName(name) {
+		for (let [id, ttdef] of this._templates) {
+			if (ttdef.name === name) {
+				return {id: id, def: ttdef};
+			}
+		}
+		return null;
+	}
+
+}
+
+class smartStorage {
+	constructor() {
+		this._enabled = true;	// false for disabled mode (emulate enabled mode)
+	}
+	get enable() {
+		return this._enabled;
+	}
+	set enable(enable) {
+		this._enabled = enable;
+	}
+	read(name) {
+		if (this._enabled) {
+			return localStorage.getItem(name);
+		}
+		return '';
+	}
+	save(name, value) {
+		if (this._enabled) {
+			localStorage.setItem(name, value);
+		}
+	}
+	delete(name) {
+		if (this._enabled) {
+			localStorage.removeItem(name);
+		}
+	}
+}
+
+class SmartTooltip {
+	// get href link paramter to new or old site
+	static getLink(link) {
+		if (typeof window.SmartTooltip.isNewSite === 'undefined' || !window.SmartTooltip.isNewSite() || !link || link == '') {
+			return link;
+		}
+		return window.location.pathname + link.replace('/grapher.cgi?', '?');
+	}
+
+	static initTooltip(id, template) {
+		// create SmartTooltip only once! the 'window' is a global object, so don't store the reference on SmartTooltip inside your class!
+		// You can alwaise find it by window.SmartTooltip call
+		if (!window.SmartTooltip) {
+			window.SmartTooltip = new SmartTooltip();
+		}
+		window.SmartTooltip.init(id, template);
+	}
+	static showTooltip(data, evt = null) {
+		if (evt && (evt.ctrlKey || evt.metaKey || evt.buttons == 2)) {
+			return;
+		}
+		// create SmartTooltip only once! the 'window' is a global object, so don't store the reference on SmartTooltip inside your class!
+		// You can alwaise find it by window.SmartTooltip call
+		if (!window.SmartTooltip) {
+			window.SmartTooltip = new SmartTooltip();
+		}
+		window.SmartTooltip.show(evt, data);
+	}
+	static moveTooltip(evt = null) {
+		// call move(..) in any case, lets this function make it's own decision :)
+		if (window.SmartTooltip) {
+			window.SmartTooltip.move(evt);
+		} else {
+			throw new ReferenceError("window.SmartTooltip hasn't been initialised. call SmartTooltip.show(data), or SmartTooltip.init(id, template) before.");
+		}
+	}
+	static hideTooltip(evt = null) {
+		// call hide(..) in any case, lets this function make it's own decision :)
+		if (window.SmartTooltip) {
+			window.SmartTooltip.hide(evt);
+		} else {
+			throw new ReferenceError("window.SmartTooltip hasn't been initialised. call SmartTooltip.show(data), or SmartTooltip.init(id, template) before.");
+		}
+	}
+
+
+	static formatString(str, data) {
+		let frmStr = '';
+		const tokens = str.split('$');
+		for (let i = 0; i < tokens.length; i++) {
+			switch(tokens[i]) {
+				case 'UUID': 	{ frmStr += data.uuid || ''; break; }
+				case 'VALUE':	{ frmStr += data.value || ''; break; }
+				case 'UNITS':	{ frmStr += data.units || ''; break; }
+				case 'COLOR':	{ frmStr += data.color || ''; break; }
+				case 'LEGEND':  { frmStr += data.legend || data.name || ''; break; }
+				case 'LINK':	{ frmStr += data.link || ''; break; }
+				case 'TOOLTIP': { frmStr += data.tooltip || ''; break; }
+				case 'STATE':	{ frmStr += data.state || ''; break; }
+				case 'DESCR':	{ frmStr += data.descr || ''; break; }
+				case 'NAME':	{ frmStr += data.name || ''; break; }
+				case 'TITLE':	{ frmStr += data.tooltip || data.text || data.name || ''; break; }
+				default:
+					frmStr += tokens[i];
+					break;
+			}
+		}
+		return frmStr;
+	}
+
+
+
 	// all browser compatible function that returns an object with curren scroll amount.
 	// many thans for w3cub project! http://docs.w3cub.com/dom/window/scrolly/
 	static getScroll() {
@@ -783,20 +814,6 @@ class SmartTooltip {
 		pt.y = clientY;
 		pt = pt.matrixTransform(svg.getScreenCTM().inverse());
 		return pt;
-	}
-
-	static saveInLocalStorage(name) {
-		SmartTooltip._readFromLocalStorage(name);
-	}
-	static clearLocalStorage(name) {
-		localStorage.removeItem(name);
-	}
-	static _saveInLocalStorage(name, val) {
-		localStorage.setItem(name, val);
-	}
-	static _readFromLocalStorage(name) {
-		const str = localStorage.getItem(name);
-		return str;
 	}
 
 	// creates svg element, sets attributes and append it to parent, if it not null
@@ -1036,7 +1053,6 @@ class SmartTooltip {
 			this._initialized = 0;	// _initEvents will change in on true after initializing all needed parts
 			this._pinned = false;
 			this._fixed = false;
-			this._instance = '';	// contains current tooltip template string
 			// this map will contains pairs: widget id (as key) : object with template file name (as name) and loaded external tooltip template string (as template)
 			// the function 'show(...)' will load the corresponding template into the body of the tooltip and fill it with the data received from outside
 			this._definitions = new TemplateDefs();
@@ -1049,6 +1065,8 @@ class SmartTooltip {
 			this._root = div.attachShadow({mode: 'open'});
 			this._ttipRef = div;
 			this._ttipGroup = null;
+
+			this.storage = new smartStorage();
 		}
 	}
 
@@ -1144,8 +1162,10 @@ class SmartTooltip {
 				const scroll = SmartTooltip.getScroll();
 				x -= scroll.X;
 				y -= scroll.Y;
-				SmartTooltip._saveInLocalStorage('SmartTooltip.x', x);
-				SmartTooltip._saveInLocalStorage('SmartTooltip.y', y);
+
+				ref.storage.save('SmartTooltip.x', x);
+				ref.storage.save('SmartTooltip.y', y);
+
 				ref._ttipPinMe.classList.remove("sttip-pinned");
 				ref._ttipPinMe.classList.add("sttip-custom");
 				ref._fixed = true; // over from just pinned to fixed mode
@@ -1235,19 +1255,20 @@ class SmartTooltip {
 					const ref = window.SmartTooltip;
 					ref._pinned = !window.SmartTooltip._pinned;
 					if (ref._pinned) {
-						SmartTooltip._saveInLocalStorage('SmartTooltip.pinned', true);
+						ref.storage.save('SmartTooltip.pinned', true);
 						this.classList.add('sttip-pinned');
 					} else {
 						if (ref._fixed) { // return from 'fixed' mode to 'pinned' mode
 							ref._fixed = false;
 							this.classList.remove('sttip-custom');
-							SmartTooltip.clearLocalStorage('SmartTooltip.x');
-							SmartTooltip.clearLocalStorage('SmartTooltip.y');
+							ref.storage.delete('SmartTooltip.x');
+							ref.storage.delete('SmartTooltip.y');
+
 							ref._pinned = true;
 							this.classList.add('sttip-pinned');
 						} else { // return from 'pinned' mode to 'float' mode
 							this.classList.remove('sttip-pinned');
-							SmartTooltip.clearLocalStorage('SmartTooltip.pinned');
+							ref.storage.delete('SmartTooltip.pinned');
 						}
 					}
 				});
@@ -1310,8 +1331,8 @@ class SmartTooltip {
 					this._fixed = true;
 				}
 				// now get 'pinned' and 'fixed' modes from local storage
-				const pinned = (localStorage.getItem('SmartTooltip.pinned') === 'true');
-				const fixed  = localStorage.getItem('SmartTooltip.x');
+				const pinned = (this.storage.read('SmartTooltip.pinned') === 'true');
+				const fixed  = this.storage.read('SmartTooltip.x');
 				this._pinned = pinned || this._pinned;
 				this._fixed  = fixed || this._fixed;
 				// set apropriated class on 'pinMe' button
@@ -1345,34 +1366,6 @@ class SmartTooltip {
 				// change apperiance of run indicator (if exists)
 				this._ttipRunIndicator.classList.replace((this._o.isRun ? 'sttip-stop' : 'sttip-run'), (this._o.isRun ? 'sttip-run' : 'sttip-stop'));
 			}
-
-			// if (typeof options.sortBy === 'string') {
-			// 	this._o.sortBy = options.sortBy;
-			// }
-			// if (typeof options.frameScale === 'number') {
-			// 	this._o.frameScale = options.frameScale;
-			// }
-			// if (typeof options.isShadow === 'number') {
-			// 	this._o.isShadow = options.isShadow;
-			// }
-			// if (typeof options.position === 'object') {
-			// 	this._o.position = options.position;
-			// }
-			// if (typeof options.template === 'string') {
-			// 	this._o.template = options.template;
-			// }
-			// if (typeof options.titleTextAlign === 'string') {
-			// 	this._o.titleTextAlign = options.titleTextAlign;
-			// }
-			// if (typeof options.descrTextAlign === 'string') {
-			// 	this._o.descrTextAlign = options.descrTextAlign;
-			// }
-			// if (typeof options.titleTextWrap !== 'undefined') {
-			// 	this._o.titleTextWrap = Number(options.titleTextWrap);
-			// }
-			// if (typeof options.descrTextWrap !== 'undefined') {
-			// 	this._o.descrTextWrap = Number(options.descrTextWrap);
-			// }
 		}
 	}
 
@@ -1388,9 +1381,9 @@ class SmartTooltip {
 				ref._definitions.register(id, tmplFileName);
 
 				if (!tmplFileName.match('.svg')) {
-					let ttdef = SmartTooltip.getInternalTemplate(tmplFileName);
+					let ttdef = TemplateDefs.getInternalTemplate(tmplFileName);
 					if (!ttdef) { // not found, so load default this._ownOptions.template
-						ttdef = SmartTooltip.getInternalTemplate((ref._ownOptions.template || 'pie'));
+						ttdef = TemplateDefs.getInternalTemplate((ref._ownOptions.template || 'pie'));
 					}
 					ref._definitions.set(id, ttdef.name, ttdef.template, ttdef.opt);
 					return;
@@ -1586,8 +1579,7 @@ class SmartTooltip {
 				} else {
 					templName = this._ownOptions.template || 'pie';
 				}
-				//this._definitions.register(data.id, templName);
-				ttipdef = SmartTooltip.getInternalTemplate(templName);
+				ttipdef = TemplateDefs.getInternalTemplate(templName);
 				this._definitions.set(data.id, templName, ttipdef.template, ttipdef.opt);
 			}
 			if (!ttipdef) {
@@ -1643,24 +1635,7 @@ class SmartTooltip {
 			// merge default options with custom
 			this._o = Object.assign({}, CustomProperties.defOptions(), this._ownOptions, ttipdef.opt);
 
-			// if (this._ttipPinMe) {
-			// 	// if pinMe button was hided by previous element, then show it!
-			// 	this._ttipPinMe.removeAttribute('display');
-			// }
-
-			// if (typeof data.options === 'object') {
-			// 	// apply custom options
-			// 	this.setOptions(data.options, data.id);
-
-			// 	this._svg.removeAttribute('style');
-			// 	if (typeof data.options.cssVars === 'object') {
-			// 		const css = data.options.cssVars;
-			// 		for (let key in css) {
-			// 			this._svg.style.setProperty(key, css[key]);
-			// 		}
-			// 	}
-			// 	CustomProperties.convertNumericProps(this._o);
-			// }
+			this.storage.enable = Number(this._o.enableStorage);
 
 			// set pinned and fixed mode by 'startFrom' parameter
 			this._pinned = this._fixed = false;
@@ -1673,8 +1648,8 @@ class SmartTooltip {
 				this._fixed = true;
 			}
 			// now get 'pinned' and 'fixed' modes from local storage
-			const pinned = (localStorage.getItem('SmartTooltip.pinned') === 'true');
-			const fixed  = localStorage.getItem('SmartTooltip.x');
+			const pinned = (this.storage.read('SmartTooltip.pinned') === 'true');
+			const fixed  = this.storage.read('SmartTooltip.x');
 			this._pinned = pinned || this._pinned;
 			this._fixed  = fixed || this._fixed;
 			// set apropriated class on 'pinMe' button
@@ -1948,8 +1923,8 @@ class SmartTooltip {
 					let left=0, top=0
 					if (this._fixed) {
 						if (forId) {
-							left = Number(localStorage.getItem('SmartTooltip.x'));
-							top = Number(localStorage.getItem('SmartTooltip.y'));
+							left = Number(this.storage.read('SmartTooltip.x'));
+							top = Number(this.storage.read('SmartTooltip.y'));
 						}
 					}
 					if (left && top) { // move here!
@@ -2052,7 +2027,8 @@ class CustomProperties {
 			'title-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
 			'descr-text-wrap',		// sets the line width (line-width attribute) for wrapped text. in case of 0 the width attribute from <rect id="tooltip-frame"> in template is used. the defaul is 0
 			'descr-text-align',		// align for wrapped text. One from 4 values: 'left', 'center', 'right', 'justify'. The default is 'left'
-
+			
+			'enable-storage',		// allows to disable or enable (default) an ability to store in localStorage pinMe functionality 
 
 			'sort-by',				// sort parameter for multiple data. May contains one of the data parameters name: 'asis', 'name', 'value', 'color', 'state'. the default is 'value'
 			'sort-dir',				// sorting direction parameter. the default value is '1', wich means from low to high. Possible values: -1, 0, 1.
@@ -2113,6 +2089,7 @@ class CustomProperties {
 			titleTextAlign:			'center',
 			descrTextWrap:			0,
 			descrTextAlign:			'justify',
+			enableStorage:			true,
 			isRun:					0,
 			sortBy:					'value',
 			sortDir:				1,
@@ -2264,7 +2241,6 @@ class CustomProperties {
 class SmartTooltipElement extends HTMLElement {
 	constructor() {
 		super();
-		// this._o = { ...CustomProperties.defOptions() };
 		this._o = Object.assign({}, CustomProperties.defOptions());
 
 		// check browser for ShadowDOM v1 specification
@@ -2314,7 +2290,6 @@ class SmartTooltipElement extends HTMLElement {
 		const opt = {};
 		opt[paramName] = this._o[paramName];
 		window.SmartTooltip.setOptions(opt, this.id);
-
 	}
 }
 const supportsCustomElementsV1 = 'customElements' in window;
