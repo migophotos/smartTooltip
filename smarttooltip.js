@@ -1,4 +1,9 @@
-/* eslint-disable */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-multi-spaces */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable indent */
+/* eslint-disable object-curly-newline */
+
 
 /**
  * @copyright Copyright © 2018 ... All rights reserved.
@@ -873,14 +878,15 @@ class TemplateDefs {
                     `
 			}]
 		]);
-		if (templateName === '')
-			templateName = 'pie';
+		if (templateName === '') {
+            templateName = 'pie';
+        }
 		return internalTemplates.get(templateName);
 	}
 
 
 	constructor() {
-		this._templates = new Map()		// stores id to {name: name, template: template} pair
+		this._templates = new Map();	// stores id to {name: name, template: template} pair
 		this._options = new Map();		// stores id to opt pair
 		this._similars = new Map();		// in case of template name already defined, store in this map the reference on id, that contains it in form: id -> id
 										// the function get(id) will returns this 'right' definition
@@ -938,7 +944,7 @@ class TemplateDefs {
 
 }
 
-class smartStorage {
+class SmartStorage {
 	constructor() {
 		this._enabled = true;	// false for disabled mode (emulate enabled mode)
 	}
@@ -951,9 +957,8 @@ class smartStorage {
 	read(name) {
 		if (this._enabled) {
 			return localStorage.getItem(name);
-		} else {
-            return sessionStorage.getItem(name);
-        }
+		}
+        return sessionStorage.getItem(name);
 	}
 	save(name, value) {
 		if (this._enabled) {
@@ -1021,7 +1026,7 @@ class SmartTooltip {
 		let frmStr = '';
 		const tokens = str.split('$');
 		for (let i = 0; i < tokens.length; i++) {
-			switch(tokens[i]) {
+			switch (tokens[i]) {
 				case 'UUID': 	{ frmStr += data.uuid || ''; break; }
 				case 'VALUE':	{ frmStr += data.value || ''; break; }
 				case 'UNITS':	{ frmStr += data.units || ''; break; }
@@ -1104,26 +1109,26 @@ class SmartTooltip {
 			elem.appendChild(doc.createTextNode(textData));
 		}
 		return elem;
-	};
+	}
 
 	static wrapText(text, textElem, widthMax, align) {
-		function layout(text, align, maxWidth, elem) {
+		function layout(textStr, aligning, maxWidth, elem) {
 			const result = {
-				dx: parseInt(elem.parentElement.getAttribute('x')),
+				dx: parseInt(elem.parentElement.getAttribute('x'), 10),
 				x: 0,
 				wspace: 0,
 				anchor: 'start'
 			};
-			const words = text.split(' ');
-			if (align === 'justify' && words.length > 1) {
+			const words = textStr.split(' ');
+			if (aligning === 'justify' && words.length > 1) {
 				const lineWidth = elem.getComputedTextLength();
-				result.wspace = (maxWidth - lineWidth) / words.length - 1;
+				result.wspace = ((maxWidth - lineWidth) / words.length) - 1; // check this! may be (words.length - 1)?
 				elem.setAttributeNS(null, 'word-spacing', result.wspace);
-			} else if (align === 'center') {
+			} else if (aligning === 'center') {
 				result.anchor = 'middle';
-				//const lineWidth = elem.getComputedTextLength();
+				// const lineWidth = elem.getComputedTextLength();
 				result.x = maxWidth / 2;
-			} else if (align === 'right') {
+			} else if (aligning === 'right') {
 				result.anchor = 'end';
 				result.x = maxWidth;
 			}
@@ -1138,14 +1143,14 @@ class SmartTooltip {
 
 		// tspan for processing
 		const testElem = SmartTooltip.addElement('tspan', { text: 'busy' }, textElem);
-		for(let n = 0; n < words.length; n++) {
+		for (let n = 0; n < words.length; n++) {
 			const testLine = line + words[n] + ' ';
 			// add line to test element
 			testElem.textContent = testLine;
 			// messure test element
 			const testLength = testElem.getComputedTextLength();
 			if (testLength > widthMax && n > 0) {
-				tspanElem = SmartTooltip.addElement('tspan', { x: 0, dy: (lineNumber ? '1em' : 0), text: line }, textElem);
+				tspanElem = SmartTooltip.addElement('tspan', {x: 0, dy: (lineNumber ? '1em' : 0), text: line}, textElem);
 				layout(line, align, widthMax, tspanElem);
 				lineNumber++;
 				line = words[n] + ' ';
@@ -1153,7 +1158,7 @@ class SmartTooltip {
 				line = testLine;
 			}
 		}
-		tspanElem = SmartTooltip.addElement('tspan', { x: 0, dy: (lineNumber ? '1em' : 0), text: line }, textElem);
+		tspanElem = SmartTooltip.addElement('tspan', {x: 0, dy: (lineNumber ? '1em' : 0), text: line}, textElem);
 		if (align === 'justify') { // the last line of justified text must be left aligned only
 			align = 'left';
 		}
@@ -1317,7 +1322,7 @@ class SmartTooltip {
 			this._ttipRef = div;
 			this._ttipGroup = null;
 
-			this.storage = new smartStorage();
+			this.storage = new SmartStorage();
 		}
 	}
 
@@ -1337,13 +1342,13 @@ class SmartTooltip {
 			x: Number(this._ttipDiagram.getAttribute('cx')),
 			y: Number(this._ttipDiagram.getAttribute('cy')),
 			r: Number(this._ttipDiagram.getAttribute('r'))
-		}
+		};
 		let startAngle = 0;
 
 		for (let i = 0; i < subTargets.length; i++) {
 			let target = subTargets[i];
 			// create individual group for each target
-			let g_el = SmartTooltip.addElement('g', {class: 'main-segment', id: `${i}--main-segment`}, this._ttipDiagramGroup);
+			let gEl = SmartTooltip.addElement('g', {class: 'main-segment', id: `${i}--main-segment`}, this._ttipDiagramGroup);
 			let endAngle = (target.value * onePCT) + startAngle;
 			const isCurrent = target.current ? 'sttip-selected' : '';
 			const isLinked  = target.link ? 'sttip-linked' : '';
@@ -1355,14 +1360,15 @@ class SmartTooltip {
 				'data-linkto': target.link || '',
 				'data-uuid': target.uuid || '',
 				d: SmartTooltip.describeArc(centerPt.x, centerPt.y, centerPt.r, startAngle, endAngle)
-			}, g_el);
+			}, gEl);
 			startAngle = endAngle;
 		}
 	}
 	_findElementByClassAndUuid(cls, uuid) {
-		if (typeof uuid === 'undefined')
-			return null;
-		const els = window.SmartTooltip._ttipGroup.getElementsByClassName(cls);
+		if (typeof uuid === 'undefined') {
+            return null;
+        }
+		const els = this._ttipGroup.getElementsByClassName(cls);
 		for (let el of els) {
 			if (el.dataset['uuid'] === uuid) {
 				return el;
@@ -1371,9 +1377,10 @@ class SmartTooltip {
 		return null;
 	}
 	_setOverEffect(cls, uuid, effect) {
-		if (typeof uuid === 'undefined')
-			return null;
-		const els = window.SmartTooltip._ttipGroup.getElementsByClassName(cls);
+		if (typeof uuid === 'undefined') {
+            return null;
+        }
+		const els = this._ttipGroup.getElementsByClassName(cls);
 		let foundEl = null;
 		for (let el of els) {
 			if (el.dataset['uuid'] === uuid) {
@@ -1405,8 +1412,8 @@ class SmartTooltip {
 		const ref = window.SmartTooltip;
 		const div = window.SmartTooltip._ttipRef;
 		// before storing position of tooltip window in local storage, lets check it's current position. may be it was moved by user
-		let x = parseInt(div.style.left)
-			, y = parseInt(div.style.top);
+		let x = parseInt(div.style.left, 10),
+			y = parseInt(div.style.top, 10);
 		if (Math.abs(div._currentX - div._startX) > 5 || Math.abs(div._currentY - div._startY) > 5) {
 			if (window.SmartTooltip._o.showMode === '' && window.SmartTooltip._pinned) {
 				// save coordinates without scroll sizes!
@@ -1417,17 +1424,19 @@ class SmartTooltip {
 				ref.storage.save('SmartTooltip.x', x);
 				ref.storage.save('SmartTooltip.y', y);
 
-				ref._ttipPinMe.classList.remove("sttip-pinned");
-				ref._ttipPinMe.classList.add("sttip-custom");
+				ref._ttipPinMe.classList.remove('sttip-pinned');
+				ref._ttipPinMe.classList.add('sttip-custom');
 				ref._fixed = true; // over from just pinned to fixed mode
 			}
 		} else {
-			console.log("drag more!")
+			console.log('drag more!');
 		}
-		div._currentX = div._startX = null;
-		div._currentY = div._startY = null;
-		document.removeEventListener("mousemove", this._drag);
-		document.removeEventListener("mouseup", this._endDrag);
+        div._currentX = null;
+        div._startX = null;
+        div._currentY = null;
+        div._startY = null;
+		document.removeEventListener('mousemove', this._drag);
+		document.removeEventListener('mouseup', this._endDrag);
 		this.isDrag = false;
 		event.preventDefault();
 	}
@@ -1437,13 +1446,15 @@ class SmartTooltip {
 			return;
 		}
 		this.isDrag = true;
-		document.addEventListener("mousemove", this._drag);
-		document.addEventListener("mouseup", this._endDrag);
+		document.addEventListener('mousemove', this._drag);
+		document.addEventListener('mouseup', this._endDrag);
 
-		const div = window.SmartTooltip._ttipRef,
-			  scroll = SmartTooltip.getScroll();
-		div._currentX = div._startX = event.clientX + scroll.X;
-		div._currentY = div._startY = event.clientY + scroll.Y;
+		const div = window.SmartTooltip._ttipRef, scroll = SmartTooltip.getScroll();
+
+        div._startX = event.clientX + scroll.X;
+        div._currentX = div._startX;
+        div._startY = event.clientY + scroll.Y;
+        div._currentY = div._startY;
 		event.preventDefault();
 	}
 
@@ -1459,11 +1470,11 @@ class SmartTooltip {
 			this._interval = null;
 			if (this._ttipGroup) {
 				this._initialized++;
-				this._ttipGroup.addEventListener('contextmenu', function(evt) {
+				this._ttipGroup.addEventListener('contextmenu', function (evt) {
 					evt.preventDefault();
 				});
 
-				this._ttipGroup.addEventListener("mousedown", this._startDrag);
+				this._ttipGroup.addEventListener('mousedown', this._startDrag);
 
 				this._ttipGroup.addEventListener('mouseover', function (evt) {
 					if (evt.target.classList.contains('sttip-legend-rect')) {
@@ -1508,26 +1519,24 @@ class SmartTooltip {
 					if (ref._pinned) {
 						ref.storage.save('SmartTooltip.pinned', true);
 						this.classList.add('sttip-pinned');
-					} else {
-						if (ref._fixed) { // return from 'fixed' mode to 'pinned' mode
-							ref._fixed = false;
-							this.classList.remove('sttip-custom');
-							ref.storage.delete('SmartTooltip.x');
-							ref.storage.delete('SmartTooltip.y');
+					} else if (ref._fixed) { // return from 'fixed' mode to 'pinned' mode
+                        ref._fixed = false;
+                        this.classList.remove('sttip-custom');
+                        ref.storage.delete('SmartTooltip.x');
+                        ref.storage.delete('SmartTooltip.y');
 
-							ref._pinned = true;
-							this.classList.add('sttip-pinned');
-						} else { // return from 'pinned' mode to 'float' mode
-							this.classList.remove('sttip-pinned');
-							ref.storage.delete('SmartTooltip.pinned');
-						}
-					}
+                        ref._pinned = true;
+                        this.classList.add('sttip-pinned');
+                    } else { // return from 'pinned' mode to 'float' mode
+                        this.classList.remove('sttip-pinned');
+                        ref.storage.delete('SmartTooltip.pinned');
+                    }
 				});
 			}
 			if (this._ttipHelpMe) { // show 'help' panel
 				this._initialized++;
 
-				this._ttipHelpMe.addEventListener('click', function(evt) {
+				this._ttipHelpMe.addEventListener('click', function (evt) {
 
 					window.SmartTooltip._ttipRef.style['display'] = 'none';
 					evt.preventDefault();
@@ -1536,17 +1545,17 @@ class SmartTooltip {
 			if (this._ttipCloseMe) { // 'close' toolip window
 				this._initialized++;
 
-				this._ttipCloseMe.addEventListener('click', function(evt) {
+				this._ttipCloseMe.addEventListener('click', function (evt) {
 					window.SmartTooltip._ttipRef.style['display'] = 'none';
 					evt.preventDefault();
-				})
+				});
 			}
 
 			this._initialized = (this._initialized > 0);
 		}
 	}
 	_checkMouseMoving(delay = null) {
-		if (window.SmartTooltip._interval) {
+		if (this._interval) {
 			clearTimeout(window.SmartTooltip._interval);
 		}
 		let noMouseActive = delay || window.SmartTooltip._o.delayOn;
