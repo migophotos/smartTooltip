@@ -1806,8 +1806,8 @@ class SmartTooltip {
 					x += scroll.X;
 					y += scroll.Y;
 
-					this._ttipRef.style['left'] = x;
-					this._ttipRef.style['top'] = y;
+					this._ttipRef.style['left'] = `${x}px`;
+					this._ttipRef.style['top'] = `${y}px`;
 
 					const divRect = this._ttipRef.getBoundingClientRect();
 					let offsetX = window.innerWidth - divRect.right;
