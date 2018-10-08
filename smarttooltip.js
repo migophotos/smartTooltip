@@ -2593,8 +2593,8 @@ const supportsCustomElementsV1 = 'customElements' in window;
 if (!supportsCustomElementsV1) {
 	throw new Error('Unfortunately, your browser does not support custom elements v1. Think about switching to a last release of Chrome browser that supports all new technologies!');
 }
-if (!customElements.get('smart-tooltip')) {
-	customElements.define('smart-tooltip', SmartTooltipElement);
+if (!customElements.get('smart-ui-tooltip')) {
+	customElements.define('smart-ui-tooltip', SmartTooltipElement);
 }
 
 

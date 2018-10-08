@@ -2,8 +2,8 @@
 <html>
 <head>
     <title>SmartTooltip description and examples</title>
-    <meta name="Description" content="Author: M. Goyberg, 
-    SmartTooltip component description and example of using">  
+    <meta name="Description" content="Author: M. Goyberg,
+    SmartTooltip component description and example of using">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
     <script src="smarttooltip.js"></script>
@@ -89,7 +89,7 @@
 </head>
 
 <body>
-    <smart-tooltip className="h3 h2 tmpl iframe-tmpl image-tmpl">Sorry, yout browser does not support custom elements.</smart-tooltip>
+    <smart-ui-tooltip className="h3 h2 tmpl iframe-tmpl image-tmpl">Sorry, yout browser does not support custom elements.</smart-ui-tooltip>
     <div class="container">
         <h2 id="header-1" class="h2" data-sttip-tooltip="SmartTooltip - больше, чем просто tooltip!">SmartTooltip - больше, чем просто tooltip!</h2>
         <p>SmartTooltip это продвинутый виджет, позволяющий реализовать отображение подсказок на веб странице. Умеет автоматически регистрироваться,
@@ -177,7 +177,7 @@
         --sttip-var-legend-fill: #fff;
         --sttip-var-legend-stroke: #666;
         </code></pre>
-        Включение элемента SmartTooltip на страницу может осуществляться несколькими способами: декларативно, с помощью добавления пользовательского элемента "<b><code>smart-tooltip</code></b>" в любом месте страницы,
+        Включение элемента SmartTooltip на страницу может осуществляться несколькими способами: декларативно, с помощью добавления пользовательского элемента "<b><code>smart-ui-tooltip</code></b>" в любом месте страницы,
         либо посредством вызова статической функции "<b><code>SmartTooltip.initTooltip(..)</code></b>" или "<b><code>SmartTooltip.showTooltip(..)</code></b>" из секции JavaScript кода.<br>
         <p>
         <h3 id="header-2" class="h3" data-sttip-name="Использование декларативного метода">Использование декларативного метода.</h3>
@@ -235,12 +235,12 @@
         При наведении указателя мыши на эти элементы, будет отображаться окно подсказки. Данные для подсказки будут вычитываться из параметров
         "<b><code>data-sttip-linkto</code></b>", "<b><code>data-sttip-uuid</code></b>" и "<b><code>data-sttip-name</code></b>".</p>
 
-        <h3 id="header-3" class="h3" data-sttip-name="Использование custom элемента smart-tooltip">Использование пользовательского элемента &ltsmart-tooltip></h3>
+        <h3 id="header-3" class="h3" data-sttip-name="Использование custom элемента smart-ui-tooltip">Использование пользовательского элемента &ltsmart-ui-tooltip></h3>
         <p></p>Если вам не требуется никакая кастомизация виджета "<b><code>SmartTooltip</code></b>, то инициализацию можно свести к минимуму, путем размещения на странице данного элемента. Просто добавьте в код страницы, следующий фрагмент:<br>
-        <pre><b><code>&ltsmart-tooltip className="sttip">Sorry, yout browser does not support custom elements.&lt/smart-tooltip></code></b></pre>
+        <pre><b><code>&ltsmart-ui-tooltip className="sttip">Sorry, yout browser does not support custom elements.&lt/smart-ui-tooltip></code></b></pre>
         В случае, если браузер не поддерживает такие элементы, после открытия страницы будет видна надпись: Sorry, yout browser does not support custom elements. <br>
         Ну а если вы пользуетесь продвинутым браузером, то больше ничего для инициализации элементов делать не нужно. Почти. Просто добавьте вашим элементам имя класса "<b><code>sttip</code></b>".<br>
-        Это имя не предустановленное, можете придумать свое если хотите, только укажите его элементу "<b><code>smart-tooltip</code></b>" в атрибуте "<b><code>className</code></b>".<br>
+        Это имя не предустановленное, можете придумать свое если хотите, только укажите его элементу "<b><code>smart-ui-tooltip</code></b>" в атрибуте "<b><code>className</code></b>".<br>
         Если у вас много разных элементов, для которых нужно показывать подсказку, вы можете указать в этом атрибуте их все, разделив имена классов через пробел.<br>
         Примечание: вы даже можете изменить вид подсказки с помощью переменных, описанных выше! Просто добавьте их в секцию стилей в определение класса. Например так:<br>
         <pre><code>
