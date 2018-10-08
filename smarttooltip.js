@@ -1304,8 +1304,26 @@ class SmartTooltip {
 	}
 
 
-	constructor() {
+	constructor(role = null, div = null, root) {
+		if (role && div && root) {
+			// create additional instance of SmartTooltip (for demo purpose) and not register it in window namespace
+			this._demo = {};
+			this._demo.role = role;
+			this._demo.id = div.id;
+			this._initialized = 0;	// _initEvents will change in on true after initializing all needed parts
+			this._pinned = false;
+			this._fixed = false;
+			// this map will contains pairs: widget id (as key) : object with template file name (as name) and loaded external tooltip template string (as template)
+			// the function 'show(...)' will load the corresponding template into the body of the tooltip and fill it with the data received from outside
+			this._definitions = null;
+			this._ownOptions = {}; // options from host custom element will stored here (function setOptions fills it on attributes changes of custom element SmartTooltipElement)
+			this._root = root;
+			this._ttipRef = div;
+			this._ttipGroup = null;
+			this.storage = null;
+		}
 		if (!window.SmartTooltip) {
+			this._demo = null;
 			this._initialized = 0;	// _initEvents will change in on true after initializing all needed parts
 			this._pinned = false;
 			this._fixed = false;
@@ -1590,11 +1608,13 @@ class SmartTooltip {
 					this._pinned = true;
 					this._fixed = true;
 				}
-				// now get 'pinned' and 'fixed' modes from local storage
-				const pinned = (this.storage.read('SmartTooltip.pinned') === 'true');
-				const fixed  = this.storage.read('SmartTooltip.x');
-				this._pinned = pinned || this._pinned;
-				this._fixed  = fixed || this._fixed;
+				if (!this.demo && this.storage) { // demo tooltip does not use this functionality
+					// now get 'pinned' and 'fixed' modes from local storage
+					const pinned = (this.storage.read('SmartTooltip.pinned') === 'true');
+					const fixed  = this.storage.read('SmartTooltip.x');
+					this._pinned = pinned || this._pinned;
+					this._fixed  = fixed || this._fixed;
+				}
 				// set apropriated class on 'pinMe' button
 				if (this._ttipPinMe && this._pinned) {
 					if (this._fixed) {
@@ -1686,6 +1706,7 @@ class SmartTooltip {
 					if(!elem) {
 						return;
 					}
+					// getting properties in form 'sttip-XXX' and 'sttip-var-XXX' from styles
 					const compStyle = getComputedStyle(elem);
 
 					const customProp = CustomProperties.getCustomProperties();
@@ -1828,7 +1849,7 @@ class SmartTooltip {
 	show(evt, data) { // dt = { x, y, title: {color, value, name, descr}, targets: [sub-targets], ...options}
 		if (typeof data === 'object') {
 			let ttipdef = null;
-			if (this._definitions.has(data.id)) {
+			if (this._definitions && this._definitions.has(data.id)) {
 				ttipdef = this._definitions.get(data.id);
 			} else {
 				let templName;
@@ -1843,17 +1864,22 @@ class SmartTooltip {
 					templName = this._ownOptions.template || 'pie';
 				}
 				ttipdef = TemplateDefs.getInternalTemplate(templName);
-				this._definitions.set(data.id, templName, ttipdef.template, ttipdef.opt);
+				// demo tooltip does not have definitions, so don't register it!
+				if (this._definitions) {
+					this._definitions.set(data.id, templName, ttipdef.template, ttipdef.opt);
+				}
 			}
 			if (!ttipdef) {
 				this._ttipGroup = null;
 				console.error('Tooltip definition not found');
 				return;
 			}
-			// Rebuild tooltip each time!
-			// clear possible timeout
-			if (window.SmartTooltip._interval) {
-				clearTimeout(window.SmartTooltip._interval);
+			if (!this._demo) {	// demo tooltip shown all time and does not use timers
+				// Rebuild tooltip each time!
+				// clear possible timeout
+				if (window.SmartTooltip._interval) {
+					clearTimeout(window.SmartTooltip._interval);
+				}
 			}
 			// reload
 			this._initialized = false;
@@ -1894,9 +1920,12 @@ class SmartTooltip {
 			this._ttipValue50      = this._root.getElementById('value-50');
             this._ttipValue100     = this._root.getElementById('value-100');
             this._ttipFakeIFrame   = this._root.getElementById('fake-iframe');
-            this._ttipImageLink    = this._root.getElementById('image-link');
-			// init events
-			this._initEvents();
+			this._ttipImageLink    = this._root.getElementById('image-link');
+			
+			if (!this._demo) { // demo tooltip does not use this functionality
+				// init events
+				this._initEvents();
+			}
 
 			/// update definition options
 			if (typeof data.options === 'object') {
@@ -1906,7 +1935,9 @@ class SmartTooltip {
 			// merge default options with custom
 			this._o = Object.assign({}, CustomProperties.defOptions(), this._ownOptions, ttipdef.opt);
 
-			this.storage.enable = Number(this._o.enableStorage);
+			if (!this._demo && this.storage) { // demo tooltip does not use this functionality
+				this.storage.enable = Number(this._o.enableStorage);
+			}
 
 			// set pinned and fixed mode by 'startFrom' parameter
 			this._pinned = this._fixed = false;
@@ -1918,11 +1949,13 @@ class SmartTooltip {
 				this._pinned = true;
 				this._fixed = true;
 			}
-			// now get 'pinned' and 'fixed' modes from local storage
-			const pinned = (this.storage.read('SmartTooltip.pinned') === 'true');
-			const fixed  = this.storage.read('SmartTooltip.x');
-			this._pinned = pinned || this._pinned;
-			this._fixed  = fixed || this._fixed;
+			if (!this._demo && this.storage) { // demo tooltip does not use this functionality
+				// now get 'pinned' and 'fixed' modes from local storage
+				const pinned = (this.storage.read('SmartTooltip.pinned') === 'true');
+				const fixed  = this.storage.read('SmartTooltip.x');
+				this._pinned = pinned || this._pinned;
+				this._fixed  = fixed || this._fixed;
+			}
 			// set apropriated class on 'pinMe' button
 			if (this._ttipPinMe && this._pinned) {
 				if (this._fixed) {
@@ -2209,36 +2242,41 @@ class SmartTooltip {
 
 				// tooltip window positioning
 				if (typeof data.x === 'number' && typeof data.y === 'number') {
-					let forId = 0;
-					if (this._shownFor != data.id) {
-						this._shownFor = data.id;
-						forId = this._shownFor;
-					}
-					// before moving to position of forId element, check the local storage x and y coordinates
-					// and move to these coordinates (the tooltip window was moved by user interaction to sutable place (i hope))
-					// but all this happens only in case of 'fixed' mode!!!
-					let left=0, top=0
-					if (this._fixed) {
-						if (forId) {
-							left = Number(this.storage.read('SmartTooltip.x'));
-							top = Number(this.storage.read('SmartTooltip.y'));
-						}
-					}
-					if (left && top) { // move here!
-						const scroll = SmartTooltip.getScroll();
-						// append current scroll positions to saved coordinates (was stored without its on 'endDrag)
-						left += scroll.X;
-						top += scroll.Y;
-
-						this._ttipRef.style['left'] = left;
-						this._ttipRef.style['top'] = top;
+					if (this._demo) {
+						this._ttipRef.style['left'] = `${data.x}px`;
+						this._ttipRef.style['top'] = `${data.y}px`;
 					} else {
-						const fakeEvt = {
-							x: data.x,
-							y: data.y,
-							type: 'fakeEvent'
+						let forId = 0;
+						if (this._shownFor != data.id) {
+							this._shownFor = data.id;
+							forId = this._shownFor;
 						}
-						this.move(fakeEvt, forId, this._o.position);
+						// before moving to position of forId element, check the local storage x and y coordinates
+						// and move to these coordinates (the tooltip window was moved by user interaction to sutable place (i hope))
+						// but all this happens only in case of 'fixed' mode!!!
+						let left=0, top=0
+						if (this._fixed) {
+							if (forId) {
+								left = Number(this.storage.read('SmartTooltip.x'));
+								top = Number(this.storage.read('SmartTooltip.y'));
+							}
+						}
+						if (left && top) { // move here!
+							const scroll = SmartTooltip.getScroll();
+							// append current scroll positions to saved coordinates (was stored without its on 'endDrag)
+							left += scroll.X;
+							top += scroll.Y;
+
+							this._ttipRef.style['left'] = left;
+							this._ttipRef.style['top'] = top;
+						} else {
+							const fakeEvt = {
+								x: data.x,
+								y: data.y,
+								type: 'fakeEvent'
+							}
+							this.move(fakeEvt, forId, this._o.position);
+						}
 					}
 				}
 
@@ -2272,7 +2310,10 @@ class SmartTooltip {
 				ttipBoundGroupBR = this._ttipGroup.getBoundingClientRect();
 				this._svg.setAttributeNS(null, 'width', ttipBoundGroupBR.width);
 				this._svg.setAttributeNS(null, 'height', ttipBoundGroupBR.height);
-				window.SmartTooltip._checkMouseMoving();
+
+				if (!this._demo) { // demo tooltip does not use this functionality
+					window.SmartTooltip._checkMouseMoving();
+				}
 			}
 		}
 	}
@@ -2545,12 +2586,27 @@ class SmartTooltipElement extends HTMLElement {
 		if (!supportsShadowDOMV1) {
 			throw new Error('Unfortunately, your browser does not support shadow DOM v1. Think about switching to a last release of Chrome browser that supports all new technologies!');
 		}
-		this._shadowDOM = this.attachShadow({mode: 'open'});
+		this._demoTooltip = null;
+		this._demoTooltipElement = null;
+
+		let root = this;
+		const role = this.getAttribute('role');
+		if (role && role === 'demoMode') {
+			this.innerHTML = `<div id="demo-smart-tooltip" style="position: absolute; z-index:999998"></div>`;
+			this._demoTooltipElement = document.getElementById('demo-smart-tooltip');
+			root = this._demoTooltipElement;
+		}
+
+		this._shadowDOM = root.attachShadow({mode: 'open'});
 		if (!this._shadowDOM) {
 			throw new Error('Unfortunately, your browser does not support shadow DOM v1. Think about switching to a last release of Chrome browser that supports all new technologies!');
 		}
+		if (this._demoTooltipElement) {
+			// this call will create special instance of SmartTooltip object not registred in window namespace
+			this._demoTooltip = new SmartTooltip(role, this._demoTooltipElement, this._shadowDOM);
+		}
 		// get custom properties for example, only
-		getComputedStyle(this).getPropertyValue("--sttip-sort-by")
+		getComputedStyle(this).getPropertyValue('--sttip-sort-by')
 
 		SmartTooltip.initTooltip();
 	}
@@ -2558,16 +2614,71 @@ class SmartTooltipElement extends HTMLElement {
 	connectedCallback() {
 		// initialize all internal here
 		CustomProperties.convertNumericProps(this._o);
-        let classNames = this.getAttribute("className");
+        let classNames = this.getAttribute('classNames');
         if (classNames) {
             classNames = classNames.split(' ')
-            document.addEventListener("DOMContentLoaded", function(evt) {
+            document.addEventListener('DOMContentLoaded', function(evt) {
 				CustomProperties.registerElementsByClassName(document, classNames);
             });
-        }
+		}
 	}
 	disconnectedCallback() {
 		// uninitialize all internals here
+	}
+
+	convertKnownProperties(opt) {
+		const options = {
+			// position: evt.target.getBoundingClientRect(),
+			cssVars: {}
+		};
+
+		// convert properties started with 'var-' to css values
+		const customProp = CustomProperties.getCustomProperties();
+		for (let n = 0; n < customProp.length; n++) {
+			if (customProp[n].startsWith('var-')) {
+				let cssKey = `${CustomProperties.getPrefix()}${customProp[n]}`;
+				let oKey = CustomProperties.customProp2Param(`${customProp[n]}`);
+				let cssVal = this._o[oKey];
+				if (typeof cssVal === 'undefined') {
+					oKey = customProp[n].replace('var-', '');
+					oKey = CustomProperties.customProp2Param(oKey);
+					cssVal = this._o[oKey];
+				}
+				// and now?
+				if (typeof cssVal !== 'undefined') {
+					cssVal = cssVal.toString();
+					options.cssVars[`${cssKey}`] = cssVal;
+				}
+			} else {
+				const propKey = CustomProperties.customProp2Param(`${customProp[n]}`);
+				let propVal = this._o[CustomProperties.customProp2Param(`${customProp[n]}`)];
+				if (typeof propVal !== 'undefined') {
+					options[propKey] = propVal;
+				}
+			}
+		}
+		return options;
+	}
+
+	showDemoTooltip(x, y) {
+		if (this._demoTooltip) {
+			const options = this.convertKnownProperties(this._o);
+			CustomProperties.convertNumericProps(options);
+
+
+			const data = {
+				x: x,
+				y: y,
+				id: null,
+				options: options,
+				title: {
+					uuid: `uuid-demo-tooltip`,
+					name: `Change options for this SmartTooltip widget and hover mouse pointer over bold text at the left side to check real SmartTooltip`,
+				}	
+			}
+			const evt = null;
+			this._demoTooltip.show(evt, data);
+		}
 	}
 
 	/**
