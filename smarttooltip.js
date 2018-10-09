@@ -251,7 +251,7 @@ class TemplateDefs {
 							}
 							#frmBtns rect {
 								fill: var(--sttip-var-frame-fill, none);
-								stroke: var(--sttip-var-border-color, black);
+								stroke: var(--no-color, black);
                                 stroke-width: 0.5;
 								rx: var(--sttip-var-border-radius);
 								ry: var(--sttip-var-border-radius);
@@ -299,11 +299,11 @@ class TemplateDefs {
 								<g id="frmBtns" transform="translate(0, 4)">
 									<g transform="translate(0, 0)">
 										<rect id="helpMe" x="0" y="0" width="16" height="16" />
-										<text text-anchor="middle" pointer-events="none" x="8" y="13">?</text>
+										<text text-anchor="middle" pointer-events="none" x="8" y="12">?</text>
 									</g>
 									<g transform="translate(20, 0)">
 										<rect id="closeMe" x="0" y="0" width="16" height="16"  />
-										<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
+										<path d="M3,3L13,13M3,13L13,3" stroke="black" stroke-width="2" pointer-events="none"  />
 									</g>
 								</g>
 								<g transform="translate(4,4)">
@@ -469,7 +469,7 @@ class TemplateDefs {
 							}
 							#frmBtns rect {
 								fill: var(--sttip-var-frame-fill, none);
-								stroke: var(--sttip-var-border-color, black);
+								stroke: var(--no-color, black);
                                 stroke-width: 0.5;
 								rx: var(--sttip-var-border-radius);
 								ry: var(--sttip-var-border-radius);
@@ -522,11 +522,11 @@ class TemplateDefs {
 								<g id="frmBtns" transform="translate(0, 4)">
 									<g transform="translate(0, 0)">
 										<rect id="helpMe" x="0" y="0" width="16" height="16" />
-										<text text-anchor="middle" pointer-events="none" x="8" y="13">?</text>
+										<text text-anchor="middle" pointer-events="none" x="8" y="12">?</text>
 									</g>
 									<g transform="translate(20, 0)">
 										<rect id="closeMe" x="0" y="0" width="16" height="16"  />
-										<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
+										<path d="M3,3L13,13M3,13L13,3" stroke="black" stroke-width="2" pointer-events="none"  />
 									</g>
 								</g>
 								<g id="title-group" data-x="10" >
@@ -641,7 +641,7 @@ class TemplateDefs {
 							}
 							#frmBtns rect {
 								fill: var(--sttip-var-frame-fill, none);
-								stroke: var(--sttip-var-border-color, black);
+								stroke: var(--no-color, black);
                                 stroke-width: 0.5;
 								rx: var(--sttip-var-border-radius);
 								ry: var(--sttip-var-border-radius);
@@ -694,11 +694,11 @@ class TemplateDefs {
 								<g id="frmBtns" transform="translate(0, 4)">
 									<g transform="translate(0, 0)">
 										<rect id="helpMe" x="0" y="0" width="16" height="16" />
-										<text text-anchor="middle" pointer-events="none" x="8" y="13">?</text>
+										<text text-anchor="middle" pointer-events="none" x="8" y="12">?</text>
 									</g>
 									<g transform="translate(20, 0)">
 										<rect id="closeMe" x="0" y="0" width="16" height="16"  />
-										<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
+										<path d="M3,3L13,13M3,13L13,3" stroke="black" stroke-width="2" pointer-events="none"  />
 									</g>
 								</g>
                                 <g id="title-group" data-x="10" >
@@ -817,7 +817,7 @@ class TemplateDefs {
 							}
 							#frmBtns rect {
 								fill: var(--sttip-var-frame-fill, none);
-								stroke: var(--sttip-var-border-color, black);
+								stroke: var(--no-color, black);
                                 stroke-width: 0.5;
 								rx: var(--sttip-var-border-radius);
 								ry: var(--sttip-var-border-radius);
@@ -870,11 +870,11 @@ class TemplateDefs {
 								<g id="frmBtns" transform="translate(0, 4)">
 									<g transform="translate(0, 0)">
 										<rect id="helpMe" x="0" y="0" width="16" height="16" />
-										<text text-anchor="middle" pointer-events="none" x="8" y="13">?</text>
+										<text text-anchor="middle" pointer-events="none" x="8" y="12">?</text>
 									</g>
 									<g transform="translate(20, 0)">
 										<rect id="closeMe" x="0" y="0" width="16" height="16"  />
-										<path d="M2,2L14,14M2,14L14,2" stroke="black" stroke-width="2" pointer-events="none"  />
+										<path d="M3,3L13,13M3,13L13,3" stroke="black" stroke-width="2" pointer-events="none"  />
 									</g>
 								</g>
                                 <g id="title-group" data-x="10" >
@@ -2448,7 +2448,7 @@ class CustomProperties {
 			outputMode:				'all-targets',
 			startFrom:				'float',
 			showMode:				'',
-			position:				'',
+			position:				'rt',
 			delayIn:				0,
 			delayOut:				250,
 			delayOn:				2000,
@@ -2685,7 +2685,7 @@ class SmartTooltipElement extends HTMLElement {
 				title: {
 					uuid: `uuid-demo-tooltip`,
                     name: `Change options for this SmartTooltip widget and hover mouse pointer over bold text at the left side to check real SmartTooltip`,
-                    link: 'http://static.boredpanda.com/blog/wp-content/uploads/2015/09/DSC_024402__880.jpg'
+                    link: 'index.html'
 				}
 			}
 			const evt = null;
