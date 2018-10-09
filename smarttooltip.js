@@ -101,29 +101,29 @@ class TemplateDefs {
 
 								--sttip-var-font-family: 'Arial', 'DIN Condensed', 'Noteworthy', sans-serif;
 								--sttip-var-font-stretch: condensed;
-								--sttip-var-font-color: #666;
+								--sttip-var-font-color: #666666;
 								--sttip-var-scale-size: 12px;
 								--sttip-var-legend-size: 18px;
 								--sttip-var-title-size: 22px;
 								--sttip-var-descr-size: 18px;
 
-								--sttip-var-run-color: #0f0;
-								--sttip-var-stop-color: #f00;
-								--sttip-var-def-color: #666;
+								--sttip-var-run-color: #00ff00;
+								--sttip-var-stop-color: #ff0000;
+								--sttip-var-def-color: #666666;
 
-								--sttip-var-frame-fill: #fff;
+								--sttip-var-frame-fill: #ffffff;
 								--sttip-var-frame-opacity: 0.95;
-								--sttip-var-border-color: none;
-								--sttip-var-border-width: 2;
+								--sttip-var-border-color: #000000;
+								--sttip-var-border-width: 0;
 								--sttip-var-border-radius: 2;
 
-								--sttip-var-legend-fill: #fff;
-								--sttip-var-legend-stroke: #666;
+								--sttip-var-legend-fill: #ffffff;
+								--sttip-var-legend-stroke: #666666;
 
 
 								--legend-frm-border-width: 2;
 								--legend-frm-border-radius: var(--sttip-var-border-radius, 2);
-								--legend-frm-border-color: var(--sttip-var-legend-stroke, #666);
+								--legend-frm-border-color: var(--sttip-var-legend-stroke, #666666);
 								--legend-frm-fill: var(--sttip-var-legend-fill, #ffc6c6);
 
 								--no-color:	none;
@@ -251,8 +251,11 @@ class TemplateDefs {
 							}
 							#frmBtns rect {
 								fill: var(--sttip-var-frame-fill, none);
-								stroke: var(--sttip-var-font-color, black);
-								stroke-width: 0.5;
+								stroke: var(--sttip-var-border-color, black);
+                                stroke-width: 0.5;
+								rx: var(--sttip-var-border-radius);
+								ry: var(--sttip-var-border-radius);
+
 								pointer-events: bounding-box;
 								cursor: pointer;
 							}
@@ -401,20 +404,20 @@ class TemplateDefs {
 
 								--sttip-var-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
 								--sttip-var-font-stretch: condensed;
-								--sttip-var-font-color: #666;
+								--sttip-var-font-color: #666666;
 								--sttip-var-scale-size: 12px;
 								--sttip-var-legend-size: 18px;
 								--sttip-var-title-size: 22px;
 								--sttip-var-descr-size: 18px;
 
-								--sttip-var-run-color: #0f0;
-								--sttip-var-stop-color: #f00;
-								--sttip-var-def-color: #666;
+								--sttip-var-run-color: #00ff00;
+								--sttip-var-stop-color: #ff0000;
+								--sttip-var-def-color: #666666;
 
-								--sttip-var-frame-fill: #fff;
+								--sttip-var-frame-fill: #ffffff;
 								--sttip-var-frame-opacity: 0.95;
-								--sttip-var-border-color: none;
-								--sttip-var-border-width: 2;
+								--sttip-var-border-color: #000000;
+								--sttip-var-border-width: 0;
 								--sttip-var-border-radius: 2;
 
 
@@ -466,8 +469,11 @@ class TemplateDefs {
 							}
 							#frmBtns rect {
 								fill: var(--sttip-var-frame-fill, none);
-								stroke: var(--sttip-var-font-color, black);
-								stroke-width: 0.5;
+								stroke: var(--sttip-var-border-color, black);
+                                stroke-width: 0.5;
+								rx: var(--sttip-var-border-radius);
+								ry: var(--sttip-var-border-radius);
+
 								pointer-events: bounding-box;
 								cursor: pointer;
 							}
@@ -585,20 +591,20 @@ class TemplateDefs {
 
 								--sttip-var-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
 								--sttip-var-font-stretch: condensed;
-								--sttip-var-font-color: #666;
+								--sttip-var-font-color: #666666;
 								--sttip-var-scale-size: 12px;
 								--sttip-var-legend-size: 18px;
 								--sttip-var-title-size: 22px;
 								--sttip-var-descr-size: 18px;
 
-								--sttip-var-run-color: #0f0;
-								--sttip-var-stop-color: #f00;
-								--sttip-var-def-color: #666;
+								--sttip-var-run-color: #00ff00;
+								--sttip-var-stop-color: #ff0000;
+								--sttip-var-def-color: #666666;
 
-								--sttip-var-frame-fill: #fff;
+								--sttip-var-frame-fill: #ffffff;
 								--sttip-var-frame-opacity: 0.95;
-								--sttip-var-border-color: none;
-								--sttip-var-border-width: 2;
+								--sttip-var-border-color: #000000;
+								--sttip-var-border-width: 0;
 								--sttip-var-border-radius: 2;
 
 
@@ -635,8 +641,11 @@ class TemplateDefs {
 							}
 							#frmBtns rect {
 								fill: var(--sttip-var-frame-fill, none);
-								stroke: var(--sttip-var-font-color, black);
-								stroke-width: 0.5;
+								stroke: var(--sttip-var-border-color, black);
+                                stroke-width: 0.5;
+								rx: var(--sttip-var-border-radius);
+								ry: var(--sttip-var-border-radius);
+
 								pointer-events: bounding-box;
 								cursor: pointer;
 							}
@@ -758,20 +767,20 @@ class TemplateDefs {
 
 								--sttip-var-font-family: 'Arial Narrow', 'DIN Condensed', 'Noteworthy', sans-serif;
 								--sttip-var-font-stretch: condensed;
-								--sttip-var-font-color: #666;
+								--sttip-var-font-color: #666666;
 								--sttip-var-scale-size: 12px;
 								--sttip-var-legend-size: 18px;
 								--sttip-var-title-size: 22px;
 								--sttip-var-descr-size: 18px;
 
-								--sttip-var-run-color: #0f0;
-								--sttip-var-stop-color: #f00;
-								--sttip-var-def-color: #666;
+								--sttip-var-run-color: #00ff00;
+								--sttip-var-stop-color: #ff0000;
+								--sttip-var-def-color: #666666;
 
-								--sttip-var-frame-fill: #fff;
+								--sttip-var-frame-fill: #ffffff;
 								--sttip-var-frame-opacity: 0.95;
-								--sttip-var-border-color: none;
-								--sttip-var-border-width: 2;
+								--sttip-var-border-color: #000000;
+								--sttip-var-border-width: 0;
 								--sttip-var-border-radius: 2;
 
 
@@ -808,8 +817,11 @@ class TemplateDefs {
 							}
 							#frmBtns rect {
 								fill: var(--sttip-var-frame-fill, none);
-								stroke: var(--sttip-var-font-color, black);
-								stroke-width: 0.5;
+								stroke: var(--sttip-var-border-color, black);
+                                stroke-width: 0.5;
+								rx: var(--sttip-var-border-radius);
+								ry: var(--sttip-var-border-radius);
+
 								pointer-events: bounding-box;
 								cursor: pointer;
 							}
@@ -1921,7 +1933,7 @@ class SmartTooltip {
             this._ttipValue100     = this._root.getElementById('value-100');
             this._ttipFakeIFrame   = this._root.getElementById('fake-iframe');
 			this._ttipImageLink    = this._root.getElementById('image-link');
-			
+
 			if (!this._demo) { // demo tooltip does not use this functionality
 				// init events
 				this._initEvents();
@@ -2090,7 +2102,7 @@ class SmartTooltip {
 						// render value indicator and its scale
 						if (typeof data.title.value !== 'undefined') {
 							this._ttipScaleGroup ? (this._ttipScaleGroup.style['display'] = 'block') : {};
-							this._ttipValue.style['fill'] = data.title.color || '#666';
+							this._ttipValue.style['fill'] = data.title.color || '#666666';
 							// value indicator (rect in 'pie' template must to have dataset parameter 'maxw' that defines the length of scale)!
 							let valueWidth = parseInt(this._ttipValue.dataset['maxw']);
 							let onepct = valueWidth/100;
@@ -2404,12 +2416,12 @@ class CustomProperties {
 			'var-legend-size',		// legend font size. Internal template specifies it as 22px.
 			'var-title-size',		// title font size. Internal template specifies it as 30px.
 			'var-descr-size',		// description font size. Internal template value is 28px.
-			'var-run-color',		// fill color for 'runned' state of runtime status indicator. The default value is '#0f0'.
-			'var-stop-color',		// fill color for 'stopped' state of runtime status indicator. The default value is '#f00'.
+			'var-run-color',		// fill color for 'runned' state of runtime status indicator. The default value is '#00ff00'.
+			'var-stop-color',		// fill color for 'stopped' state of runtime status indicator. The default value is '#ff0000'.
 			'var-def-color',		// default color. currently not in use.
 			'var-legend-fill',
 			'var-legend-stroke',
-			'var-frame-fill',		// the fill color of tooltip window background. Internal template defines it as '#fff'.
+			'var-frame-fill',		// the fill color of tooltip window background. Internal template defines it as '#ffffff'.
 			'var-border-color',		// the border color of tooltip window. Internal template defines it as 'none'.
 			'var-frame-opacity',	// opacity value of tooltip window background. Internal template defines it as 0.95.
 			'var-border-width',		// the border width of tooltip window. Internal template defines it as 2px.
@@ -2445,22 +2457,21 @@ class CustomProperties {
 			fontFamily:				'Arial Narrow, DIN Condensed, Noteworthy, sans-serif',
 			fontSize:				'12px',
 			fontStretch:			'condensed',
-			fontSize:				'22px',
-			fontColor:				'#666',
+			fontColor:				'#666666',
 			scaleSize:				'12px',
 			legendSize:				'18px',
 			titleSize:				'22px',
 			descrSize:				'18px',
-			runColor:				'#0f0',
-			stopColor:				'#f00',
-			defColor:				'#666',
-			legendFill:				'#fff',
-			legensStroke:			'#666',
-			frameFill:				'#fff',
-			borderColor:			'none',
+			runColor:				'#00ff00',
+			stopColor:				'#ff0000',
+			defColor:				'#666666',
+			legendFill:				'#ffffff',
+			legendStroke:			'#666666',
+			frameFill:				'#ffffff',
+			borderColor:			'#000000',
 			frameOpacity:			0.95,
 			frameScale:				0.8,
-			borderWidth:			2,
+			borderWidth:			0,
 			borderRadius:			2,
 			isShadow:				1
 		}
@@ -2673,8 +2684,9 @@ class SmartTooltipElement extends HTMLElement {
 				options: options,
 				title: {
 					uuid: `uuid-demo-tooltip`,
-					name: `Change options for this SmartTooltip widget and hover mouse pointer over bold text at the left side to check real SmartTooltip`,
-				}	
+                    name: `Change options for this SmartTooltip widget and hover mouse pointer over bold text at the left side to check real SmartTooltip`,
+                    link: 'http://static.boredpanda.com/blog/wp-content/uploads/2015/09/DSC_024402__880.jpg'
+				}
 			}
 			const evt = null;
 			this._demoTooltip.show(evt, data);
