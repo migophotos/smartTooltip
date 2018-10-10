@@ -2454,7 +2454,7 @@ class CustomProperties {
 			delayOn:				2000,
 			transitionIn:			0,
 			transitionOut:			0,
-			fontFamily:				'Arial Narrow, DIN Condensed, Noteworthy, sans-serif',
+			fontFamily:				'Arial, DIN Condensed, Noteworthy, sans-serif',
 			fontSize:				'12px',
 			fontStretch:			'condensed',
 			fontColor:				'#666666',
