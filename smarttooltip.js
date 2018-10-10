@@ -2467,12 +2467,12 @@ class CustomProperties {
 			defColor:				'#666666',
 			legendFill:				'#ffffff',
 			legendStroke:			'#666666',
-			frameFill:				'#ffffff',
-			borderColor:			'#000000',
-			frameOpacity:			0.95,
+			frameFill:				'#fffcde',
+			borderColor:			'#d1c871',
+			frameOpacity:			0.90,
 			frameScale:				0.8,
-			borderWidth:			0,
-			borderRadius:			2,
+			borderWidth:			2.5,
+			borderRadius:			6,
 			isShadow:				1
 		}
 	}
