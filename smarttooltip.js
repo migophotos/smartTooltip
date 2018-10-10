@@ -2439,7 +2439,7 @@ class CustomProperties {
 			titleTextAlign:			'center',
 			descrTextWrap:			0,
 			descrTextAlign:			'justify',
-			enableStorage:			true,
+			enableStorage:			1,
 			isRun:					0,
 			sortBy:					'value',
 			sortDir:				1,
