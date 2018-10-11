@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="favicon.png" />
     <title>SmartTooltip description and examples</title>
     <meta name="Description" content="Author: M. Goyberg,
     SmartTooltip component description and example of using">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
-    <script src="smarttooltip.js"></script>
+
+    <script src="./../smartUI/js/smarttooltip.js"></script>
+    <!-- <script src="smarttooltip.js"></script> -->
     <style>
         .container {
           width: 80%;
@@ -236,7 +240,7 @@
         "<b><code>data-sttip-linkto</code></b>", "<b><code>data-sttip-uuid</code></b>" и "<b><code>data-sttip-name</code></b>".</p>
 
         <h3 id="header-3" class="h3" data-sttip-name="Использование custom элемента smart-ui-tooltip">Использование пользовательского элемента &ltsmart-ui-tooltip></h3>
-        <p></p>Если вам не требуется никакая кастомизация виджета "<b><code>SmartTooltip</code></b>, то инициализацию можно свести к минимуму, путем размещения на странице данного элемента. 
+        <p></p>Если вам не требуется никакая кастомизация виджета "<b><code>SmartTooltip</code></b>, то инициализацию можно свести к минимуму, путем размещения на странице данного элемента.
         Просто добавьте в код страницы, следующий фрагмент:<br>
         <pre><b><code>&ltsmart-ui-tooltip classNames="sttip">Sorry, yout browser does not support custom elements.&lt/smart-ui-tooltip></code></b></pre>
         В случае, если браузер не поддерживает такие элементы, после открытия страницы будет видна надпись: Sorry, yout browser does not support custom elements. <br>
