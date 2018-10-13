@@ -9,8 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
 
-    <script src="./../smartUI/js/smarttooltip.js"></script>
-    <!-- <script src="smarttooltip.js"></script> -->
+    <script src="smarttooltip.js"></script>
+
     <style>
         .container {
           width: 80%;
@@ -93,7 +93,7 @@
 </head>
 
 <body>
-    <smart-ui-tooltip classNames="h3 h2 tmpl iframe-tmpl image-tmpl">Sorry, yout browser does not support custom elements.</smart-ui-tooltip>
+    <smart-ui-tooltip class-names="h3 h2 tmpl iframe-tmpl image-tmpl">Sorry, yout browser does not support custom elements.</smart-ui-tooltip>
     <div class="container">
         <h2 id="header-1" class="h2" data-sttip-tooltip="SmartTooltip - больше, чем просто tooltip!">SmartTooltip - больше, чем просто tooltip!</h2>
         <p>SmartTooltip это продвинутый виджет, позволяющий реализовать отображение подсказок на веб странице. Умеет автоматически регистрироваться,
@@ -242,10 +242,10 @@
         <h3 id="header-3" class="h3" data-sttip-name="Использование custom элемента smart-ui-tooltip">Использование пользовательского элемента &ltsmart-ui-tooltip></h3>
         <p></p>Если вам не требуется никакая кастомизация виджета "<b><code>SmartTooltip</code></b>, то инициализацию можно свести к минимуму, путем размещения на странице данного элемента.
         Просто добавьте в код страницы, следующий фрагмент:<br>
-        <pre><b><code>&ltsmart-ui-tooltip classNames="sttip">Sorry, yout browser does not support custom elements.&lt/smart-ui-tooltip></code></b></pre>
+        <pre><b><code>&ltsmart-ui-tooltip class-names="sttip">Sorry, yout browser does not support custom elements.&lt/smart-ui-tooltip></code></b></pre>
         В случае, если браузер не поддерживает такие элементы, после открытия страницы будет видна надпись: Sorry, yout browser does not support custom elements. <br>
         Ну а если вы пользуетесь продвинутым браузером, то больше ничего для инициализации элементов делать не нужно. Почти. Просто добавьте вашим элементам имя класса "<b><code>sttip</code></b>".<br>
-        Это имя не предустановленное, можете придумать свое если хотите, только укажите его элементу "<b><code>smart-ui-tooltip</code></b>" в атрибуте "<b><code>classNames</code></b>".<br>
+        Это имя не предустановленное, можете придумать свое если хотите, только укажите его элементу "<b><code>smart-ui-tooltip</code></b>" в атрибуте "<b><code>class-names</code></b>".<br>
         Если у вас много разных элементов, для которых нужно показывать подсказку, вы можете указать в этом атрибуте их все, разделив имена классов через пробел.<br>
         Примечание: вы даже можете изменить вид подсказки с помощью переменных, описанных выше! Просто добавьте их в секцию стилей в определение класса. Например так:<br>
         <pre><code>
@@ -278,7 +278,7 @@
             // you may specify here any screen coordinates for positioning SmartTooltip window
             // only top and right parameters used for calculating currently.
             // The position of tooltip window will be moved by 16 px at right side of specified 'right' parameter.
-            // In case of this parameter not specified, the 'pinned' tooltip will be positioned near mouse cursor (=6 pixels to right and down).
+            // In case of this parameter not specified, the 'pinned' tooltip will be positioned near mouse cursor (30px to right and 10px down).
             position: '',
 
             // run indicator is a small circle near the legend. It's fill color is green, when this parameter equals true and red when false.
