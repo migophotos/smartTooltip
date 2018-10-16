@@ -185,6 +185,7 @@
         </code></pre>
         Включение элемента SmartTooltip на страницу может осуществляться несколькими способами: декларативно, с помощью добавления пользовательского элемента "<b><code>smart-ui-tooltip</code></b>" в любом месте страницы,
         либо посредством вызова статической функции "<b><code>SmartTooltip.initTooltip(..)</code></b>" или "<b><code>SmartTooltip.showTooltip(..)</code></b>" из секции JavaScript кода.<br>
+        К сожалению, на данный момент первый и наиболее удобный способ не поддерживается браузером IE.
         <p>
         <h3 id="header-2" class="h3" data-sttip-name="Использование декларативного метода">Использование декларативного метода.</h3>
         Инициализация SmartTooltip, происходит автоматически, а для регистрации элементов HTML, достаточно вызвать статическую функцию<br>
@@ -374,6 +375,36 @@
         Первый вызов функции <code>SmartTooltip.showTooltip(..)</code> инициализирует, если необходимо элемент SmartTooltip, встроенным шаблоном.<br><br>
         Статические функции <code>SmartTooltip.moveTooltip(evt)</code> и <code>SmartTooltip.hideTooltip(evt)</code> вызываются из тела обработчика событий <code>mousemove</code> <code>mouseout</code> соответственно.<br>
         Важное дополнение: эти функции запрещено вызывать до первого вызова, инициализирующих элемент, функций!
+        </p>
+        <p>Существует еще один способ задания вида элемента подсказки - с помощью строки в JSON-формате. 
+            Например следующий фрагмент кода будет отображать окно подсказки, сверху над элементом:<br>
+            Данное окно подсказки использует простой шаблон, включающий в себя заголовок и описание. В заголовке выводится текст, передаваемый в параметре 'data.title.name'<br>
+            В описании выводится значение, передаваемое в параметре 'data.title.value'. Заголовок и описание выравниваются по ширине окна подсказки, равному  296 пикселей. Окно зуммируется с коэффициэнтом 0,7<br>
+            Цвет текста - белый. Размер шрифта заголовка - 26 пикселей, описания - 20 пикселей. Фон окна подсказки - "#ffa222". Непрозрачность = 1.
+            <pre><code>
+            el.addEventListener('mouseout', (evt) => {
+                SmartTooltip.hideTooltip(evt);
+            });    
+            el.addEventListener('mousemove', (evt) => {
+                SmartTooltip.moveTooltip(evt);
+            });
+            el.addEventListener('mouseover', (evt) => {
+                const options = '{"--sttip-title-format":"","--sttip-descr-format":"$VALUE$","--sttip-descr-text-align":"center","--sttip-enable-storage":"0","--sttip-show-mode":"pinned","--sttip-position":"cu","--sttip-frame-scale":"0.7","--sttip-var-tooltip-max-width":"296","--sttip-var-font-color":"#ffffff","--sttip-var-title-size":"26px","--sttip-var-descr-size":"20px","--sttip-var-frame-fill":"#ffa222","--sttip-var-frame-opacity":"1"}';<br>
+                const opt = CustomProperties.JsonToOptions(options);
+                const data = { 
+                    id: evt.target.id,
+                    x: evt.clientX,
+                    y: evt.clientY,
+                    options: opt,
+                    title: {
+                        uuid: evt.target.id,
+                        name: 'Current value',
+                        value: 150,
+                    }
+                };
+                SmartTooltip.showTooltip(data);
+            });
+            </code></pre>
         </p>
     </div>
 </body>
