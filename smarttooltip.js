@@ -722,15 +722,17 @@ class TemplateDefs {
 										<text id="tooltip-title" class="sttip-text sttip-title" x="10" y="40"></text>
 										<text id="tooltip-description" class="sttip-text sttip-description" x="10" y="60"></text>
 									</g>
-                                    <rect id="fake-iframe" x="10" y="66" width="360" height="240" stroke="none" fill="gray"/>
+                                    <rect id="fake-iframe" x="10" y="66" width="360" height="240" stroke="none" fill="gray" style="visibility:hidden;"/>
+                                    <foreignObject id="fo-iframe" x="10" y="66" width="360" height="240" style="position:relative;">
+                                        <iframe id="inlineFrame" width="100%" height="100%"
+                                            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                                            src="">
+                                        </iframe>
+                                    <foreignObject>
                                 </g>
 							</g>
 						</g>
                     </svg>
-                    <iframe id="inlineFrame" width="357" height="238"
-                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                    style="position:absolute; left:10px; top:30px;"
-                    src=""></iframe>
                 `
 			}],
 			['image', {
@@ -1053,7 +1055,7 @@ class CustomProperties {
 	static getPrefix() {
 		return '--sttip-';
 	}
-	
+
 	/**
 	 * converts JSON representation of options into the options parameters object siutable for show() call
 	 */
@@ -1166,7 +1168,7 @@ class CustomProperties {
 	/**
 	 * Build text representation of changed options for specific templates
 	 * @param {object} opt Options
-	 * @param {string} templateId Specific template name. 
+	 * @param {string} templateId Specific template name.
 	 * The one from next: 'def-custom-elem_btn', 'def-json_btn', 'def-object-params_btn', 'def-svg_widget_btn'
 	 */
     static serializeOptions(opt, templateId) {
@@ -1191,19 +1193,49 @@ class CustomProperties {
                 break;
 			case 'def-json_btn':
 				cssOpt = CustomProperties.buidOptionsAndCssVars(opt, false);
-				template = `options = '${JSON.stringify(cssOpt)}'`;
+				const jstr = `'${JSON.stringify(cssOpt)}'`;
+				const bjstr = jstr.replace(/,/g, ',\\\n    ');
+
+				template = `${jstr}`;
 				template += '\n\n';
-				template += 
+				template +=
 				`// later, use CustomProperties.JsonToOptions(options); to convert JSON string
-// into 'options' object, sutable for SmartToolip.showTooltip() call.`
-				// beutify it by 'lf'
-				//template = template.replace(/,/g, ',\\\n');
+// into 'options' object, sutable for SmartToolip.showTooltip() call. Fof example:
+
+const el = document.getElementById("jsn");
+el.addEventListener('mouseout', (evt) => {
+	SmartTooltip.hideTooltip(evt);
+});
+el.addEventListener('mousemove', (evt) => {
+	SmartTooltip.moveTooltip(evt);
+});
+el.addEventListener('mouseover', (evt) => {
+	const opt = ${bjstr};
+	const options = CustomProperties.JsonToOptions(opt);
+
+	opt.location = evt.target.getBoundingClientRect();
+	const data = {
+		id: evt.target.id,
+		x: evt.clientX,
+		y: evt.clientY,
+		options: options,
+		title: {
+			uuid: evt.target.id,
+			name: 'Current value',
+			value: 150,
+			max: 300,
+			color: 'rgb(19, 233, 19)'
+		}
+	};
+	SmartTooltip.showTooltip(data, evt);
+});
+`
                 break;
             case 'def-object-params_btn':
 				cssOpt = CustomProperties.buidOptionsAndCssVars(opt);
 				template = '// inside "mouseover" event\n';
 				template += 'const data = {\n  x: evt.clientX,\n  y: evt.clientY,\n  id: evt.target.id;\n';
-				template += '  options: {\n';
+				template += '  options: {\n    location: evt.target.getBoundingClientRect();\n';
 				if (typeof cssOpt.cssVars === 'object') {
 					template += '    cssVars: {\n';
 					for (let key in cssOpt.cssVars) {
@@ -1233,7 +1265,7 @@ class CustomProperties {
         }
         return template;
 	}
-	
+
 	/**
 	 * Returns an array of custom properties. Each of the custom property has corresponding declarative attribute in form first-second == prefix-first-second
 	 * and option parameter with name "firstSecond".
@@ -1420,7 +1452,7 @@ class CustomProperties {
     }
 	/**
 	 * Translate by html lang attribute texts inside 'data.title' and 'data.options' sections
-	 * @param {object} data 
+	 * @param {object} data
 	 */
     static tryToTranslate(data) {
         const title   = data.title;
@@ -1462,12 +1494,12 @@ class CustomProperties {
             }
         }
 	}
-	
+
 	/**
 	 * Register (add event listeners) an array of elements by its id
 	 * @param {object} doc current document (page document by default)
 	 * @param {array} ids an array of elements id that will be registered (mousemove, mouseover and mouseout event listeners will be added)
-	 * Each element may require the specific template by specifing its name (for example 'simple') in attribute '--sttip-template', 
+	 * Each element may require the specific template by specifing its name (for example 'simple') in attribute '--sttip-template',
 	 * or dataset attribute in form 'data-template'. If template name is not specified, the default one, 'pie' will be used.
 	 */
 	static registerElementsByIds(doc, ids = []) {
@@ -1495,7 +1527,7 @@ class CustomProperties {
 	 * Register (add event listeners) an array of elements by its class name
 	 * @param {object} doc current document (page document by default)
 	 * @param {array} cls an array of class names of elements that will be registered (mousemove, mouseover and mouseout event listeners will be added)
-	 * Each element may require the specific template by specifing its name (for example 'simple') in attribute '--sttip-template', 
+	 * Each element may require the specific template by specifing its name (for example 'simple') in attribute '--sttip-template',
 	 * or dataset attribute in form 'data-template'. If template name is not specified, the default one, 'pie' will be used.
 	 */
 	static registerElementsByClassName(doc, cls = []) {
@@ -2671,7 +2703,8 @@ class SmartTooltip {
 			this._svg = this._root.firstElementChild;
 
 			if (this._o.template === 'iframe') {
-				this._iframe = this._root.lastElementChild;
+                this._foIFrame = this._root.getElementById('fo-iframe');
+				this._iframe = this._root.getElementById('inlineFrame');
 			} else {
 				this._iframe = null;
 			}
@@ -2827,17 +2860,21 @@ class SmartTooltip {
 						}
 						prevElemRef = this._ttipDescription;
 					}
+                    // prevElemRef = this._ttipDescrGroup;
 
 					if (this._ttipFakeIFrame) {
 						// before drawing lets do the similar trick with own position
 						if (prevElemRef) {
-							const gap = Number(this._ttipFakeIFrame.attributes.y.value) - Number(prevElemRef.attributes.y.value);
-							const height = prevElemRef.getBoundingClientRect().height;
+                            const gap = Number(this._ttipFakeIFrame.attributes.y.value) - Number(prevElemRef.attributes.y.value);
+                            const rect = prevElemRef.getBoundingClientRect();
+                            const height = rect.height;
+                            const width = this._ttipDescrGroup.getBoundingClientRect().width;
+
 							let offset = height - gap;
 							this._ttipFakeIFrame.attributes.y.value = Number(this._ttipFakeIFrame.attributes.y.value) + offset;
+                            this._foIFrame.attributes.y.value = this._ttipFakeIFrame.attributes.y.value;
+                            this._foIFrame.attributes.width.value = width;
 						}
-						const top = this._ttipFakeIFrame.getAttribute('y');
-						this._iframe.style.setProperty('top', `${top}px`);
 						if (typeof data.title.link !== 'undefined') {
 							this._iframe.setAttribute('src', data.title.link);
 						}
@@ -2862,7 +2899,7 @@ class SmartTooltip {
 					if (this._ttipValue) {
 						// before drawing lets do the similar trick with own position
 						if (prevElemRef) {
-							const gap = Number(this._ttipValue.attributes.y.value) - Number(prevElemRef.attributes.y.value);
+							const gap = Number(this._ttipValue.attributes.y.value) -  Number(prevElemRef.attributes.y.value);
 							const height = prevElemRef.getBoundingClientRect().height;
 							let offset = height - gap;
 							if (this._ttipScaleGroup) {
@@ -3114,24 +3151,12 @@ class SmartTooltip {
 					const btnRect = this._ttipFrameBGroup.getBoundingClientRect();
 					btnX = ttipBoundGroupBR.width - (btnRect.width + 4); /* the gap */
 					this._ttipFrameBGroup.setAttribute('transform', `translate(${btnX}, 4)`);
-				}
+                }
+                if (this._ttipFakeIFrame) {
+                    this._foIFrame.attributes.width.value = ttipBoundGroupBR.width - 20;
+                }
 				// zoom tooltip window to optional parameter 'frameScale'
 				this._ttipGroup.setAttribute('transform', `scale(${this._o.frameScale})`);
-
-				// after scaling: in case of 'iframe' - template zoom ifame also
-				if (this._ttipFakeIFrame) {
-					// get fake rectangle coordinates and size and convert its to client
-					const fakeRc = this._ttipFakeIFrame.getBoundingClientRect();
-					let pt = this._svg.createSVGPoint();
-					pt.x = fakeRc.x;
-					pt.y = fakeRc.y;
-					pt = pt.matrixTransform(this._svg.getScreenCTM().inverse());
-					// reposition and scaling the frame
-					this._iframe.style.setProperty('top', `${pt.y}px`);
-					this._iframe.style.setProperty('left', `${pt.x}px`);
-					this._iframe.style.setProperty('width', `${fakeRc.width}px`);
-					this._iframe.style.setProperty('height', `${fakeRc.height}px`);
-				}
 
 				// after scaling: get real size of #toolip-group and resize the root SVG
 				ttipBoundGroupBR = this._ttipGroup.getBoundingClientRect();
@@ -3177,7 +3202,7 @@ class SmartTooltipElement extends HTMLElement {
 
 		const role = this.getAttribute('role');
 		if (role && role === 'demoMode') {
-			this.innerHTML = '<div id="demo-smart-tooltip" style="position: absolute; z-index:999998"></div>';
+			this.innerHTML = '<div id="demo-smart-tooltip" style="position: inherit; z-index:999998"></div>';
             this._demoTooltipElement = document.getElementById('demo-smart-tooltip');
             this._shadowDOM = this._demoTooltipElement.attachShadow({mode: 'open'});
 			// this call will create special instance of SmartTooltip object not registred in window namespace
@@ -3212,7 +3237,7 @@ class SmartTooltipElement extends HTMLElement {
 			// not work correctrly! todo: check it!
 			// const diff = CustomProperties.diffProperties(this._o);
 			// const options = CustomProperties.buidOptionsAndCssVars(diff);
-			
+
 			// CustomProperties.convertNumericProps(options);
 
             // const data = Object.assign({}, demoData);
